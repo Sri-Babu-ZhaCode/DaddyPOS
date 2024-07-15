@@ -1,8 +1,9 @@
-// ignore_for_file: unnecessary_override
+// ignore_for_file: unnecessary_override, unnecessary_overrides
 
 import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
+import 'package:easybill_app/app/constants/app_string.dart';
 import 'package:easybill_app/app/data/models/login.dart';
 import 'package:easybill_app/app/data/models/subscription.dart';
 import 'package:easybill_app/app/data/repositories/subscription_repo.dart';
@@ -208,7 +209,7 @@ class SubscriptionController extends GetxController {
       }
     }
 
-    print(
+    debugPrint(
         'selected paln ${selectedSubscription?.price}  ${selectedSubscription?.planname}');
 
     if (selectedSubscription != null) {
@@ -232,8 +233,12 @@ class SubscriptionController extends GetxController {
       if (updateTransaction != null) {
         SetPasswordAlertDialog.setPasswordAlertDialof(
             formKey: formKey,
+            // loginmobile number will be updated while resgistion and login
             loginMobileNum:
-                Get.find<RegisterController>().mobileController.text);
+             EBAppString.loginmobilenumber != null
+                ? EBAppString.loginmobilenumber!
+                : "--"
+                );
       }
     }
 
@@ -269,7 +274,7 @@ class SubscriptionController extends GetxController {
   }
 
   void _checkPayMentSecured(PaymentSuccessResponse response) {
-    print('inside _checkPayMentSecured method --------------------->> ');
+    debugPrint('inside _checkPayMentSecured method --------------------->> ');
     generatedSignature =
         hmacSha256('${response.orderId}|${response.paymentId}', razorPaySecret);
     debugPrint(generatedSignature);
@@ -277,7 +282,7 @@ class SubscriptionController extends GetxController {
 
     if (generatedSignature == response.signature) {
       // payment is successfull
-      print(
+      debugPrint(
           'inside success state wainting to open dialog ----------------------->>');
       SetPasswordAlertDialog.setPasswordAlertDialof(
           formKey: formKey,

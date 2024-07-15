@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_overrides
+
 import 'dart:math';
 import 'package:easybill_app/app/data/models/category.dart';
 import 'package:easybill_app/app/data/models/product.dart';
@@ -88,9 +90,8 @@ class ProductManagementController extends GetxController {
   }
 
   String? validateProductName(String val) {
-    if (isEditMode) return null;
     if (val.trim().isEmpty) return 'This field is required';
-
+    if (isEditMode) return null;
     bool isProductFound = Get.find<InventoryController>().productList!.any(
         (product) =>
             val.trim().toLowerCase() ==
@@ -133,7 +134,7 @@ class ProductManagementController extends GetxController {
       update();
       Get.back();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       rethrow;
     }
   }
@@ -170,7 +171,7 @@ class ProductManagementController extends GetxController {
       update();
       Get.back();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -187,9 +188,9 @@ class ProductManagementController extends GetxController {
     EBBools.isQuickPresent = EBAppString.screenAccessList.contains("quick");
     EBBools.isTokenPresent = EBAppString.screenAccessList.contains("token");
 
-    print("sales ----------------->> ${EBBools.isSalePresent}");
-    print("quick -------------------->> ${EBBools.isQuickPresent}");
-    print("token ------------------->> ${EBBools.isTokenPresent}");
+    debugPrint("sales ----------------->> ${EBBools.isSalePresent}");
+    debugPrint("quick -------------------->> ${EBBools.isQuickPresent}");
+    debugPrint("token ------------------->> ${EBBools.isTokenPresent}");
   }
 
   bool hideTaxFiled() {

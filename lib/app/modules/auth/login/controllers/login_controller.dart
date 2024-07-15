@@ -22,6 +22,7 @@ class LoginController extends GetxController {
   List<Login>? loginList;
 
   bool isStaffTabTapped = false;
+  bool pwdVisibility = false;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -39,8 +40,10 @@ class LoginController extends GetxController {
 
   @override
   void onClose() {
-    // mobileController.dispose();
+    //   mobileController.dispose();
     // pwdController.dispose();
+    // staffPwdController.dispose();
+    // staffMobileController.dispose();
     super.onClose();
   }
 
@@ -59,44 +62,46 @@ class LoginController extends GetxController {
         loggedindevicename: deviceName,
       );
       final res = await _authRepo.login(login);
-      EBBools.isLoading = false;
       loginList = res;
 
       int? userRegiserId = loginList?[0].userregistrationid;
       int? usercredentialsid = loginList?[0].usercredentialsid;
       if (userRegiserId != null) {
-        try {
-          LocalStorage.writeUserLoginId(usercredentialsid.toString());
-          print(
-              "user credentials Id --------->> : ${await LocalStorage.getUserLoginId()}");
-          LocalStorage.writeUserId(userRegiserId.toString());
-          print(
-              "User register id -------->> : ${await LocalStorage.getUserId()}");
-        } catch (e) {
-          debugPrint('errod --------->>  $e');
-        }
+        LocalStorage.writeUserLoginId(usercredentialsid.toString());
+        print(
+            "user credentials Id --------->> : ${await LocalStorage.getUserLoginId()}");
+        LocalStorage.writeUserId(userRegiserId.toString());
+        print(
+            "User register id -------->> : ${await LocalStorage.getUserId()}");
       }
 
       if (res != null) {
         if (res[0].gst != null) {
           EBBools.isTaxNeeded = res[0].gst!;
+
+          EBAppString.loginmobilenumber = mobileController.text;
         }
         for (var element in res) {
+          // common fileds
+          EBAppString.productlanguage = element.productlanguage;
+          EBAppString.businessName = element.businessname;
+          EBAppString.businessMobile = element.loginmobilenumber;
+          EBAppString.businessEmail = element.email;
+          EBAppString.businessEmail = element.email;
+          EBAppString.userRole = element.userrole;
+
           if (element.userrole == 'Staff') {
             print('staff login --------->>  ');
             print(element.userrole);
             print(element.username);
             print(element.userpassword);
             print(element.loginmobilenumber);
-
             if (element.screenaccess != null) {
               EBAppString.screenAccessList = [...element.screenaccess!];
               for (var screens in element.screenaccess!) {
                 print('screens ------->> $screens');
               }
             }
-
-            EBAppString.productlanguage = element.productlanguage;
 
             print(
                 "product language ------------------------------------------------------------------>>  ${element.productlanguage}");
@@ -117,17 +122,17 @@ class LoginController extends GetxController {
                 print('screens ------->> $screens');
               }
             }
-            EBAppString.productlanguage = element.productlanguage;
             print(
                 "product language ------------------------------------------------------------------>>  ${element.productlanguage}");
           }
         }
         routingForLogin(res);
-
-        update();
       }
     } catch (e) {
       debugPrint(e.toString());
+    } finally {
+      EBBools.isLoading = false;
+      update();
     }
   }
 
@@ -143,9 +148,13 @@ class LoginController extends GetxController {
       case 1:
         debugPrint('decision key --------------->>  $decisionKey');
 
-        Get.offAllNamed(
-            isStaffTabTapped ? Routes.CASHIER_BILLS : Routes.INVENTORY,
-            arguments: {'triggeredFromStaff': false});
+        if (isStaffTabTapped) {
+          EBBools.triggeredFromStaff = isStaffTabTapped;
+          Get.offAllNamed(Routes.CASHIER_BILLS);
+        } else {
+          EBBools.triggeredFromStaff = isStaffTabTapped;
+          Get.offAllNamed(Routes.DAY_END_REPORT);
+        }
         break;
       case 2:
         debugPrint('decision key --------------->>  $decisionKey');
@@ -171,7 +180,15 @@ class LoginController extends GetxController {
         break;
       case 6:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('Already logged in another device');
+        debugPrint(
+            'credencials id--------------->>  ${userList[0].usercredentialsid}');
+        debugPrint(
+            'registeration id--------------->>  ${userList[0].userregistrationid}');
+        debugPrint('decision key --------------->>  $decisionKey');
+        // logout form all devices in here
+
+        Get.toNamed(Routes.LOGOUT);
+        // EBCustomSnackbar.show('${EBAppString.responseMsg}');
         break;
       case 7:
         debugPrint('decision key --------------->>  $decisionKey');
@@ -193,9 +210,6 @@ class LoginController extends GetxController {
         setPassword(pwd);
       } else {
         login();
-        // Get.offAllNamed(
-        //     isStaffTabTapped ? Routes.CASHIER_BILLS : Routes.INVENTORY,
-        //     arguments: {'triggeredFromStaff': false});
       }
       update();
     }
@@ -259,5 +273,10 @@ class LoginController extends GetxController {
       staffPwdController.clear();
       isStaffTabTapped = false;
     }
+  }
+
+  changePwdVisibility() {
+    pwdVisibility = !pwdVisibility;
+    update();
   }
 }

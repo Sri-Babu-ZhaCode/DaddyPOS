@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_overrides
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -31,11 +33,21 @@ class AdminSettingsController extends GetxController {
 
   List<String> printerSizeList = ['80MM (3 inch)', '52MM (2 inch)'];
   List<String> languageList = ['English', 'Others'];
+  List<int> timeinterval = [];
   late String selectedPrinterSize;
   late String selectedLanguage;
-  bool? isEmail, isMobile, isGst, isFooter, isWhatsapp;
+  late String settimeinterval;
+  bool? isEmail,
+      isMobile,
+      isGst,
+      isFooter,
+      isWhatsapp,
+      isBusinessName,
+      isAddress;
 
   bool readOnly = true, gstFlag = true;
+
+  String printVia = 'bluetooth';
 
   @override
   void onInit() {
@@ -69,8 +81,8 @@ class AdminSettingsController extends GetxController {
         update();
 
         Uint8List imageBytes = await imageFile!.readAsBytes();
-        print('image bytes --------->>  ');
-        print(imageBytes);
+        debugPrint('image bytes --------->>  ');
+        debugPrint(imageBytes.toString());
 
         // Decode the image
         img.Image originalImage = img.decodeImage(imageBytes)!;
@@ -136,24 +148,29 @@ class AdminSettingsController extends GetxController {
   Future<void> updateSetings() async {
     try {
       Setting setting = Setting(
-        // image tod
-        businesslogo: imageInBytes,
-        businessname: businessNameController.text,
-        businessaddress: businessAddressController.text,
-        businessmobile: mobilController.text,
-        businessemail: emailController.text,
-        footer: footerController.text,
-        //--------------->> todo choosed
-        // printername: '',
-        // printeraddress: '',
-        printersize: selectedPrinterSize,
-        language: selectedLanguage,
-        emailenable: isEmail,
-        mobileenable: isMobile,
-        gstenable: isGst,
-        footerenable: isFooter,
-        whatsappenable: isWhatsapp,
-      );
+          // image tod
+          businesslogo: imageInBytes,
+          businessname: businessNameController.text,
+          businessaddress: businessAddressController.text,
+          businessmobile: mobilController.text,
+          businessemail: emailController.text,
+          footer: footerController.text,
+          //--------------->> todo choosed
+          // printername: '',
+          // printeraddress: '',
+          printersize: selectedPrinterSize,
+          language: selectedLanguage,
+          emailenable: isEmail,
+          mobileenable: isMobile,
+          gstenable: isGst,
+          footerenable: isFooter,
+          addressenable: isAddress,
+          nameenable: isBusinessName,
+          usb: printVia == EBAppString.bluetooth.toLowerCase() ? false : true,
+          bluetooth:
+              printVia == EBAppString.bluetooth.toLowerCase() ? true : false,
+          whatsappenable: isWhatsapp,
+          settimeinterval: settimeinterval);
       EBBools.isLoading = true;
       readOnly = true;
       update();
@@ -182,7 +199,7 @@ class AdminSettingsController extends GetxController {
   }
 
   void onTapOfUnEditable() {
-    print('onTapOfUnEditable method called ------>. ');
+    debugPrint('onTapOfUnEditable method called ------>. ');
 
     ebCustomTtoastMsg(message: 'This Field Can\'t be edited');
   }
@@ -205,13 +222,31 @@ class AdminSettingsController extends GetxController {
         selectedLanguage = data.language == null || data.language!.isEmpty
             ? selectedLanguage
             : data.language!;
-        isEmail = data.emailenable ?? false;
-        isMobile = data.mobileenable ?? false;
+        timeinterval = data.timeinterval!;
+        // todp part -------------------------->>
+        settimeinterval =
+            data.settimeinterval == null || data.settimeinterval!.isEmpty
+                ? data.timeinterval![0].toString()
+                : data.settimeinterval!;
+
         isGst = data.gstenable ?? false;
+        isMobile = data.mobileenable ?? false;
+        isEmail = data.emailenable ?? false;
         isFooter = data.footerenable ?? false;
         isWhatsapp = data.whatsappenable ?? false;
+        isBusinessName = data.nameenable ?? false;
+        isAddress = data.addressenable ?? false;
+        printVia = data.bluetooth == true
+            ? EBAppString.bluetooth.toLowerCase()
+            : EBAppString.usb.toLowerCase();
+
         // updating product language to show it on Product list
         EBAppString.productlanguage = data.language;
+        // storing set time intervel globally
+        EBAppString.settimeinterval =
+            data.settimeinterval == null || data.settimeinterval == ''
+                ? '1'
+                : data.settimeinterval;
       }
     }
   }

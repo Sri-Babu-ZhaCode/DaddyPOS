@@ -49,15 +49,19 @@ class EBAppString {
   static const String login = 'Login';
   static const String staffLogin = 'Staff $login';
   static const String register = 'Register';
+  static const String logoutFromOtherDevices = 'Logout from other devices & continue';
   static const String logout = 'Log Out';
   static const String create = 'Create';
   static const String delete = 'Delete';
+  static const String allClear = 'All clear';
   static const String next = 'Next';
   static const String update = 'Update';
+  static const String summit = 'Summit';
   static const String print = 'Print';
   static const String printBill = 'Print Bill';
   static const String cancel = 'Cancel';
   static const String add = 'Add';
+  static const String filterByPaymentmode = 'Filter by Paymentmode';
   static const String addItems = 'Add Items';
   static const String edit = 'Edit';
   static const String updatePassword = '$update $pass';
@@ -76,7 +80,7 @@ class EBAppString {
   static const String createNew = 'Create New Product+';
 
   // Add Product
-  static const String nativeLanguage = 'Native Language';
+  static const String native = 'Native';
   static const String english = 'English';
   static const String itemId = 'Item ID No';
   static const String itemName = 'Item Name';
@@ -121,7 +125,24 @@ class EBAppString {
 
   static const String qrBarcode = 'Qr/Barcode';
 
+  static const String dayEndReport = 'Day end report';
   static String? productlanguage;
+  static String? businessName;
+  static String? businessMobile;
+  static String? businessEmail;
+  static String? userRole;
 
   static List<String> screenAccessList = [];
+
+  static String? loginmobilenumber;
+
+  static String? responseMsg;
+
+  static const String bluetooth = 'Bluetooth';
+
+  static const String usb = 'USB';
+
+  static String? settimeinterval;
+
+  static const String changePaymentMode = 'Change Payment Mode';
 }

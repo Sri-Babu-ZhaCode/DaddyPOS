@@ -1,3 +1,4 @@
+import 'package:easybill_app/app/modules/cashier/cashier_bills/views/widgets/product_list.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,16 +6,16 @@ import '../../../../constants/app_string.dart';
 import '../../../../constants/size_config.dart';
 import '../../../../constants/themes.dart';
 import '../controllers/cashier_bills_controller.dart';
-import 'cashier_bills_view.dart';
 
 Future<void> productSearchSheet(context) {
   return showModalBottomSheet<void>(
+  //  enableDrag: false,
     backgroundColor: EBTheme.kPrimaryWhiteColor,
     context: context,
     isScrollControlled: true,
-    constraints:  const BoxConstraints(
-       maxWidth: double.infinity,
-   ),
+    constraints: const BoxConstraints(
+      maxWidth: double.infinity,
+    ),
     builder: (BuildContext context) {
       return GetBuilder<CashierBillsController>(builder: (controller) {
         return FractionallySizedBox(
@@ -32,6 +33,7 @@ Future<void> productSearchSheet(context) {
                         size: 30,
                       ), // 'x' icon
                       onPressed: () {
+                       // controller.updateseachableProductList(0);
                         Get.back();
                       },
                     ),
@@ -57,7 +59,7 @@ Future<void> productSearchSheet(context) {
                 ),
                 EBSizeConfig.sizedBoxH20,
                 const Expanded(
-                  child: BillItemListWidget(),
+                  child: ProductListWidget(),
                 ),
               ],
             ),

@@ -115,9 +115,9 @@ class RegisterView extends GetView<RegisterController> {
                 Switch(
                   value: controller.isGstApplicable,
                   onChanged: (value) {
-                    print(value);
+                    debugPrint(value.toString());
                     controller.isGstApplicable = value;
-                    print(controller.isGstApplicable);
+                    debugPrint(controller.isGstApplicable.toString());
                     controller.gstController.clear();
                     controller.update();
                   },

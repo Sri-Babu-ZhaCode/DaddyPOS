@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_overrides
+
 import 'package:easybill_app/app/constants/utils.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_toast.dart';
 import 'package:flutter/widgets.dart';
@@ -114,7 +116,7 @@ class AdminProfileController extends GetxController {
         addressController.text = data.businessaddress ?? "";
         mobilController.text = data.loginmobilenumber ?? "";
         emailController.text = data.email ?? "";
-        if (data.gst == true || data.gstnumber != null) {
+        if (data.gst == true) {
           gstFlag = true;
           gstController.text = data.gstnumber!;
           EBBools.isTaxNeeded = true;

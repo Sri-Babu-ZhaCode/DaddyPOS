@@ -1,3 +1,5 @@
+import 'package:easybill_app/app/constants/bools.dart';
+import 'package:easybill_app/app/constants/size_config.dart';
 import 'package:easybill_app/app/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,11 +15,12 @@ class EBCustomScaffold extends StatelessWidget {
       this.noDrawer,
       this.resizeToAvoidBottomInset = true,
       this.trailingIconNeeded = false,
-      this.trailingIcon, 
-      this.trailingIconOnPressed, 
-      this.actionWidget,  this.actionWidgetList});
+      this.trailingIcon,
+      this.trailingIconOnPressed,
+      this.actionWidget,
+      this.actionWidgetList});
 
-  final Widget? body, bottomNavBar, bottomSheet , actionWidget ;
+  final Widget? body, bottomNavBar, bottomSheet, actionWidget;
   final List<Widget>? actionWidgetList;
   final bool? noDrawer, resizeToAvoidBottomInset, trailingIconNeeded;
   final IconData? trailingIcon;
@@ -45,10 +48,9 @@ class EBCustomScaffold extends StatelessWidget {
             centerTitle: true,
             backgroundColor: EBTheme.kPrintBtnColor,
             elevation: 0,
-            actions:  
-            [
-             actionWidget ?? Container(),
-             ...actionWidgetList?? [],
+            actions: [
+              actionWidget ?? Container(),
+              ...actionWidgetList ?? [],
               // Visibility(
               //   visible: trailingIconNeeded!,
               //   child: IconButton(
@@ -59,12 +61,13 @@ class EBCustomScaffold extends StatelessWidget {
             ],
           ),
         ),
-        body: body,
+        body: EBBools.isInternerAvailabile ? body : placeHolderForNoInterner(),
         bottomNavigationBar: bottomNavBar,
         bottomSheet: bottomSheet,
       );
     } else {
       return Scaffold(
+        resizeToAvoidBottomInset: resizeToAvoidBottomInset,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(40.0),
           child: AppBar(
@@ -72,17 +75,16 @@ class EBCustomScaffold extends StatelessWidget {
               color: EBTheme.kPrimaryWhiteColor, // Change the color here
             ),
             title: Text(
-              'Easy Bill',
+              'Daddy POS',
               style: EBAppTextStyle.appBarTxt,
             ),
             systemOverlayStyle: const SystemUiOverlayStyle(
               // Status bar colorrrr
               statusBarColor: EBTheme.kPrintBtnColor,
             ),
-            actions:  
-            [
-             actionWidget ?? Container(),
-             ...actionWidgetList?? [],
+            actions: [
+              actionWidget ?? Container(),
+              ...actionWidgetList ?? [],
               // Visibility(
               //   visible: trailingIconNeeded!,
               //   child: IconButton(
@@ -97,10 +99,28 @@ class EBCustomScaffold extends StatelessWidget {
           ),
         ),
         drawer: const EBAppDrawer(),
-        body: body,
+        body: EBBools.isInternerAvailabile ? body : placeHolderForNoInterner(),
         bottomNavigationBar: bottomNavBar,
         bottomSheet: bottomSheet,
       );
     }
+  }
+
+  Widget placeHolderForNoInterner() {
+    return Center(
+      child: Column(
+        children: [
+          const Icon(
+            Icons.network_check,
+            size: 45,
+          ),
+          EBSizeConfig.sizedBoxH30,
+          Text(
+            'No Internet Connection',
+            style: EBAppTextStyle.bodyText,
+          ),
+        ],
+      ),
+    );
   }
 }

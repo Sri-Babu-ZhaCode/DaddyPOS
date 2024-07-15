@@ -1,9 +1,8 @@
 import 'package:get/get.dart';
 
 class QrScannerController extends GetxController {
-  //TODO: Implement QrScannerController
+ 
 
-  final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
@@ -18,6 +17,7 @@ class QrScannerController extends GetxController {
   void onClose() {
     super.onClose();
   }
+  
+   
 
-  void increment() => count.value++;
 }

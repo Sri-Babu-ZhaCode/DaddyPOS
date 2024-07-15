@@ -1,14 +1,15 @@
+import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/data/api/local_storage.dart';
 import 'package:easybill_app/app/data/models/login.dart';
 import 'package:easybill_app/app/data/repositories/auth_repository.dart';
 import 'package:easybill_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../constants/app_string.dart';
 import '../constants/app_text_style.dart';
 import '../constants/size_config.dart';
 import '../constants/themes.dart';
-import '../modules/admin/inventory/controllers/inventory_controller.dart';
 import 'custom_widgets/custom_elevated_button.dart';
 import 'custom_widgets/custom_list_tile.dart';
 
@@ -17,10 +18,9 @@ class EBAppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authRepo = AuthRepo();
-    Login login = Login(
-        usercredentialsid:
-            int.tryParse(LocalStorage.usercredentialsid ?? "45"));
-    return Get.find<InventoryController>().triggeredFromStaff == null
+    Login login =
+        Login(usercredentialsid: int.tryParse(LocalStorage.usercredentialsid!));
+    return EBBools.triggeredFromStaff
         // Cashier Drawer
         ? Drawer(
             backgroundColor: EBTheme.kPrimaryWhiteColor,
@@ -40,6 +40,34 @@ class EBAppDrawer extends StatelessWidget {
                 ),
                 EBCustomListTile(
                   leading: const Icon(
+                    Icons.cancel_presentation,
+                    size: 40,
+                  ),
+                  titleName: EBAppString.billWiseReport,
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(
+                      Routes.BILL_WISE_REPORT,
+                      arguments: {"billWiseDecisionKey": 2},
+                    );
+                  },
+                ),
+                EBCustomListTile(
+                  leading: const Icon(
+                    Icons.cancel_presentation,
+                    size: 40,
+                  ),
+                  titleName: EBAppString.changePaymentMode,
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(
+                      Routes.BILL_WISE_REPORT,
+                      arguments: {"billWiseDecisionKey": 2},
+                    );
+                  },
+                ),
+                EBCustomListTile(
+                  leading: const Icon(
                     Icons.cancel_outlined,
                     size: 40,
                   ),
@@ -47,9 +75,23 @@ class EBAppDrawer extends StatelessWidget {
                   onTap: () {
                     Get.back();
                     Get.toNamed(
-                      Routes.ADMIN_REPORT,
-                      arguments: {"decitionKeyForReports": 4},
+                      Routes.BILL_WISE_REPORT,
+                      arguments: {"billWiseDecisionKey": 5},
                     );
+                  },
+                ),
+                EBCustomListTile(
+                  leading: const Icon(
+                    Icons.person_outline_sharp,
+                    size: 40,
+                  ),
+                  // Image.asset(
+                  //   color: Colors.black54,
+                  //   EBAppString.profileImg,
+                  // ),
+                  titleName: EBAppString.profile,
+                  onTap: () {
+                    Get.toNamed(Routes.CASHIER_PROFILE);
                   },
                 ),
                 EBCustomListTile(
@@ -87,6 +129,17 @@ class EBAppDrawer extends StatelessWidget {
             child: ListView(
               padding: EBSizeConfig.edgeInsetsOnlyH70,
               children: [
+                EBCustomListTile(
+                  leading: const Icon(
+                    Icons.file_copy_outlined,
+                    size: 40,
+                  ),
+                  titleName: EBAppString.dayEndReport,
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(Routes.DAY_END_REPORT);
+                  },
+                ),
                 EBCustomListTile(
                   leading: const Icon(
                     Icons.factory_outlined,
@@ -128,8 +181,22 @@ class EBAppDrawer extends StatelessWidget {
                       onTap: () {
                         Get.back();
                         Get.toNamed(
-                          Routes.ADMIN_REPORT,
-                          arguments: {"decitionKeyForReports": 1},
+                          Routes.BILL_WISE_REPORT,
+                          arguments: {"billWiseDecisionKey": 0},
+                        );
+                      },
+                    ),
+                    EBCustomListTile(
+                      leading: const Icon(
+                        Icons.cancel_presentation,
+                        size: 40,
+                      ),
+                      titleName: EBAppString.changePaymentMode,
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(
+                          Routes.BILL_WISE_REPORT,
+                          arguments: {"billWiseDecisionKey": -1},
                         );
                       },
                     ),
@@ -143,7 +210,7 @@ class EBAppDrawer extends StatelessWidget {
                         Get.back();
                         Get.toNamed(
                           Routes.ADMIN_REPORT,
-                          arguments: {"decitionKeyForReports": 2},
+                          arguments: {"otherReportsDecisionKey": 1},
                         );
                       },
                     ),
@@ -157,7 +224,7 @@ class EBAppDrawer extends StatelessWidget {
                         Get.back();
                         Get.toNamed(
                           Routes.ADMIN_REPORT,
-                          arguments: {"decitionKeyForReports": 3},
+                          arguments: {"otherReportsDecisionKey": 2},
                         );
                       },
                     ),
@@ -171,7 +238,7 @@ class EBAppDrawer extends StatelessWidget {
                         Get.back();
                         Get.toNamed(
                           Routes.ADMIN_REPORT,
-                          arguments: {"decitionKeyForReports": 4},
+                          arguments: {"otherReportsDecisionKey": 3},
                         );
                       },
                     ),

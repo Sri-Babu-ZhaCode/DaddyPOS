@@ -15,16 +15,22 @@ class EBAppTextStyle {
 
   static final bodyText = GoogleFonts.poppins(
     fontSize: 14,
+    
     fontWeight: FontWeight.w500,
   );
   static final billItemStyle = GoogleFonts.poppins(
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: FontWeight.w500,
   );
   static final avtiveTxt = GoogleFonts.poppins(
     fontSize: 15,
     fontWeight: FontWeight.w500,
     color: EBTheme.greenColor,
+  );
+
+  static final totalAmt = GoogleFonts.poppins(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
   );
   static final button = GoogleFonts.poppins(
     fontSize: 18,

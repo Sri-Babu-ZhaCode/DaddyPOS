@@ -10,18 +10,22 @@ class EBCustomListTile extends StatelessWidget {
       this.trailingWidget,
       this.leading,
       this.trailingIconSize,
-      this.subtitle});
+      this.subtitle,
+      
+      this.contentPadding});
 
   final String? titleName;
   final IconData? trailingIcon;
   final GestureTapCallback? onTap;
   final Widget? trailingWidget, leading, subtitle;
   final double? trailingIconSize;
+  final EdgeInsetsGeometry? contentPadding;
 
   @override
   Widget build(BuildContext context) {
     return trailingIcon != null
         ? ListTile(
+          contentPadding: contentPadding,
             leading: leading,
             title: Text(
               titleName ?? '',
@@ -35,6 +39,7 @@ class EBCustomListTile extends StatelessWidget {
             onTap: onTap,
           )
         : ListTile(
+          contentPadding: contentPadding,
             leading: leading,
             title: Text(
               titleName ?? '',

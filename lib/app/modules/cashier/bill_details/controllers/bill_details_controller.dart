@@ -19,20 +19,8 @@ class BillDetailsController extends GetxController {
   List<String> paymentMode = ['Cash', 'Card', 'Upi'];
 
   int currentIndex = 0;
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   Future<void> addBillInfo() async {
     try {
@@ -56,7 +44,7 @@ class BillDetailsController extends GetxController {
       update();
       Get.offNamed(Routes.CASHIER_BILLS);
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 }

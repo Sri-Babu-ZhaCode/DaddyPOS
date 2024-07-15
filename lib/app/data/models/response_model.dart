@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:easybill_app/app/constants/app_string.dart';
 import 'package:equatable/equatable.dart';
 
 class BtResponse<T extends BaseModel> {
@@ -19,6 +20,8 @@ class BtResponse<T extends BaseModel> {
       Map<String, dynamic> json, ResponseResultDecoder<T> resultsDecoder) {
     status = json['status'];
     message = json['message'];
+    // storing response message
+    EBAppString.responseMsg = json['message'];
     decisionkey = json['decisionkey'];
     requiredFields = json['requiredFields'];
     if (json['results'] != null) {

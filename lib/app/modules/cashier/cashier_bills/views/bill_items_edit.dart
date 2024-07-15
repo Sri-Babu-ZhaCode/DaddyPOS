@@ -3,12 +3,10 @@ import 'package:easybill_app/app/widgets/custom_widgets/custom_text_form_field.d
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
 import '../../../../constants/app_string.dart';
 import '../../../../constants/app_text_style.dart';
 import '../../../../constants/size_config.dart';
 import '../../../../constants/themes.dart';
-import '../../../../constants/validation.dart';
 import '../../../../widgets/custom_widgets/custom_elevated_button.dart';
 import '../../../../widgets/custom_widgets/custom_round_btn.dart';
 import '../controllers/cashier_bills_controller.dart';
@@ -19,15 +17,14 @@ Future<void> billItemEditorBottomSheet(context, BillItems billItem) {
     context: context,
     isScrollControlled: true,
     builder: (BuildContext context) {
-      final allowedValues = [0.250, 0.500, 0.700];
       final cashierController = Get.find<CashierBillsController>();
       cashierController.itemNameController.text =
           EBAppString.productlanguage == 'English'
               ? billItem.productNameEnglish!
               : billItem.productnameTamil!;
       cashierController.itemPriceController.text = billItem.price.toString();
-      cashierController.itemQuantityController.text =
-          billItem.quantity.toString();
+      print(
+          'billItemEditorBottomSheet called ------------------------------------->>  ');
       return GetBuilder<CashierBillsController>(builder: (controller) {
         return FractionallySizedBox(
           heightFactor: 0.80,
@@ -74,7 +71,6 @@ Future<void> billItemEditorBottomSheet(context, BillItems billItem) {
                       onPressed: () {
                         double quntityIncremetal = double.parse(
                             controller.itemQuantityController.text);
-
                         if (quntityIncremetal > 1.0) {
                           quntityIncremetal = quntityIncremetal - 1;
                           controller.itemQuantityController.text =
@@ -94,10 +90,11 @@ Future<void> billItemEditorBottomSheet(context, BillItems billItem) {
                             decimal: true),
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.allow(
-                              RegExp(r'^\d*\.?\d*')),
+                              RegExp(r'^\d+\.?\d{0,3}'))
                         ],
-                        validator: (value) =>
-                            EBValidation.validateDouble(value!, allowedValues),
+                        onChanged: (value) {
+                            controller.update();
+                        },
                       ),
                     ),
                     RoundedButton(
@@ -118,7 +115,7 @@ Future<void> billItemEditorBottomSheet(context, BillItems billItem) {
                   ],
                 ),
                 Text(
-                  'Total Price : ${double.parse(controller.itemPriceController.text) * double.parse(controller.itemQuantityController.text)}',
+                  'Total Price : ${(double.parse(controller.itemPriceController.text) * double.parse(controller.itemQuantityController.text.isEmpty ? '0.0' : controller.itemQuantityController.text)).toStringAsFixed(2)}',
                   style: EBAppTextStyle.heading2,
                 ),
                 CustomElevatedButton(

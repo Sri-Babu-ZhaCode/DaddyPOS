@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_overrides
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import '../../../../data/models/cashier.dart';
@@ -17,6 +19,7 @@ class CashierRegisterController extends GetxController {
   TextEditingController mobileController = TextEditingController();
 
   TextEditingController userPasswordController = TextEditingController();
+  TextEditingController staffUsernameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   @override
   void onInit() {
@@ -36,18 +39,19 @@ class CashierRegisterController extends GetxController {
 
   Future<void> addCashier() async {
     try {
-      print(mobileController.text);
-      print(userPasswordController.text);
+      debugPrint(mobileController.text);
+      debugPrint(userPasswordController.text);
       Cashier cashier = Cashier(
         loginusername: mobileController.text.trim(),
         userpassword: userPasswordController.text.trim(),
+        staffname: staffUsernameController.text.trim(),
       );
       final cashierList = await cashierRepo.addCashier(cashier);
       Get.find<CashiersController>().updateCashiers(cashierList!);
-      print(cashierList);
+      debugPrint(cashierList.toString());
       Get.back();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -66,32 +70,34 @@ class CashierRegisterController extends GetxController {
   }
 
   Future<void> updateCashier() async {
-    print('update cashier called -------------->>   ');
+    debugPrint('update cashier called -------------->>   ');
     try {
       Cashier cashier = Cashier(
         usercredentialsid: selectedCashier!.usercredentialsid,
         loginusername: mobileController.text.trim(),
+        staffname: staffUsernameController.text.trim(),
         userpassword: userPasswordController.text.trim(),
       );
       final cashierList = await cashierRepo.updateCashier(cashier);
       Get.find<CashiersController>().updateCashiers(cashierList!);
-      print(cashierList);
+      debugPrint(cashierList.toString());
       Get.back();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
   void initCashier() {
     mobileController.text = selectedCashier!.loginusername ?? '';
     userPasswordController.text = selectedCashier!.userpassword ?? '';
+    staffUsernameController.text = selectedCashier!.staffname ?? '';
   }
 
   Future<void> deleteCashier(Cashier c) async {
     try {
       final x = await cashierRepo.deleteCashier(c);
       Get.find<CashiersController>().updateCashiers(x!);
-     // update();
+      // update();
       Get.back();
       Get.back();
     } catch (e) {

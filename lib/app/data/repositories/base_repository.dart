@@ -21,6 +21,19 @@ class BaseRepo {
       throw (EbException(e));
     }
   }
+  
+
+  Future<void> postWithOutResponse<T extends BaseModel>(String path,
+      {required body, ResponseAsListHandler<T>? responseHandler}) async {
+    try {
+      await _client.post(
+        path,
+        data: body,
+      );
+    } catch (e) {
+      throw (EbException(e));
+    }
+  }
 
   Future<List<T>?> get<T extends BaseModel>(String path,
       {Map<String, dynamic>? body,

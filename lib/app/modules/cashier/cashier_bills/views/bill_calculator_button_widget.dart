@@ -47,9 +47,12 @@
 
 import 'package:easybill_app/app/constants/app_string.dart';
 import 'package:easybill_app/app/constants/app_text_style.dart';
+import 'package:easybill_app/app/constants/size_config.dart';
 import 'package:easybill_app/app/constants/themes.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_container.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../widgets/responsive.dart';
 
 class CalculatorButton extends StatelessWidget {
   final String? btnText;
@@ -64,16 +67,17 @@ class CalculatorButton extends StatelessWidget {
     this.btnIcon,
     this.isAddItemBtn,
     this.onButtonPressed,
-     this.btnColor,
+    this.btnColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    EBSizeConfig.init(context);
     return isAddItemBtn == true
         ? GestureDetector(
             onTap: onButtonPressed,
             child: CustomContainer(
-              height: 210,
+              height:   EBSizeConfig.screenWidth > 900 ? 162 : Responsive.isTablet(context) == true ?  348 : 210,
               color: EBTheme.kPrintBtnColor,
               child: Center(
                 child: Text(
@@ -90,16 +94,16 @@ class CalculatorButton extends StatelessWidget {
         : GestureDetector(
             onTap: onButtonPressed,
             child: CustomContainer(
-              height: 100,
-              color: btnColor?? EBTheme.listColor,
+              height: EBSizeConfig.screenWidth > 900 ? 75 : Responsive.isTablet(context) == true ? 168: 100,
+              color: btnColor ?? EBTheme.listColor,
               child: Center(
                 child: btnIcon ??
                     Text(
                       btnText!,
-                      style:  EBAppTextStyle.customeTextStyle(
-                      color: Colors.black,
-                      fontSize: 45,
-                      fontWeigh: FontWeight.w600),
+                      style: EBAppTextStyle.customeTextStyle(
+                          color: Colors.black,
+                          fontSize: 45,
+                          fontWeigh: FontWeight.w600),
                     ),
               ),
             ),

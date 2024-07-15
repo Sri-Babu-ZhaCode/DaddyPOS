@@ -1,3 +1,4 @@
+import 'package:easybill_app/app/constants/app_string.dart';
 import 'package:easybill_app/app/data/repositories/auth_repository.dart';
 import 'package:easybill_app/app/routes/app_pages.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_snackbar.dart';
@@ -60,6 +61,9 @@ class RegisterController extends GetxController {
       userList = res;
       print('user list ------->> $userList');
       userRegiserId = userList![0].userregistrationid;
+      EBAppString.loginmobilenumber = userList![0].loginmobilenumber;
+      print(
+                'login mobile number  ---------------- >> ${EBAppString.loginmobilenumber}');
       print('userregister id-------------->>  $userRegiserId');
       LocalStorage.writeUserId(userRegiserId.toString());
       String? userId = await LocalStorage.getUserId();

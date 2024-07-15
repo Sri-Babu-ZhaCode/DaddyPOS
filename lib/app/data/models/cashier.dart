@@ -8,6 +8,7 @@ class Cashier extends BaseModel {
   String? userrole;
   bool? isactive;
   String? createdon;
+  String? staffname;
   int? decisionkey;
   List<String>? screenaccess;
 
@@ -18,12 +19,14 @@ class Cashier extends BaseModel {
       this.userpassword,
       this.userrole,
       this.isactive,
-      this.createdon});
+      this.createdon,
+      this.staffname});
 
   Cashier.fromJson(Map<String, dynamic> json) {
     usercredentialsid = json['usercredentialsid'];
     userregistrationid = json['userregistrationid'];
     loginusername = json['loginusername'];
+    staffname = json['fullname'];
     userpassword = json['userpassword'];
     userrole = json['userrole'];
     isactive = json['isactive'];
@@ -36,6 +39,7 @@ class Cashier extends BaseModel {
     data['usercredentialsid'] = usercredentialsid;
     data['userregistrationid'] = userregistrationid;
     data['loginusername'] = loginusername;
+    data['fullname'] = staffname;
     data['userpassword'] = userpassword;
     return data;
   }

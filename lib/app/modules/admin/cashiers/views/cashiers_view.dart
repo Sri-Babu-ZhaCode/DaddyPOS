@@ -100,15 +100,14 @@ class CashiersView extends GetView<CashiersController> {
                   Expanded(
                     child: Row(
                       children: [
-                        Text('Login Username',
-                            style: EBAppTextStyle.catStyle),
+                        Text('Login Username', style: EBAppTextStyle.catStyle),
                         //      IconButton(
                         //   onPressed: () {
                         //     // _deleteAlertDialof(
                         //     //     controller.cashierList![index]);
                         //   },
                         //   icon: const Icon(
-                                  
+
                         //      textDirection: TextDirection.ltr,
                         //     Icons.delete_forever, size: 18, color: Colors.red),
                         // ),
@@ -122,22 +121,33 @@ class CashiersView extends GetView<CashiersController> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  // Text(
-                  //   controller.cashierList![index].isactive!
-                  //       ? 'Active'
-                  //       : 'Idle',
-                  //   style: EBAppTextStyle.avtiveTxt,
-                  // ),
+
+                  Expanded(
+                      child: Row(
+                    children: [
+                      Text(
+                        'Username :',
+                        style: EBAppTextStyle.bodyText,
+                      ),
+                      Flexible(
+                        child: Text(
+                          ' ${controller.cashierList![index].staffname}',
+                          style: EBAppTextStyle.bodyText,
+                        ),
+                      ),
+                    ],
+                  )),
+
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                         Expanded(
-                    child: Text(
-                      'Role : ${controller.cashierList![index].userrole}',
-                      style: EBAppTextStyle.bodyText,
-                    ),
-                  ),
+                        Expanded(
+                          child: Text(
+                            'Role : ${controller.cashierList![index].userrole}',
+                            style: EBAppTextStyle.bodyText,
+                          ),
+                        ),
                         Text(
                           controller.cashierList![index].isactive!
                               ? 'Active'
@@ -159,7 +169,7 @@ class CashiersView extends GetView<CashiersController> {
                   //     ),
                   //   ],
                   // ),
-                ] ,
+                ],
               ),
             ),
           );

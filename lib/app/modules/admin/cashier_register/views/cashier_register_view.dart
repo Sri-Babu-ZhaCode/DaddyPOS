@@ -73,6 +73,12 @@ class CashierRegisterView extends GetView<CashierRegisterController> {
                     ),
                     CustomTextFormField(
                         readOnly: _.isEditMode,
+                        controller: controller.staffUsernameController,
+                        labelText: EBAppString.userName,
+                        validator: (value) =>
+                            EBValidation.validateIsEmpty(value!)),
+                    CustomTextFormField(
+                        readOnly: _.isEditMode,
                         controller: controller.userPasswordController,
                         labelText: EBAppString.userpass,
                         validator: (value) =>

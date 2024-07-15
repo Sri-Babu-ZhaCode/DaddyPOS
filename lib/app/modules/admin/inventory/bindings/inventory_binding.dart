@@ -6,9 +6,7 @@ class InventoryBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<InventoryController>(
-      () => InventoryController(
-       triggeredFromStaff: Get.arguments['triggeredFromStaff'] ?? true,
-      ),
+      () => InventoryController(),
     );
   }
 }

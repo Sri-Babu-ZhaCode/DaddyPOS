@@ -4,19 +4,30 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'app/constants/size_config.dart';
+import 'app/internet/dependency.dart';
 import 'app/routes/app_pages.dart';
 import 'app/widgets/custom_widgets/custom_elevated_icon_button.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // getDeviceInfo();
+  if (isPhone) {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+  }
+
   EBSizeConfig.mediaQueryData =
       MediaQueryData.fromView(WidgetsBinding.instance.window);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor:
-        EBTheme.kPrimaryColor, // Set your desired status bar color here
+    statusBarColor: EBTheme.kPrimaryColor,
   ));
   runApp(const MyApp());
+  DependencyInjection.init();
+}
+
+bool get isPhone {
+  final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
+  return data.size.shortestSide < 576; // Adjust threshold as needed
 }
 
 class MyApp extends StatelessWidget {

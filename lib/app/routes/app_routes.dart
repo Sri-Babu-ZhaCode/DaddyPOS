@@ -34,6 +34,9 @@ abstract class Routes {
   static const QR_SCANNER = _Paths.ADMIN + _Paths.QR_SCANNER;
   static const QUNATITY_BILL_CALCULATOR =
       _Paths.CASHIER + _Paths.QUNATITY_BILL_CALCULATOR;
+  static const DAY_END_REPORT = _Paths.ADMIN + _Paths.DAY_END_REPORT;
+  static const BILL_WISE_REPORT = _Paths.ADMIN + _Paths.BILL_WISE_REPORT;
+  static const LOGOUT = _Paths.AUTH + _Paths.LOGOUT;
 }
 
 abstract class _Paths {
@@ -69,4 +72,7 @@ abstract class _Paths {
   static const CHOOSE_PRINTER = '/choose-printer';
   static const QR_SCANNER = '/qr-scanner';
   static const QUNATITY_BILL_CALCULATOR = '/qunatity-bill-calculator';
+  static const DAY_END_REPORT = '/day-end-report';
+  static const BILL_WISE_REPORT = '/bill-wise-report';
+  static const LOGOUT = '/logout';
 }

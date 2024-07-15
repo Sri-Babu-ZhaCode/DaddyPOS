@@ -27,8 +27,8 @@ class BillDetailsView extends GetView<BillDetailsController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                height: EBSizeConfig.screenHeight * 0.5,
-                child: const BillDetailsItemList()),
+                  height: EBSizeConfig.screenHeight * 0.5,
+                  child: const BillDetailsItemList()),
               ListView(
                 shrinkWrap: true,
                 children: [
@@ -69,6 +69,7 @@ class BillDetailsView extends GetView<BillDetailsController> {
                       onTap: () {
                         controller.currentIndex = index;
                         controller.update();
+                        controller.addBillInfo();
                       },
                       child: CustomContainer(
                         height: 60,
@@ -84,19 +85,18 @@ class BillDetailsView extends GetView<BillDetailsController> {
                       ),
                     ),
                   ),
-                  FractionallySizedBox(
-                    widthFactor: 0.50,
-                    child: CustomElevatedButton(
-                      onPressed: () {
-                        print('Print btn pressed------------>>');
-                        controller.addBillInfo();
-                      },
-                      child: Text(
-                        EBAppString.print,
-                        style: EBAppTextStyle.printBtn,
-                      ),
-                    ),
-                  ),
+                  // FractionallySizedBox(
+                  //   widthFactor: 0.50,
+                  //   child: CustomElevatedButton(
+                  //     onPressed: () {
+                  //       controller.addBillInfo();
+                  //     },
+                  //     child: Text(
+                  //       EBAppString.print,
+                  //       style: EBAppTextStyle.printBtn,
+                  //     ),
+                  //   ),
+                  // ),
                 ]
                     .expand(
                       (element) => [
@@ -116,10 +116,11 @@ class BillDetailsView extends GetView<BillDetailsController> {
   Future deleteAlertDialog() {
     return const CustomAlertDialog().alertDialog(
       dialogTitle: 'Delete Bill',
+      confimBtnColor: EBTheme.redColor,
       isformChildrenNeeded: true,
       dialogContent: 'Are you sure you want delete this Bill items',
       formKey: key,
-      confirmButtonText: EBAppString.delete,
+      confirmButtonText: EBAppString.allClear,
       confirmOnPressed: () {
         controller.cashierBillsController.cancelOrderPressed();
         Get.close(2);

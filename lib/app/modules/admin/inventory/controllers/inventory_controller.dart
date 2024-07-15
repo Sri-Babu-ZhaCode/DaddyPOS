@@ -1,5 +1,11 @@
+import 'dart:io';
+
+import 'package:easybill_app/app/constants/app_string.dart';
+import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/data/repositories/category_repo.dart';
 import 'package:easybill_app/app/data/repositories/product_repo.dart';
+import 'package:easybill_app/app/widgets/custom_widgets/custom_toast.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import '../../../../data/models/category.dart';
@@ -15,8 +21,7 @@ class InventoryController extends GetxController {
   List<Product>? seachableProductList;
   List<Units>? unitList;
   List<TaxType>? taxType;
-  bool? triggeredFromStaff;
-  InventoryController({this.triggeredFromStaff});
+  InventoryController();
 
   List<Product>? categoryProductsList(int catId) =>
       productList?.where((element) => element.categoryid == catId).toList();
@@ -28,10 +33,11 @@ class InventoryController extends GetxController {
   @override
   void onInit() {
     debugPrint(' inventory oninint called');
-    debugPrint('------------------->> triggered from staff  :  $triggeredFromStaff');
+    debugPrint(
+        '------------------->> triggered from staff  :  ${EBBools.triggeredFromStaff}');
     super.onInit();
-    
-    getProducts();  
+
+    getProducts();
     getUtilitiesUnit();
     getUtilitiesTaxtype();
   }
@@ -40,23 +46,21 @@ class InventoryController extends GetxController {
     try {
       final x = await productRepo.getProducts();
       productList = x;
-      // productList?.add(Product(
-      //     productnameEnglish: 'Note book',
-      //     productnameTamil: 'Puthagam',
-      //     categoryid: 188,
-      //     productid: 101,
-      //     istoken: false,
-      //     price: '30',
-      //     taxpercentage: '0',
-      //     unitid: 1,
-      //     qrOrBarCodeNumber: "123456789012"));
       seachableProductList = x;
       getCategories();
       for (var element in productList!) {
-        print('product names ----------->>  ${element.productnameEnglish}');
+        debugPrint('product names ----------->>  ${element.productnameEnglish}');
       }
       update();
-    } catch (e) {}
+    } catch (e) {
+      if (e is SocketException) {
+        debugPrint(
+            '<<---------------------------------------------- Error in Internet --------------------------------------------------------------->>');
+      }
+
+      debugPrint(
+          '<<---------------------------------------------- Error occured --------------------------------------------------------------->>');
+    }
   }
 
   Future<void> getCategories() async {
@@ -67,7 +71,7 @@ class InventoryController extends GetxController {
       for (var element in categoryList!) {
         if (isProductPresent(element.categoryid)) {
           resultList.add(element);
-          print(element.categoryname);
+          debugPrint(element.categoryname);
         }
       }
 
@@ -112,19 +116,39 @@ class InventoryController extends GetxController {
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
 
+  Future<void> downloadProduct() async {
+    try {
+      await productRepo.downloadProduct();
+      ebCustomTtoastMsg(message: 'Product CSV downloaded');
+      update();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> uploadProduct() async {
+    try {
+      Product p = Product();
+      await productRepo.updateProduct(p);
+      ebCustomTtoastMsg(message: EBAppString.responseMsg ?? "-");
+      update();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
   void onReady() {
     super.onReady();
-    print('on ready called -------------->>');
+    debugPrint('on ready called -------------->>');
   }
 
   @override
   void onClose() {
     super.onClose();
-    print('on closed called -------------->>');
+    debugPrint('on closed called -------------->>');
   }
 
   bool isProductPresent(int? categoryid) {
@@ -172,16 +196,16 @@ class InventoryController extends GetxController {
   }
 
   void addPressed() {
-    print('add category validation called ----------------->>      ');
+    debugPrint('add category validation called ----------------->>      ');
     if (formKey.currentState?.validate() == true) {
-      print('inside add category validation called ----------------->>      ');
+      debugPrint('inside add category validation called ----------------->>      ');
       addCategory();
       update();
     }
   }
 
   void editPressed(category) {
-    print('edit category calleedd ----------------->>      ');
+    debugPrint('edit category calleedd ----------------->>      ');
     if (formKey.currentState?.validate() == true) {
       editCategory(category);
       update();
@@ -193,17 +217,16 @@ class InventoryController extends GetxController {
       Category category = Category(categoryname: categoryController.text);
       final x = await categoryRepo.addCategory(category);
       categoryList = x;
-
       categoryController.text = "";
       update();
       Get.back();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
   Future<void> editCategory(Category c) async {
-    print('edit apdi called -------------------->> ');
+    debugPrint('edit apdi called -------------------->> ');
     try {
       Category category = Category(
           categoryid: c.categoryid, categoryname: categoryController.text);
@@ -211,7 +234,7 @@ class InventoryController extends GetxController {
       updateCategory(categoryList!);
       Get.back();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -223,7 +246,7 @@ class InventoryController extends GetxController {
       Get.back();
       update();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -233,9 +256,13 @@ class InventoryController extends GetxController {
       resultList = productList;
     } else {
       resultList = productList!
-          .where((product) => product.productnameEnglish!
-              .toLowerCase()
-              .contains(value.toLowerCase()))
+          .where((product) => EBAppString.productlanguage == 'English'
+              ? product.productnameEnglish!
+                  .toLowerCase()
+                  .contains(value.toLowerCase())
+              : product.productnameTamil!
+                  .toLowerCase()
+                  .contains(value.toLowerCase()))
           .toList();
     }
     seachableProductList = resultList;
@@ -253,6 +280,16 @@ class InventoryController extends GetxController {
           .toList();
       seachableProductList = resultList;
       update();
+    }
+  }
+
+  void chooeseFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      final file = File(result.files.single.path!);
+
+    } else {
+      ebCustomTtoastMsg(message: 'No File Selected');
     }
   }
 }

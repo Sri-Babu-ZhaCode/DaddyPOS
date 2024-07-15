@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:easybill_app/app/constants/app_string.dart';
 import 'package:easybill_app/app/constants/app_text_style.dart';
 import 'package:easybill_app/app/constants/bools.dart';
@@ -152,7 +151,7 @@ class AdminSettingsView extends GetView<AdminSettingsController> {
                             child: Center(
                               child: EBBools.isImageSelected
                                   ? const LoadingWidget()
-                                  : controller.imageInBytes == null
+                                  : controller.imageInBytes == null || controller.imageInBytes == ''
                                       ? Image.asset(
                                           fit: BoxFit.fill,
                                           EBAppString.businessLogoImg,
@@ -373,6 +372,96 @@ Widget themePrinter() {
                 ),
               ),
             ),
+            EBCustomListTile(
+              titleName: 'QR Scaning Time in Seconds',
+              trailingWidget: FractionallySizedBox(
+                widthFactor: 0.60,
+                heightFactor: 0.90,
+                child: CustomDropDownFormField<String>(
+                  value: controller.settimeinterval,
+                  items: controller.timeinterval
+                      .map<DropdownMenuItem<String>>(
+                        (element) => DropdownMenuItem<String>(
+                          value: element.toString(),
+                          child: Text(element.toString().toUpperCase(),
+                              overflow: TextOverflow.ellipsis,
+                              style: EBAppTextStyle.bodyText),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: controller.readOnly
+                      ? null
+                      : (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          controller.settimeinterval = value;
+                          controller.update();
+                        },
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: RadioListTile<String>(
+                    title: Text(
+                      EBAppString.bluetooth,
+                      style: EBAppTextStyle.bodyText,
+                    ),
+                    value: 'bluetooth',
+                    groupValue: controller.printVia,
+                    activeColor: EBTheme.kPrimaryColor,
+                    onChanged: controller.readOnly
+                        ? null
+                        : (value) {
+                            controller.printVia = value!;
+                            debugPrint("value ---------->> $value");
+                            controller.update();
+                          },
+                  ),
+                ),
+                Expanded(
+                  child: RadioListTile<String>(
+                      title: Text(
+                        EBAppString.usb,
+                        style: EBAppTextStyle.bodyText,
+                      ),
+                      value: 'usb',
+                      groupValue: controller.printVia,
+                      activeColor: EBTheme.kPrimaryColor,
+                      onChanged: controller.readOnly
+                          ? null
+                          : (value) {
+                              controller.printVia = value!;
+                               debugPrint("value ---------->> $value");
+                              controller.update();
+                            }),
+                ),
+              ],
+            ),
+            // EBCustomListTile(
+            //   titleName: EBAppString.business,
+            //   trailingWidget: EBCustomToogleBtn(
+            //       value: controller.isBusinessName!,
+            //       onChanged: controller.readOnly
+            //           ? null
+            //           : (value) => {
+            //                 controller.isBusinessName = value,
+            //                 controller.update(),
+            //               }),
+            // ),
+            // EBCustomListTile(
+            //   titleName: EBAppString.address,
+            //   trailingWidget: EBCustomToogleBtn(
+            //       value: controller.isAddress!,
+            //       onChanged: controller.readOnly
+            //           ? null
+            //           : (value) => {
+            //                 controller.isAddress = value,
+            //                 controller.update(),
+            //               }),
+            // ),
             EBCustomListTile(
               titleName: EBAppString.email,
               trailingWidget: EBCustomToogleBtn(

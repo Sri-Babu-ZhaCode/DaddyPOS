@@ -1,29 +1,39 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:easybill_app/app/constants/app_string.dart';
 import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/data/models/bill_items.dart';
 import 'package:easybill_app/app/data/models/product.dart';
+import 'package:easybill_app/app/internet/controller/network_controller.dart';
+import 'package:easybill_app/app/modules/cashier/cashier_bills/views/widgets/delete_dialog.dart';
 import 'package:easybill_app/app/routes/app_pages.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import '../../../../constants/size_config.dart';
+import '../../../../data/repositories/setting_repo.dart';
 import '../../../admin/inventory/controllers/inventory_controller.dart';
+import '../views/widgets/token_delete_dialog.dart';
 
 class CashierBillsController extends GetxController
     with GetSingleTickerProviderStateMixin {
   InventoryController inventoryController = Get.find<InventoryController>();
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  final _settingsRepo = SettingsRepo();
 
   final quantityCalulatorConroller = TextEditingController();
   final itemNameController = TextEditingController();
-  TextEditingController itemPriceController = TextEditingController();
+  final itemPriceController = TextEditingController();
   final itemQuantityController = TextEditingController();
   late TabController tabController;
 
   NumberFormat decimalFormatter = NumberFormat('#.###');
 
-  double sheetHeight = EBSizeConfig.screenHeight * 0.59;
+  double? initialSheetHeight = EBSizeConfig.screenHeight * 0.60;
+  double? initialSheetHMW;
+  double? sheetHeight;
+  double? screenWidth;
+  double? sheetAfterTappedHeight = 30;
   bool isExpanded = true;
 
   String productQuantity = '';
@@ -31,6 +41,7 @@ class CashierBillsController extends GetxController
   double defaultQuantity = 1;
   double totalPrice = 0.0;
   int? billItemIndex;
+  int qrQuantity = 1;
   Product? product;
 
   List quantityButtons = [
@@ -89,23 +100,29 @@ class CashierBillsController extends GetxController
 
   bool isDesimal = true;
 
+  double? deviceScreenHeight;
+
   void isPopUp() {}
 
-  void nextPressed(Product p) {
+  void nextPressed(Product p) async {
     bool isAdded = false;
 
-    // print('token -------------->>  ${p.istoken}');
-    if (EBBools.isTokenPresent  &&  tabIndex == EBAppString.screenAccessList.length - 1) {
-      billItems.clear();
-      addBillItem(p);
-      Get.offNamed(Routes.BILL_DETAILS, arguments: {'billItems': billItems});
+    // debugPrint('token -------------->>  ${p.istoken}');
+    if (EBBools.isTokenPresent &&
+        tabIndex == EBAppString.screenAccessList.length - 1) {
+      if (billItems.isNotEmpty) {
+        await deteteBillItemsIfTokenAdded(p);
+      } else {
+        addBillItem(p);
+        Get.offNamed(Routes.BILL_DETAILS, arguments: {'billItems': billItems});
+      }
     } else {
       for (var item in billItems) {
         if (item.productId == p.productid) {
           item.quantity = item.quantity! +
               double.parse(productQuantity.isEmpty
                   ? defaultQuantity.toString()
-                  : productQuantity);
+                  : formateQty(productQuantity));
           item.totalprice = formateDecimal(
               updatedPrice: double.parse(p.price!) * item.quantity!);
           isAdded = true;
@@ -119,22 +136,32 @@ class CashierBillsController extends GetxController
         update();
       }
       // quick sale tab resticting form going back
-      tabIndex != 1 ? Get.back() : null;
+
+      if (p.showQuantityPopup == true) {
+        Get.back();
+        debugPrint(
+            '--------------------------------------------------->> getting back ');
+      }
+
+      // tabIndex != 1 ? Get.back() : null;
     }
   }
 
   void addBillItem(Product p) {
-    billItems = [BillItems(
-        p.productnameEnglish!,
-        p.productid,
-        double.parse(productQuantity.isEmpty
-            ? defaultQuantity.toString()
-            : productQuantity),
-        double.parse(p.price!),
-        formateDecimal(p: p),
-        p.shopproductid,
-        p.isDecimalAllowed,
-        p.productnameTamil), ...billItems];
+    billItems = [
+      BillItems(
+          p.productnameEnglish!,
+          p.productid,
+          double.parse(productQuantity.isEmpty
+              ? defaultQuantity.toString()
+              : formateQty(productQuantity)),
+          double.parse(p.price!),
+          formateDecimal(p: p),
+          p.shopproductid,
+          p.isDecimalAllowed,
+          p.productnameTamil),
+      ...billItems
+    ];
     // billItems.add(BillItems(
     //     p.productnameEnglish!,
     //     p.productid,
@@ -146,7 +173,8 @@ class CashierBillsController extends GetxController
     //     p.shopproductid,
     //     p.isDecimalAllowed,
     //     p.productnameTamil));
-    print('demal for this ${p.productnameEnglish} is : ${p.isDecimalAllowed}');
+    debugPrint(
+        'demal for this ${p.productnameEnglish} is : ${p.isDecimalAllowed}');
     getTotalPriceOfBill();
   }
 
@@ -164,28 +192,30 @@ class CashierBillsController extends GetxController
   @override
   void onInit() {
     super.onInit();
+    sheetHeight = initialSheetHeight;
     // SchedulerBinding.instance.addPostFrameCallback((_) {
 
     // });
     // tabController = TabController(length: 3, vsync: this);
-    //    print('outside future delayed-------------------->>');
+    //    debugPrint('outside future delayed-------------------->>');
     //  Future.delayed(Duration.zero, () {
-    //   print('inside future delayed-------------------->>');
+    //   debugPrint('inside future delayed-------------------->>');
     //   tabController = TabController(length: 3, vsync: this);
     //     selectedIndex = tabController.index;
     //      updateseachableProductList(tabController.index);
     //    update();
 
     // });
+    getSetting();
     getScreenAccess();
     tabController = TabController(
-        length: EBAppString.screenAccessList.length,
-        vsync: this,
-        initialIndex: 1);
+      length: EBAppString.screenAccessList.length,
+      vsync: this,
+    );
     // tabController.addListener(() {
     //   selectedIndex = tabController.index;
     //   // update();
-    //   print("Selected Index ------------->>: ${tabController.index}");
+    //   debugPrint("Selected Index ------------->>: ${tabController.index}");
     //   updateseachableProductList(tabController.index);
     // });
 
@@ -197,23 +227,45 @@ class CashierBillsController extends GetxController
     //   int newIndex = pageController.page!.round();
     //   if (selectedIndex != newIndex) {
     //     selectedIndex = newIndex;
-    //     print('-------------------->> current index  ${selectedIndex}');
+    //     debugPrint('-------------------->> current index  ${selectedIndex}');
     //     updateseachableProductList(selectedIndex);
     //     update();
     //   }
     // });
-    WidgetsFlutterBinding.ensureInitialized();
-    print('widgets initialized --------->>');
-    update();
+  }
+
+  Future<void> getSetting() async {
+    try {
+      EBBools.isLoading = true;
+      final settings = await _settingsRepo.getSettings();
+      for (var element in settings!) {
+        debugPrint('----------------------------------->> getSettings ');
+
+        print(element.businessaddress);
+        print(element.mobileenable);
+        print(element.emailenable);
+        print(element.businessname);
+        print(element.settimeinterval);
+
+        EBAppString.settimeinterval = element.settimeinterval ?? '1';
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      //  EBBools.isLoading = false;
+      // update();
+    }
   }
 
   void updateseachableProductList(int index) {
-    print('Called times  ${index + 1}');
+    debugPrint('Called times  ${index + 1}');
     if (index == 0) {
       inventoryController.seachableProductList =
           inventoryController.productList;
       inventoryController.filterableCategoryList =
           inventoryController.filterableCategoryList;
+      // updating category list
+      selectedIndex = 0;
       update();
     } else if (index == 2) {
       if (inventoryController.productList == null) return;
@@ -226,8 +278,6 @@ class CashierBillsController extends GetxController
   }
 
   void toggleSheet() {
-    print(sheetHeight);
-    print(isExpanded);
     sheetHeight = isExpanded
         ? EBSizeConfig.screenHeight * 0.00
         : EBSizeConfig.screenHeight * 0.59;
@@ -235,11 +285,17 @@ class CashierBillsController extends GetxController
     update();
   }
 
+  void toggleSheetForTab() {
+    sheetHeight = sheetAfterTappedHeight;
+    isExpanded = !isExpanded;
+    update();
+  }
+
   @override
   void onReady() {
     super.onReady();
-    print('on ready called;');
-    update();
+    debugPrint('on ready called;');
+    Future.delayed(const Duration(seconds: 2), _updateSalesTab);
   }
 
   @override
@@ -249,21 +305,25 @@ class CashierBillsController extends GetxController
   }
 
   void updateBillItem(BillItems billItem) {
-    double tolalprice = double.parse(itemPriceController.text) *
-        double.parse(itemQuantityController.text);
-    billItems[billItemIndex!] = BillItems(
-        billItem.productNameEnglish,
-        billItem.productId,
-        double.parse(itemQuantityController.text),
-        double.parse(itemPriceController.text),
-        tolalprice,
-        billItem.shopproductid,
-        billItem.isDecimal,
-        billItem.productnameTamil);
-    getTotalPriceOfBill();
+    if (itemQuantityController.text.isEmpty) {
+      ebCustomTtoastMsg(message: 'Can\'t update with empty quantity');
+    } else {
+      double tolalprice = double.parse(itemPriceController.text) *
+          double.parse(itemQuantityController.text);
+      billItems[billItemIndex!] = BillItems(
+          billItem.productNameEnglish,
+          billItem.productId,
+          double.parse(itemQuantityController.text),
+          double.parse(itemPriceController.text),
+          tolalprice,
+          billItem.shopproductid,
+          billItem.isDecimal,
+          billItem.productnameTamil);
+      getTotalPriceOfBill();
 
-    Get.back();
-    update();
+      Get.back();
+      update();
+    }
   }
 
   void getTotalPriceOfBill() {
@@ -281,15 +341,15 @@ class CashierBillsController extends GetxController
 
   void deleteBillItem(value) {
     billItems.remove(value);
+    getTotalPriceOfBill();
     Get.back();
-    update();
   }
 
   void isShopProductIdPresent() {
-    print('shoprproduct id  ----------->>  $shopproductid');
+    debugPrint('shoprproduct id  ----------->>  $shopproductid');
     String shopproductidWithOutX =
         shopproductid.substring(0, shopproductid.length - 1);
-    print('shoprproduct id  ----------->>  $shopproductidWithOutX');
+    debugPrint('shoprproduct id  ----------->>  $shopproductidWithOutX');
 
     product = inventoryController.productList?.firstWhereOrNull(
         (product) => product.shopproductid.toString() == shopproductidWithOutX);
@@ -299,7 +359,7 @@ class CashierBillsController extends GetxController
     } else {
       // checking is decimal is allowed or not and validating visibility of the decimal accordingly
       product?.isDecimalAllowed == true ? isDesimal = true : isDesimal = false;
-      print(
+      debugPrint(
           'produdct name ${product?.shopproductid} ------------->> decimal allowed ${product?.isDecimalAllowed}');
       update();
     }
@@ -315,9 +375,10 @@ class CashierBillsController extends GetxController
 
       RegExpMatch? match = regExp.firstMatch(shopproductid);
       String? productQty = match?.group(1);
-      print('matched variable --------->>  $productQty');
+      debugPrint('matched variable --------->>  $productQty');
+
       if (productQty != null && double.parse(productQty) > 0.1) {
-        productQuantity = productQty;
+        productQuantity = formateQty(productQty);
         shopproductid = '';
         isXpressed = false;
         isDecimalPressed = false;
@@ -332,7 +393,7 @@ class CashierBillsController extends GetxController
       // if (indexOfX != -1 && indexOfX < shopproductid.length - 1) {
       //   String productQty =
       //       shopproductid.substring(indexOfX + 1, shopproductid.length);
-      //   print("product qunatity ---------------->>>  $productQty");
+      //   debugPrint("product qunatity ---------------->>>  $productQty");
       //   productQuantity = productQty;
       //   shopproductid = '';
       //   isXpressed = false;
@@ -343,21 +404,28 @@ class CashierBillsController extends GetxController
     }
   }
 
-  Future<void> addBillItemByQrOrBarcode() async {
-    final result = await Get.toNamed(Routes.QR_SCANNER);
-    if (result != null) {
-      print('result of qr -------------->>  $result');
-      Product? product = inventoryController.productList?.firstWhereOrNull(
-        (product) => result.toString() == product.qrbarcode,
-      );
-      if (product != null) {
-        print('result of Product QR  -------------->>  ${product.qrbarcode}');
-        nextPressed(product);
-        update();
-      } else {
-        ebCustomTtoastMsg(message: 'Not a registed scannable code');
-      }
+  Future<void> addBillItemByQrOrBarcode(String result) async {
+    debugPrint('result of qr -------------->>  $result');
+    Product? product = inventoryController.productList?.firstWhereOrNull(
+      (product) => result.toString() == product.qrbarcode,
+    );
+    if (product != null) {
+      debugPrint(
+          'result of Product QR  -------------->>  ${product.qrbarcode}');
+      nextPressed(product);
+      // playing beep sound
+      ebCustomTtoastMsg(
+          message: '${product.productnameEnglish} added in Bill Items');
+      qrQuantity++;
+      playBeepSound();
+      update();
+    } else {
+      ebCustomTtoastMsg(message: 'Not a registed scannable code');
     }
+  }
+
+  Future<void> playBeepSound() async {
+    await _audioPlayer.play(AssetSource('sounds/beep.mp3'));
   }
 
   void getScreenAccess() {
@@ -365,9 +433,9 @@ class CashierBillsController extends GetxController
     EBBools.isQuickPresent = EBAppString.screenAccessList.contains("quick");
     EBBools.isTokenPresent = EBAppString.screenAccessList.contains("token");
 
-    print("sales ----------------->> ${EBBools.isSalePresent}");
-    print("quick -------------------->> ${EBBools.isQuickPresent}");
-    print("token ------------------->> ${EBBools.isTokenPresent}");
+    debugPrint("sales ----------------->> ${EBBools.isSalePresent}");
+    debugPrint("quick -------------------->> ${EBBools.isQuickPresent}");
+    debugPrint("token ------------------->> ${EBBools.isTokenPresent}");
   }
 
   double formateDecimal({Product? p, double? updatedPrice}) {
@@ -386,5 +454,33 @@ class CashierBillsController extends GetxController
     );
 
     return double.parse(formattedNumber);
+  }
+
+  String formateQty(String value) {
+    double number = double.tryParse(value) ?? 0.0;
+    NumberFormat formatter = NumberFormat('0.000');
+    return formatter.format(number);
+  }
+
+  void _updateSalesTab() {
+    debugPrint('_updateSalesTab called ----------------------->>   ');
+    if (inventoryController.filterableCategoryList != null &&
+        inventoryController.seachableProductList != null) {
+      debugPrint(
+          'filterableCategoryList and seachableProductList data are presednt ----------------------->>  ');
+      update();
+    } else {
+      Future.delayed(const Duration(seconds: 2), update);
+      NetworkController.logoutFromApp();
+    }
+  }
+
+  String converDecimalConditionally(double num) {
+    // Check if the number is an integer by comparing the fractional part to 0
+    if (num == num.toInt()) {
+      return num.toInt().toString();
+    } else {
+      return num.toString();
+    }
   }
 }

@@ -10,6 +10,8 @@ import '../modules/admin/admin_report/bindings/admin_report_binding.dart';
 import '../modules/admin/admin_report/views/admin_report_view.dart';
 import '../modules/admin/admin_settings/bindings/admin_settings_binding.dart';
 import '../modules/admin/admin_settings/views/admin_settings_view.dart';
+import '../modules/admin/bill_wise_report/bindings/bill_wise_report_binding.dart';
+import '../modules/admin/bill_wise_report/views/bill_wise_report_view.dart';
 import '../modules/admin/bindings/admin_binding.dart';
 import '../modules/admin/cashier_management/bindings/cashier_management_binding.dart';
 import '../modules/admin/cashier_management/views/cashier_management_view.dart';
@@ -19,6 +21,8 @@ import '../modules/admin/cashiers/bindings/cashiers_binding.dart';
 import '../modules/admin/cashiers/views/cashiers_view.dart';
 import '../modules/admin/choose_printer/bindings/choose_printer_binding.dart';
 import '../modules/admin/choose_printer/views/choose_printer_view.dart';
+import '../modules/admin/day_end_report/bindings/day_end_report_binding.dart';
+import '../modules/admin/day_end_report/views/day_end_report_view.dart';
 import '../modules/admin/inventory/bindings/inventory_binding.dart';
 import '../modules/admin/inventory/views/inventory_view.dart';
 import '../modules/admin/product_management/bindings/product_management_binding.dart';
@@ -31,6 +35,8 @@ import '../modules/auth/create_password/bindings/create_password_binding.dart';
 import '../modules/auth/create_password/views/create_password_view.dart';
 import '../modules/auth/login/bindings/login_binding.dart';
 import '../modules/auth/login/views/login_view2.dart';
+import '../modules/auth/logout/bindings/logout_binding.dart';
+import '../modules/auth/logout/views/logout_view.dart';
 import '../modules/auth/register/bindings/register_binding.dart';
 import '../modules/auth/register/views/register_view.dart';
 import '../modules/auth/subscription/bindings/subscription_binding.dart';
@@ -123,6 +129,16 @@ class AppPages {
           page: () => const QrScannerView(),
           binding: QrScannerBinding(),
         ),
+        GetPage(
+          name: _Paths.DAY_END_REPORT,
+          page: () => const DayEndReportView(),
+          binding: DayEndReportBinding(),
+        ),
+        GetPage(
+          name: _Paths.BILL_WISE_REPORT,
+          page: () => const BillWiseReportView(),
+          binding: BillWiseReportBinding(),
+        ),
       ],
     ),
     GetPage(
@@ -162,7 +178,7 @@ class AppPages {
         ),
         GetPage(
           name: _Paths.QUNATITY_BILL_CALCULATOR,
-          page: () =>  QunatityBillCalculatorView(),
+          page: () => QunatityBillCalculatorView(),
           binding: QunatityBillCalculatorBinding(),
         ),
       ],
@@ -214,6 +230,11 @@ class AppPages {
         //   page: () => const StaffLoginView(),
         //   binding: StaffLoginBinding(),
         // ),
+        GetPage(
+          name: _Paths.LOGOUT,
+          page: () => const LogoutView(),
+          binding: LogoutBinding(),
+        ),
       ],
     ),
   ];

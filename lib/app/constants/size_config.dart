@@ -16,6 +16,7 @@ class EBSizeConfig {
 
   static  MediaQueryData? mediaQueryData;
 
+
   // static late double safeBlockHorizontal;
 //  static late double safeBlockVertical;
   // static late double _safeAreaHorizontal;
@@ -78,6 +79,7 @@ class EBSizeConfig {
   static const sizedBoxW30 = SizedBox(width: 30);
   static const sizedBoxW20 = SizedBox(width: 20);
   static const sizedBoxH100 = SizedBox(height: 100);
+  static const sizedBoxH200 = SizedBox(height: 200);
   static const sizedBoxW100 = SizedBox(width: 100);
   static const textFormConstrain = BoxConstraints(minHeight: 40, maxHeight: 40);
   static const textContentPadding =
@@ -150,6 +152,8 @@ class EBSizeConfig {
   static const edgeInsetsOnlyH40 = EdgeInsets.symmetric(vertical: 40);
   static const edgeInsetsOnlyH50 = EdgeInsets.symmetric(vertical: 50);
   static const edgeInsetsOnlyH70 = EdgeInsets.symmetric(vertical: 70);
+  static const edgeInsetsOnlyH100 = EdgeInsets.symmetric(vertical: 100);
+  static const edgeInsetsOnlyH250 = EdgeInsets.symmetric(vertical: 250);
 
   // Padding Horizontal
   static const edgeInsetsOnlyW04 = EdgeInsets.symmetric(horizontal: 04);

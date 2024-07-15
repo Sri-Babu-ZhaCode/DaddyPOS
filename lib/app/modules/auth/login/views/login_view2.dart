@@ -92,30 +92,33 @@ class LoginForm extends StatelessWidget {
           padding: EBSizeConfig.edgeInsetsActivities,
           child: Column(
             children: <Widget>[
-                CustomTextFormField(
-                   controller: controller.isStaffTabTapped
-                      ? controller.staffMobileController
-                      : controller.mobileController,
-                  labelText: EBAppString.mobile,
-                  maxLength: 10,
-                  keyboardType: TextInputType.phone,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                  validator: (value) => EBValidation.validateMobile(value!),
-                ),
               CustomTextFormField(
+                controller: controller.isStaffTabTapped
+                    ? controller.staffMobileController
+                    : controller.mobileController,
+                labelText: EBAppString.mobile,
+                maxLength: 10,
+                keyboardType: TextInputType.phone,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                validator: (value) => EBValidation.validateMobile(value!),
+              ),
+              CustomTextFormField(
+                obscureText: controller.pwdVisibility,
                 controller: controller.isStaffTabTapped
                     ? controller.staffPwdController
                     : controller.pwdController,
                 labelText: EBAppString.pass,
                 suffixIcon: IconButton(
-                  icon: const Icon(Icons.visibility_outlined),
-                  onPressed: () => "",
+                  icon: Icon(controller.pwdVisibility
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined),
+                  onPressed: () => controller.changePwdVisibility(),
                 ),
                 validator: (value) => EBValidation.validateIsEmpty(value!),
               ),
-              const LoginButton(),
+              loginButton(controller),
               if (!controller.isStaffTabTapped) const LoginOrRegister(),
             ]
                 .expand(
@@ -166,33 +169,28 @@ class LoginOrRegister extends StatelessWidget {
 }
 
 // Login Button
-class LoginButton extends StatelessWidget {
-  const LoginButton({
-    super.key,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    EBSizeConfig.init(context);
-    return GetBuilder<LoginController>(builder: (controller) {
-      return Padding(
-        padding: EBSizeConfig.edgeInsetsAll20,
-        child: CustomElevatedButton(
-            minWidth: EBSizeConfig.screenWidthForEle,
-            onPressed: () {
-              controller.loginPressed();
-            },
-            child: EBBools.isLoading
-                ? const LoadingWidget(color: EBTheme.kPrimaryWhiteColor)
-                : Text(
-                    !controller.isStaffTabTapped
-                        ? EBAppString.login
-                        : EBAppString.staffLogin,
-                    style: EBAppTextStyle.button,
-                  )),
-      );
-    });
-  }
+Widget loginButton(LoginController controller) {
+  print('login button build method called ----------------------->>');
+
+  return Padding(
+    padding: EBSizeConfig.edgeInsetsAll20,
+    child: CustomElevatedButton(
+        minWidth: EBSizeConfig.screenWidthForEle,
+        onPressed: () {
+          controller.loginPressed();
+        },
+        child: EBBools.isLoading
+            ? const LoadingWidget(color: EBTheme.kPrimaryWhiteColor)
+            : Text(
+                !controller.isStaffTabTapped
+                    ? EBAppString.login
+                    : EBAppString.staffLogin,
+                style: EBAppTextStyle.button,
+              )),
+  );
+}
+  
   //  Future setPasswordAlertDialof() {
   //   final
   //   return const CustomAlertDialog().alertDialog(
@@ -234,4 +232,4 @@ class LoginButton extends StatelessWidget {
   //     },
   //   );
   // }
-}
+

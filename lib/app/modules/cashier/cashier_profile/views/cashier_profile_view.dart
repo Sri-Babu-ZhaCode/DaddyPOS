@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
 import '../../../../constants/app_string.dart';
-import '../../../../constants/app_text_style.dart';
 import '../../../../constants/size_config.dart';
 import '../../../../constants/themes.dart';
-import '../../../../constants/validation.dart';
 import '../../../../widgets/custom_widgets/custom_container.dart';
-import '../../../../widgets/custom_widgets/custom_elevated_button.dart';
 import '../../../../widgets/custom_widgets/custom_list_tile.dart';
 import '../../../../widgets/custom_widgets/custom_scaffold.dart';
-import '../../../../widgets/custom_widgets/custom_text_form_field.dart';
+import '../../../admin/admin_profile/views/update_pass_dialog.dart';
 import '../controllers/cashier_profile_controller.dart';
 
 class CashierProfileView extends GetView<CashierProfileController> {
@@ -19,57 +15,10 @@ class CashierProfileView extends GetView<CashierProfileController> {
   @override
   Widget build(BuildContext context) {
     return EBCustomScaffold(
-      bottomSheet: Container(
-        height: 85,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Color.fromRGBO(58, 57, 57, 1),
-              offset: Offset(0.0, 1.0), //(x,y)
-              blurRadius: 6.0,
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: EBSizeConfig.edgeInsetsAll20,
-          child: GetBuilder<CashierProfileController>(builder: (_) {
-            return CustomElevatedButton(
-              onPressed: null,
-              child: Text(
-                EBAppString.update,
-                style: EBAppTextStyle.button,
-              ),
-            );
-          }),
-        ),
-      ),
       body: Padding(
-        padding: EBSizeConfig.edgeInsetsActivities,
-        child: ListView(
+        padding: EBSizeConfig.edgeInsetsOnlyH250,
+        child: ListView( 
           children: [
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  backgroundColor: EBTheme.listColor,
-                  maxRadius: 60,
-                  backgroundImage: AssetImage("assets/icons/profile.png"),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Text(
-                    "Zha Code",
-                    overflow: TextOverflow.ellipsis,
-                    style: EBAppTextStyle.heading1,
-                  ),
-                )
-              ],
-            ),
             GetBuilder<CashierProfileController>(builder: (_) {
               return Form(
                 //   key: _.formKey,
@@ -83,34 +32,19 @@ class CashierProfileView extends GetView<CashierProfileController> {
                     borderColor: EBTheme.silverColor,
                     child: Column(
                       children: [
-                        const EBCustomListTile(
+                        EBCustomListTile(
                           trailingIconSize: 20,
-                          titleName: EBAppString.edit,
+                          titleName: EBAppString.updatePassword,
                           trailingIcon: Icons.edit,
-                        ),
-                        CustomTextFormField(
-                          controller: _.loginUserName,
-                          labelText: EBAppString.loginUserName,
-                          validator: (value) =>
-                              EBValidation.validateIsEmpty(value!),
-                        ),
-                        CustomTextFormField(
-                          controller: _.username,
-                          labelText: EBAppString.userName,
-                          validator: (value) =>
-                              EBValidation.validateIsEmpty(value!),
-                        ),
-                        CustomTextFormField(
-                          controller: _.passwordController,
-                          labelText: EBAppString.pass,
-                          validator: (value) =>
-                              EBValidation.validateEmail(value!),
+                          onTap: () async {
+                           await updatePassDialog(_);
+                          },
                         ),
                       ]
                           .expand(
                             (element) => [
                               element,
-                              EBSizeConfig.sizedBoxH15,
+                             // EBSizeConfig.sizedBoxH15,
                             ],
                           )
                           .toList(),

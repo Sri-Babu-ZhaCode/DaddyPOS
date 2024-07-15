@@ -32,13 +32,14 @@ class CustomAlertDialog {
   Future<dynamic> alertDialog({
     required String? dialogTitle,
     required String? dialogContent,
-     Key? formKey,
+    Key? formKey,
     List<Widget>? formChildren,
     //  WillPopCallback? onWillPop,
     required String confirmButtonText,
     required VoidCallback? confirmOnPressed,
     required String cancelButtonText,
     required VoidCallback? cancelOnPressed,
+    Color? confimBtnColor,
     bool? makeUpPopbale = false,
     bool isformChildrenNeeded = false,
   }) async {
@@ -48,12 +49,13 @@ class CustomAlertDialog {
             backgroundColor: EBTheme.kPrimaryWhiteColor,
             barrierDismissible: makeUpPopbale!,
             title: dialogTitle ?? "",
+
             content: Padding(
               padding: EBSizeConfig.edgeInsetsActivities,
               child: Form(
                 key: formKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     if (dialogContent != null)
                       Text(
@@ -73,6 +75,7 @@ class CustomAlertDialog {
             ),
             actions: [
               CustomElevatedButton(
+                btnColor: confimBtnColor,
                 isDefaultWidth: true,
                 onPressed: confirmOnPressed,
                 child: Text(

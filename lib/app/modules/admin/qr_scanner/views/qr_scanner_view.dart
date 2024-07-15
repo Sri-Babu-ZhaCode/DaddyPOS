@@ -1,7 +1,17 @@
+import 'dart:async';
+
+import 'package:easybill_app/app/constants/app_string.dart';
+import 'package:easybill_app/app/constants/bools.dart';
+import 'package:easybill_app/app/modules/admin/qr_scanner/controllers/qr_scanner_controller.dart';
+import 'package:easybill_app/app/modules/cashier/cashier_bills/controllers/cashier_bills_controller.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+
+import '../../../../constants/app_text_style.dart';
+import '../../../../constants/size_config.dart';
+import '../../../cashier/cashier_bills/views/bill_items_edit.dart';
 
 class QrScannerView extends StatefulWidget {
   const QrScannerView({super.key});
@@ -14,89 +24,155 @@ class QrScannerView extends StatefulWidget {
 class _QrScannerViewState extends State<QrScannerView> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   final MobileScannerController controller = MobileScannerController(
-      // formats: const [BarcodeFormat.qrCode],
-      formats: const [BarcodeFormat.all]);
+    // formats: const [BarcodeFormat.qrCode],
+    formats: const [BarcodeFormat.all],
+    detectionTimeoutMs: int.parse(EBAppString.settimeinterval ?? '1') * 1000,
+  );
 
   @override
   Widget build(BuildContext context) {
+    EBSizeConfig.init(context);
     final scanWindow = Rect.fromCenter(
       center: MediaQuery.sizeOf(context).center(Offset.zero),
       width: 200,
       height: 200,
     );
 
-    return EBCustomScaffold(
-      noDrawer: true,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Center(
-            child: MobileScanner(
-              fit: BoxFit.contain,
-              controller: controller,
-              scanWindow: scanWindow,
-              errorBuilder: (context, error, child) {
-                return ScannerErrorWidget(error: error);
-              },
-              overlayBuilder: (context, constraints) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: ScannedBarcodeLabel(barcodes: controller.barcodes),
+    return GetBuilder<QrScannerController>(builder: (_) {
+      return EBCustomScaffold(
+        noDrawer: true,
+        body: Column(
+          children: [
+            if (EBBools.triggeredFromBillTab)
+              GetBuilder<CashierBillsController>(builder: (controller) {
+                return SizedBox(
+                  height: EBSizeConfig.screenHeight * 0.18,
+                  child: ListView.builder(
+                    padding: EBSizeConfig.textContentPadding,
+                    itemCount: controller.billItems.length,
+                    itemBuilder: (context, index) => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Text(
+                              '${EBAppString.productlanguage == 'English' ? controller.billItems[index].productNameEnglish : controller.billItems[index].productnameTamil} (${controller.converDecimalConditionally(controller.billItems[index].quantity!)})',
+                              style: EBAppTextStyle.billItemStyle),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                                ' + ${controller.billItems[index].totalprice!.toStringAsFixed(2)}',
+                                style: EBAppTextStyle.avtiveTxt),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.edit_outlined,
+                                size: 16,
+                              ), // 'x' icon
+                              onPressed: () {
+                                // edit bottom sheet
+                                controller.billItemIndex = index;
+
+                                controller.itemQuantityController.text =
+                                    controller.billItems[index].quantity
+                                        .toString();
+                                billItemEditorBottomSheet(
+                                    context, controller.billItems[index]);
+                              },
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 );
-              },
-              onDetect: (capture) {
-                final List<Barcode> barcodes = capture.barcodes;
-                //   LogUtility.custom('Capture Object ${capture.raw}');
-                //   LogUtility.custom('RAW ${capture.raw}');
-                var value =
-                    barcodes.isNotEmpty ? barcodes.first.rawValue : null;
-                if (value != null) {
-                  print('=================>>  : barcode value $value');
-                  Get.back(result: value);
-                  controller.stop();
-                  //  context.pop(value);
-                }
-              },
-            ),
-          ),
-          ValueListenableBuilder(
-            valueListenable: controller,
-            builder: (context, value, child) {
-              if (!value.isInitialized ||
-                  !value.isRunning ||
-                  value.error != null) {
-                return const SizedBox();
-              }
-
-              return CustomPaint(
-                painter: ScannerOverlay(scanWindow: scanWindow),
-              );
-            },
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              }),
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
                 children: [
-                  ToggleFlashlightButton(controller: controller),
-                  SwitchCameraButton(controller: controller),
+                  Center(
+                    child: MobileScanner(
+                      fit: BoxFit.fill,
+                      controller: controller,
+                      scanWindow: scanWindow,
+                      errorBuilder: (context, error, child) {
+                        return ScannerErrorWidget(error: error);
+                      },
+                      overlayBuilder: (context, constraints) {
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: ScannedBarcodeLabel(
+                                barcodes: controller.barcodes),
+                          ),
+                        );
+                      },
+                      onDetect: (capture) async {
+                        controller.detectionTimeoutMs;
+                        final List<Barcode> barcodes = capture.barcodes;
+                        //   LogUtility.custom('Capture Object ${capture.raw}');
+                        //   LogUtility.custom('RAW ${capture.raw}');
+                        var value = barcodes.isNotEmpty
+                            ? barcodes.first.rawValue
+                            : null;
+                        if (value != null) {
+                          debugPrint(
+                              ' ----------------------------------->>  : barcode value $value');
+                          if (EBBools.triggeredFromBillTab) {
+                            //   Timer(const Duration(seconds: 2), () {
+                            Get.find<CashierBillsController>()
+                                .addBillItemByQrOrBarcode(value);
+                            //  });
+                          } else {
+                            debugPrint(
+                                ' oppes else part executed ------------------------->>>');
+                            Get.back(result: value);
+                            controller.stop();
+                          }
+                          //  context.pop(value);
+                        }
+                      },
+                    ),
+                  ),
+                  ValueListenableBuilder(
+                    valueListenable: controller,
+                    builder: (context, value, child) {
+                      if (!value.isInitialized ||
+                          !value.isRunning ||
+                          value.error != null) {
+                        return const SizedBox();
+                      }
+
+                      return CustomPaint(
+                        painter: ScannerOverlay(scanWindow: scanWindow),
+                      );
+                    },
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ToggleFlashlightButton(controller: controller),
+                          SwitchCameraButton(controller: controller),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 
   @override
@@ -118,7 +194,6 @@ class ScannerOverlay extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // TODO: use `Offset.zero & size` instead of Rect.largest
     // we need to pass the size to the custom paint widget
     final backgroundPath = Path()..addRect(Rect.largest);
 
@@ -187,6 +262,7 @@ class StartStopMobileScannerButton extends StatelessWidget {
             icon: const Icon(Icons.play_arrow),
             iconSize: 32.0,
             onPressed: () async {
+              await controller.stop();
               await controller.start();
             },
           );

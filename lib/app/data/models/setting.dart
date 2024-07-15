@@ -25,6 +25,10 @@ class Setting extends BaseModel {
   int? userregistrationid;
   bool? emailenable;
   bool? isactive;
+  bool? usb;
+  bool? bluetooth;
+  String? settimeinterval;
+  List<int>? timeinterval;
 
   Setting(
       {this.configid,
@@ -50,7 +54,11 @@ class Setting extends BaseModel {
       this.templatedesign,
       this.userregistrationid,
       this.emailenable,
-      this.isactive});
+      this.isactive,
+      this.bluetooth,
+      this.usb,
+      this.settimeinterval,
+      this.timeinterval});
 
   Setting.fromJson(Map<String, dynamic> json) {
     configid = json['configid'];
@@ -77,6 +85,10 @@ class Setting extends BaseModel {
     userregistrationid = json['userregistrationid'];
     emailenable = json['emailenable'];
     isactive = json['isactive'];
+    usb = json['usb'];
+    bluetooth = json['bluetooth'];
+    settimeinterval = json['settimeinterval'];
+    timeinterval = json['timeinterval'].cast<int>();
   }
 
   @override
@@ -104,6 +116,9 @@ class Setting extends BaseModel {
     data['language'] = language;
     data['templatedesign'] = templatedesign;
     data['emailenable'] = emailenable;
+    data['usbenable'] = usb;
+    data['bluetoothenable'] = bluetooth;
+    data['settimeinterval'] = settimeinterval;
     return data;
   }
 

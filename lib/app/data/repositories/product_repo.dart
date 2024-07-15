@@ -53,6 +53,24 @@ class ProductRepo extends BaseRepo {
     }
   }
 
+  Future<List<Product>?> downloadProduct() async {
+    try {
+      return await get<Product>("/productDownload",
+          decoder: (json) => Product.fromJson(json));
+    } catch (e) {
+      throw EbException(e);
+    }
+  }
+
+  Future<List<Product>?> uploadProduct(Product p) async {
+    try {
+      return await post<Product>("/upload",
+          body: p, decoder: (json) => Product.fromJson(json));
+    } catch (e) {
+      throw EbException(e);
+    }
+  }
+
 // Utilities Repo
   Future<List<Units>?> getUtilitiesUnit() async {
     try {

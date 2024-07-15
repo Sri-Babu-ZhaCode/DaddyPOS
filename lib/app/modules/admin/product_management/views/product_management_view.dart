@@ -38,7 +38,7 @@ class ProductManagementView extends GetView<ProductManagementController> {
                     CustomTextFormField(
                       readOnly: !controller.isEditMode,
                       controller: controller.productNameTamilController,
-                      labelText: EBAppString.nativeLanguage,
+                      labelText: EBAppString.native,
                       validator: (value) =>
                           EBValidation.validateIsEmpty(value!),
                     ),
@@ -338,11 +338,12 @@ class ProductManagementView extends GetView<ProductManagementController> {
             height: EBSizeConfig.screenHeight * 0.1 / 1.7,
             child: CustomElevatedButton(
               elevation: 3,
-              btnColor: EBTheme.kPrimaryWhiteColor,
+              btnColor: const Color.fromARGB(255, 233, 45, 45),
               onPressed: () async {
+                debugPrint(' QR_SCANNER ------------------------------->>');
                 final result = await Get.toNamed(Routes.QR_SCANNER);
                 if (result != null) {
-                  print('result of qr -------------->>  $result');
+                  debugPrint('result of qr -------------->>  $result');
                   _.scannerController.text = result.toString();
                 }
                 _.update();

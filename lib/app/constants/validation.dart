@@ -42,14 +42,4 @@ abstract class EBValidation {
     return null;
   }
 
-  static String? validateDouble(String? value, allowedValues) {
-    if (value == null || value.isEmpty) {
-      return null;
-    }
-    final doubleValue = double.tryParse(value);
-    if (doubleValue == null || !allowedValues.contains(doubleValue)) {
-      return null;
-    }
-    return null;
-  }
 }

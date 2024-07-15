@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:dio/dio.dart';
 import 'package:dio/native_imp.dart';
 import 'package:flutter/foundation.dart';
@@ -6,8 +8,7 @@ import '../../core/exceptions.dart';
 import 'local_storage.dart';
 
 class DioClient extends DioForNative {
-  DioClient._privateConstructor([BaseOptions? baseOptions])
-      : super(baseOptions) {
+  DioClient._privateConstructor([super.baseOptions]) {
     options.baseUrl = _baseUrl;
     //  options.contentType = ContentType.json.toString();
     interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
@@ -29,7 +30,7 @@ class DioClient extends DioForNative {
 
         //  print('current-user ${LocalStorage.readString('create-user')}');
       }
-      print(">>>${options.data}");
+      debugPrint(">>>${options.data}");
       return handler.next(options);
     }, onError: (error, handler) {
       throw (EbException(error));
@@ -42,7 +43,7 @@ class DioClient extends DioForNative {
   String? appVersion;
   String get _baseUrl {
     String iP = kReleaseMode ? PRODUCTION_IP : DEBUG_IP;
-    return "${iP}";
+    return iP;
   }
 
   Response _handleResponse(Response response) {

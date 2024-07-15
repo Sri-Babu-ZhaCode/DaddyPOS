@@ -22,6 +22,7 @@ class CustomContainer extends StatelessWidget {
     this.borderColor,
     this.onPressed,
     this.borderWidth,
+    this.width,
   })  : assert(margin == null || margin.isNonNegative),
         assert(padding == null || padding.isNonNegative),
         assert(decoration == null || decoration.debugAssertIsValid()),
@@ -46,6 +47,7 @@ class CustomContainer extends StatelessWidget {
   final Clip clipBehavior;
   final Widget? child;
   final double? height;
+  final double? width;
   final VoidCallback? onPressed;
   final double? borderWidth;
 
@@ -54,9 +56,9 @@ class CustomContainer extends StatelessWidget {
     return noHeight == true
         ? Container(
             padding: padding ?? EBSizeConfig.textContentPadding,
-            margin: EBSizeConfig.edgeInsetsAll02,
+            margin: margin ?? EBSizeConfig.edgeInsetsAll02,
             alignment: Alignment.centerLeft,
-             width: double.infinity,
+            width: width ?? double.infinity,
             decoration: BoxDecoration(
                 color: color ?? EBTheme.listColor,
                 borderRadius: EBSizeConfig.borderRadiusCircular04,
@@ -67,9 +69,9 @@ class CustomContainer extends StatelessWidget {
           )
         : Container(
             padding: padding ?? EBSizeConfig.textContentPadding,
-            margin: EBSizeConfig.edgeInsetsAll02,
+            margin: margin ?? EBSizeConfig.edgeInsetsAll02,
             alignment: Alignment.centerLeft,
-            width: double.infinity,
+            width: width ?? double.infinity,
             height: height ?? 100,
             decoration: BoxDecoration(
                 color: color ?? EBTheme.listColor,

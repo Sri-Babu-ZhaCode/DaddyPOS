@@ -16,6 +16,8 @@ abstract class EBTheme {
   static const silverColor = Color(0xFFC0C0C0);
   static const platinumColor = Color(0xFFE5E5E5);
   static const greenColor = Color(0xFF5CDF61);
+  static const darKGreen = Color(0xFF118115);
 
   static const redColor = Colors.red;
+  static const blackColor = Colors.black87;
 }
