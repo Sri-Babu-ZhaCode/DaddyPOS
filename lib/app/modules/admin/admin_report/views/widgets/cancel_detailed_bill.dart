@@ -44,8 +44,7 @@ Future<void> cancelDetailedbillDetailedInfoSheet(context) {
               GetBuilder<AdminReportController>(builder: (_) {
                 if (EBBools.isLoading) return const LoadingWidget();
                 if (_.cancelillDetailedReports == null ||
-                    _.cancelillDetailedReports!.isEmpty)
-                  return customMessageWidget();
+                    _.cancelillDetailedReports!.isEmpty) return customMessageWidget();
                 return Expanded(
                   child: ListView.builder(
                       padding: EBSizeConfig.textContentPadding,

@@ -70,13 +70,13 @@ class CashierBillsView extends GetView<CashierBillsController> {
                     child: CustomElevatedButton(
                       btnColor: EBTheme.kPrintBtnColor,
                       onPressed: () {
-                        controller.totalPrice > 0.01
+                        controller.billItemsTotalPrice > 0.01
                             ? Get.toNamed(Routes.BILL_DETAILS,
                                 arguments: {'billItems': controller.billItems})
                             : null;
                       },
                       child: Text(
-                        '${controller.totalPrice.toStringAsFixed(1)}  Bill',
+                        '${controller.billItemsTotalPrice.toStringAsFixed(1)}  Bill',
                         style: EBAppTextStyle.appBarTxt,
                       ),
                     ),

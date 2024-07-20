@@ -6,6 +6,7 @@ class Setting extends BaseModel {
   String? businessaddress;
   String? businessmobile;
   String? businessemail;
+  String? upi;
   dynamic businesslogo;
   String? footer;
   String? gst;
@@ -16,6 +17,7 @@ class Setting extends BaseModel {
   bool? logoenable;
   bool? footerenable;
   bool? gstenable;
+  bool? upienable;
   bool? whatsappenable;
   String? printername;
   String? printeraddress;
@@ -58,7 +60,9 @@ class Setting extends BaseModel {
       this.bluetooth,
       this.usb,
       this.settimeinterval,
-      this.timeinterval});
+      this.timeinterval,
+      this.upi,
+      this.upienable});
 
   Setting.fromJson(Map<String, dynamic> json) {
     configid = json['configid'];
@@ -69,6 +73,8 @@ class Setting extends BaseModel {
     businesslogo = json['businesslogo'];
     footer = json['footer'];
     gst = json['gst'];
+    upi = json['upi'];
+    upienable = json['upienable'];
     nameenable = json['nameenable'];
     phoneenable = json['phoneenable'];
     addressenable = json['addressenable'];
@@ -102,6 +108,8 @@ class Setting extends BaseModel {
     data['businesslogo'] = businesslogo;
     data['footerdata'] = footer;
     data['gst'] = gst;
+    data['upi'] = upi;
+    data['upienable'] = upienable;
     data['nameenable'] = nameenable;
     data['phoneenable'] = phoneenable;
     data['addressenable'] = addressenable;

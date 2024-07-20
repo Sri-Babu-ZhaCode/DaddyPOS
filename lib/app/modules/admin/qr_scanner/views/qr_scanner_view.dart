@@ -25,6 +25,7 @@ class _QrScannerViewState extends State<QrScannerView> {
   @override
   void initState() {
     super.initState();
+    debugPrint('${EBAppString.settimeinterval}');
   }
 
   final MobileScannerController controller = MobileScannerController(

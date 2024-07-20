@@ -1,3 +1,4 @@
+import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,17 @@ class CashiersView extends GetView<CashiersController> {
   Widget build(BuildContext context) {
     EBSizeConfig.init(context);
     return EBCustomScaffold(
+      actionWidgetList: [
+        IconButton(
+          icon: const Icon(
+            Icons.refresh,
+            size: 26,
+          ),
+          onPressed: () {
+            controller.getCashier();
+          },
+        ),
+      ],
       body: SafeArea(
         child: Padding(
           padding: EBSizeConfig.edgeInsetsActivities,
@@ -73,7 +85,8 @@ class CashiersView extends GetView<CashiersController> {
 
   Widget cashierDetailsList() {
     return GetBuilder<CashiersController>(builder: (_) {
-      if (controller.cashierList == null) return const LoadingWidget();
+      if (EBBools.isLoading) return const LoadingWidget();
+      if (controller.cashierList == null || controller.cashierList!.isEmpty) return msgForNoStaff();
       return GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2, // Number of columns

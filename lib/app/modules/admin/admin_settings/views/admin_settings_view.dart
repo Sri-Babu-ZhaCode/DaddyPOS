@@ -61,7 +61,7 @@ class AdminSettingsView extends GetView<AdminSettingsController> {
         );
       }),
       body: DefaultTabController(
-        length: 3,
+        length: 2,
         child: Column(
           children: [
             TabBar(
@@ -71,7 +71,7 @@ class AdminSettingsView extends GetView<AdminSettingsController> {
               indicatorSize: TabBarIndicatorSize.tab,
               indicatorColor: EBTheme.kPrimaryColor,
               tabs:
-                  [EBAppString.invoice, EBAppString.printer, EBAppString.theme]
+                  [EBAppString.invoice, EBAppString.printer]
                       .map((e) => Tab(
                             child: Text(
                               e,
@@ -88,7 +88,6 @@ class AdminSettingsView extends GetView<AdminSettingsController> {
                   children: [
                     invoiceTab(),
                     themePrinter(),
-                    pdfTab(),
                   ],
                 ),
               ),
@@ -151,7 +150,7 @@ class AdminSettingsView extends GetView<AdminSettingsController> {
                             child: Center(
                               child: EBBools.isImageSelected
                                   ? const LoadingWidget()
-                                  : controller.imageInBytes == null || controller.imageInBytes == ''
+                                  : controller.imageInBytes == null || controller.imageInBytes!.isEmpty
                                       ? Image.asset(
                                           fit: BoxFit.fill,
                                           EBAppString.businessLogoImg,
@@ -207,6 +206,12 @@ class AdminSettingsView extends GetView<AdminSettingsController> {
                 ),
                 CustomTextFormField(
                   readOnly: controller.readOnly,
+                  controller: controller.upiController,
+                  labelText: EBAppString.upiId,
+                  validator: (value) => EBValidation.validateUpiId(value!),
+                ),
+                CustomTextFormField(
+                  readOnly: controller.readOnly,
                   controller: controller.footerController,
                   maxLines: 7,
                   labelText: EBAppString.footer,
@@ -228,11 +233,7 @@ class AdminSettingsView extends GetView<AdminSettingsController> {
   }
 }
 
-Widget pdfTab() {
-  return const Center(
-    child: Text('Pdf Need to be implemented'),
-  );
-}
+
 
 Widget themePrinter() {
   return GetBuilder<AdminSettingsController>(builder: (controller) {
@@ -462,6 +463,28 @@ Widget themePrinter() {
             //                 controller.update(),
             //               }),
             // ),
+            EBCustomListTile(
+              titleName: EBAppString.upiId,
+              trailingWidget: EBCustomToogleBtn(
+                  value: controller.isUPI ?? false,
+                  onChanged: controller.readOnly
+                      ? null
+                      : (value) => {
+                            controller.isUPI = value,
+                            controller.update(),
+                          }),
+            ),
+            EBCustomListTile(
+              titleName: EBAppString.businessLogo,
+              trailingWidget: EBCustomToogleBtn(
+                  value: controller.isLogo!,
+                  onChanged: controller.readOnly
+                      ? null
+                      : (value) => {
+                            controller.isLogo = value,
+                            controller.update(),
+                          }),
+            ),
             EBCustomListTile(
               titleName: EBAppString.email,
               trailingWidget: EBCustomToogleBtn(

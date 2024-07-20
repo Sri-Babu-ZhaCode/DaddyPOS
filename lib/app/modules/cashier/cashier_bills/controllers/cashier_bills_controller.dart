@@ -3,8 +3,8 @@ import 'package:easybill_app/app/constants/app_string.dart';
 import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/data/models/bill_items.dart';
 import 'package:easybill_app/app/data/models/product.dart';
+import 'package:easybill_app/app/data/models/setting.dart';
 import 'package:easybill_app/app/internet/controller/network_controller.dart';
-import 'package:easybill_app/app/modules/cashier/cashier_bills/views/widgets/delete_dialog.dart';
 import 'package:easybill_app/app/routes/app_pages.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,8 @@ class CashierBillsController extends GetxController
   String productQuantity = '';
   String shopproductid = '';
   double defaultQuantity = 1;
-  double totalPrice = 0.0;
+  double billItemsTotalPrice = 0;
+  double billItemsTotalQty = 0;
   int? billItemIndex;
   int qrQuantity = 1;
   Product? product;
@@ -102,7 +103,8 @@ class CashierBillsController extends GetxController
 
   double? deviceScreenHeight;
 
-  void isPopUp() {}
+  Setting? billConfig;
+
 
   void nextPressed(Product p) async {
     bool isAdded = false;
@@ -126,7 +128,7 @@ class CashierBillsController extends GetxController
           item.totalprice = formateDecimal(
               updatedPrice: double.parse(p.price!) * item.quantity!);
           isAdded = true;
-          getTotalPriceOfBill();
+          getTotalPriceAndQtyOfBill();
           update();
           break;
         }
@@ -135,15 +137,6 @@ class CashierBillsController extends GetxController
         addBillItem(p);
         update();
       }
-      // quick sale tab resticting form going back
-
-      if (p.showQuantityPopup == true) {
-        Get.back();
-        debugPrint(
-            '--------------------------------------------------->> getting back ');
-      }
-
-      // tabIndex != 1 ? Get.back() : null;
     }
   }
 
@@ -175,7 +168,7 @@ class CashierBillsController extends GetxController
     //     p.productnameTamil));
     debugPrint(
         'demal for this ${p.productnameEnglish} is : ${p.isDecimalAllowed}');
-    getTotalPriceOfBill();
+    getTotalPriceAndQtyOfBill();
   }
 
   void categoryListPressed(index) {
@@ -237,23 +230,31 @@ class CashierBillsController extends GetxController
   Future<void> getSetting() async {
     try {
       EBBools.isLoading = true;
-      final settings = await _settingsRepo.getSettings();
-      for (var element in settings!) {
+      final result = await _settingsRepo.getSettings();
+
+      if (result != null) {
+        billConfig = result[0];
+      }
+
+      for (var element in result!) {
         debugPrint('----------------------------------->> getSettings ');
 
-        print(element.businessaddress);
-        print(element.mobileenable);
-        print(element.emailenable);
-        print(element.businessname);
-        print(element.settimeinterval);
+        debugPrint(element.businessaddress);
+        debugPrint(element.mobileenable.toString());
+        debugPrint(element.emailenable.toString());
+        debugPrint(element.businessname);
+        debugPrint(element.settimeinterval);
 
-        EBAppString.settimeinterval = element.settimeinterval ?? '1';
+        EBAppString.settimeinterval =
+            element.settimeinterval == null || element.settimeinterval!.isEmpty
+                ? '1'
+                : element.settimeinterval;
       }
     } catch (e) {
       debugPrint(e.toString());
     } finally {
-      //  EBBools.isLoading = false;
-      // update();
+      EBBools.isLoading = false;
+      update();
     }
   }
 
@@ -319,29 +320,31 @@ class CashierBillsController extends GetxController
           billItem.shopproductid,
           billItem.isDecimal,
           billItem.productnameTamil);
-      getTotalPriceOfBill();
+      getTotalPriceAndQtyOfBill();
 
       Get.back();
       update();
     }
   }
 
-  void getTotalPriceOfBill() {
-    totalPrice = billItems.fold(
+  void getTotalPriceAndQtyOfBill() {
+    billItemsTotalPrice = billItems.fold(
         0.0, (previousValue, item) => previousValue + item.totalprice!);
+    billItemsTotalQty = billItems.fold(
+        0.0, (previousValue, item) => previousValue + item.quantity!);
     update();
   }
 
   void cancelOrderPressed() {
     billItems.clear();
     shopproductid = '';
-    getTotalPriceOfBill();
+    getTotalPriceAndQtyOfBill();
     update();
   }
 
   void deleteBillItem(value) {
     billItems.remove(value);
-    getTotalPriceOfBill();
+    getTotalPriceAndQtyOfBill();
     Get.back();
   }
 
@@ -483,4 +486,6 @@ class CashierBillsController extends GetxController
       return num.toString();
     }
   }
+
+  
 }

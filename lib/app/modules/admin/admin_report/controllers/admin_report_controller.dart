@@ -43,6 +43,7 @@ class AdminReportController extends GetxController {
   Future<void> getOtherBillReports() async {
     try {
       EBBools.isLoading = true;
+      update();
       Reports reports = Reports(
         reporttype: '',
         credentialsid: 0,
@@ -218,6 +219,7 @@ class AdminReportController extends GetxController {
       final resultList = await _billRepo.filterBills(reports);
       if (resultList != null) {
         filterableBillReports = resultList;
+       // ebCustomTtoastMsg(message:   'Bills filtered by dates');
       } else {
         ebCustomTtoastMsg(message: 'No bills in Found');
       }
@@ -226,6 +228,27 @@ class AdminReportController extends GetxController {
     } finally {
       EBBools.isLoading = false;
       update();
+    }
+  }
+
+  Future<void> showDateCalender(context) async {
+    final result = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2024),
+      lastDate: DateTime.now().add(
+        const Duration(days: 365),
+      ),
+    );
+    // DateTime startDate = DateTime.utc(2021, 03, 01);
+    // debugPrint(startDate.toString());
+
+    if (result != null) {
+      debugPrint('Start date ----------->>${result.start}');
+      formtDates(result.start, result.end);
+
+      filterByDateOrPaymentmode(fromDate: strDate, toDate: endDate);
+      debugPrint('End date ----------->>${result.end}');
+      debugPrint('range date ----------->>$result');
     }
   }
 }

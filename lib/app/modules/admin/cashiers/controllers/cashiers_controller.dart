@@ -1,4 +1,8 @@
+// ignore_for_file: unnecessary_overrides
+
+import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/data/repositories/cashier_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../data/models/cashier.dart';
@@ -9,7 +13,7 @@ class CashiersController extends GetxController {
 
   @override
   void onInit() {
-    print('CashiersController intit method called ');
+    debugPrint('CashiersController intit method called ');
     super.onInit();
     getCashier();
   }
@@ -25,28 +29,33 @@ class CashiersController extends GetxController {
   }
 
   Future<void> getCashier() async {
-    print('getCashier method called ------------------->>  ');
+    EBBools.isLoading = true;
+    update();
+    debugPrint('getCashier method called ------------------->>  ');
 
     try {
-      print('before try method called ------------------->>  ');  
+      debugPrint('before try method called ------------------->>  ');
       final categoryLists = await cashierRepo.getCashier();
       update();
-      print('after try method called ------------------->>  ');
+      debugPrint('after try method called ------------------->>  ');
 
       for (var category in categoryLists!) {
-        print(category.loginusername);
+        debugPrint(category.loginusername);
       }
       cashierList = categoryLists;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
+    } finally {
+      EBBools.isLoading = false;
+      update();
     }
   }
 
   void updateCashiers(List<Cashier> updatedList) {
+    EBBools.isLoading = true;
+    update();
     cashierList = updatedList;
+     EBBools.isLoading = false;
     update();
   }
-
-
-
 }

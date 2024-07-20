@@ -28,6 +28,20 @@ abstract class EBValidation {
     return null;
   }
 
+  static String? validateUpiId(String value) {
+    if (value.trim().isEmpty) {
+      return 'This field is required';
+    }
+     // Regular expression to validate UPI ID
+    String pattern = r'^[\w.-]+@[\w.-]+$';
+    RegExp regex = RegExp(pattern);
+    
+    if (!regex.hasMatch(value)) {
+      return 'Please enter a valid UPI ID';
+    }
+    return null;
+  }
+
   static String? validateEmail(String value) {
     if (!value.isEmail) {
       return 'Please enter valid email';

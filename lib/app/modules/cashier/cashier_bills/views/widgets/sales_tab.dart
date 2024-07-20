@@ -12,7 +12,7 @@ import '../product_search_sheet.dart';
 Widget saleTab(context) {
   return GetBuilder<CashierBillsController>(
     builder: (_) {
-      if (_.inventoryController.filterableCategoryList == null) return const LoadingWidget();
+      if (_.inventoryController.filterableCategoryList == null ) return const LoadingWidget();
       return Padding(
         padding: EBSizeConfig.edgeInsetsActivities,
         child: Row(

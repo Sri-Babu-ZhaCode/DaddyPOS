@@ -36,6 +36,7 @@ class LoginView2 extends GetView<LoginController> {
                       children: [
                         TabBar(
                           onTap: (index) {
+                            controller.tappedIndex = index;
                             controller.onTabChanged(index);
                           },
                           overlayColor: WidgetStatePropertyAll(
@@ -86,49 +87,46 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<LoginController>(builder: (controller) {
-      return Form(
-        key: controller.formKey,
-        child: Padding(
-          padding: EBSizeConfig.edgeInsetsActivities,
-          child: Column(
-            children: <Widget>[
-              CustomTextFormField(
-                controller: controller.isStaffTabTapped
-                    ? controller.staffMobileController
-                    : controller.mobileController,
-                labelText: EBAppString.mobile,
-                maxLength: 10,
-                keyboardType: TextInputType.phone,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
+      return Padding(
+        padding: EBSizeConfig.edgeInsetsActivities,
+        child: Column(
+          children: <Widget>[
+            CustomTextFormField(
+              controller: controller.isStaffTabTapped
+                  ? controller.staffMobileController
+                  : controller.mobileController,
+              labelText: EBAppString.mobile,
+              maxLength: 10,
+              keyboardType: TextInputType.phone,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              validator: (value) => controller.validateMobile(value!),
+            ),
+            CustomTextFormField(
+              obscureText: controller.pwdVisibility,
+              controller: controller.isStaffTabTapped
+                  ? controller.staffPwdController
+                  : controller.pwdController,
+              labelText: EBAppString.pass,
+              suffixIcon: IconButton(
+                icon: Icon(controller.pwdVisibility
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined),
+                onPressed: () => controller.changePwdVisibility(),
+              ),
+              validator: (value) => controller.validateIsEmpty(value!),
+            ),
+            loginButton(controller),
+            if (!controller.isStaffTabTapped) const LoginOrRegister(),
+          ]
+              .expand(
+                (element) => [
+                  element,
+                  EBSizeConfig.sizedBoxH15,
                 ],
-                validator: (value) => EBValidation.validateMobile(value!),
-              ),
-              CustomTextFormField(
-                obscureText: controller.pwdVisibility,
-                controller: controller.isStaffTabTapped
-                    ? controller.staffPwdController
-                    : controller.pwdController,
-                labelText: EBAppString.pass,
-                suffixIcon: IconButton(
-                  icon: Icon(controller.pwdVisibility
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined),
-                  onPressed: () => controller.changePwdVisibility(),
-                ),
-                validator: (value) => EBValidation.validateIsEmpty(value!),
-              ),
-              loginButton(controller),
-              if (!controller.isStaffTabTapped) const LoginOrRegister(),
-            ]
-                .expand(
-                  (element) => [
-                    element,
-                    EBSizeConfig.sizedBoxH15,
-                  ],
-                )
-                .toList(),
-          ),
+              )
+              .toList(),
         ),
       );
     });
@@ -171,7 +169,8 @@ class LoginOrRegister extends StatelessWidget {
 // Login Button
 
 Widget loginButton(LoginController controller) {
-  print('login button build method called ----------------------->>');
+  debugPrint('login button build method called ----------------------->>');
+ // debugPrint( ' is loading --------------------->>  ${EBBools.isLoading}');
 
   return Padding(
     padding: EBSizeConfig.edgeInsetsAll20,

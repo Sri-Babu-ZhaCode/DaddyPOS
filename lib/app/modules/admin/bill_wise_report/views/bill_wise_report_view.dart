@@ -1,9 +1,7 @@
+import 'package:easybill_app/app/modules/admin/bill_wise_report/views/widgets/billwise_filter_dialog.dart';
 import 'package:easybill_app/app/modules/admin/bill_wise_report/views/widgets/detailed_bill.dart';
-import 'package:easybill_app/app/modules/admin/bill_wise_report/views/widgets/paymentmode_filterdialog.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-
 import '../../../../constants/app_string.dart';
 import '../../../../constants/app_text_style.dart';
 import '../../../../constants/bools.dart';
@@ -12,7 +10,6 @@ import '../../../../constants/themes.dart';
 import '../../../../data/models/bill_reports.dart';
 import '../../../../widgets/custom_widgets/custom_alert_dialog.dart';
 import '../../../../widgets/custom_widgets/custom_container.dart';
-import '../../../../widgets/custom_widgets/custom_elevated_button.dart';
 import '../../../../widgets/custom_widgets/custom_list_tile.dart';
 import '../../../../widgets/custom_widgets/custom_msg_widget.dart';
 import '../../../../widgets/custom_widgets/custom_scaffold.dart';
@@ -29,17 +26,18 @@ class BillWiseReportView extends GetView<BillWiseReportController> {
         return EBCustomScaffold(
             noDrawer: true,
             actionWidgetList: [
-              if (controller.billWiseDecisionKey == 0)
-                IconButton(
-                  icon: const Icon(
-                    Icons.refresh,
-                    size: 20,
-                  ),
-                  onPressed: () {
-                    controller.filterableBillReports = controller.billReports;
-                    controller.update();
-                  },
+              // if (controller.billWiseDecisionKey == 0)
+              IconButton(
+                icon: const Icon(
+                  Icons.refresh,
+                  size: 20,
                 ),
+                onPressed: () {
+                  controller.getBillWiseFromReportType();
+                  //controller.filterableBillReports = controller.billReports;
+                  // controller.update();
+                },
+              ),
               if (controller.billWiseDecisionKey == 0)
                 IconButton(
                   icon: const Icon(
@@ -47,31 +45,7 @@ class BillWiseReportView extends GetView<BillWiseReportController> {
                     size: 20,
                   ),
                   onPressed: () async {
-                    final result = await showDateRangePicker(
-                      context: context,
-                      firstDate: DateTime(2024),
-                      lastDate: DateTime.now().add(
-                        const Duration(days: 365),
-                      ),
-                    );
-
-                    DateTime startDate = DateTime.utc(2021, 03, 01);
-                    debugPrint(startDate.toString());
-
-                    if (result != null) {
-                      //  debugPrint('Start date ----------->>${result.start}');
-                      // controller.filterBillsByDateRange(
-                      //     result.start, result.end);
-                      String startDate =
-                          controller.formateBillDate(result.start.toString());
-                      String endDate =
-                          controller.formateBillDate(result.end.toString());
-                      controller.filterByDateOrPaymentmode(
-                          fromDate: startDate, toDate: endDate);
-                      debugPrint('start date ------------------>>  $startDate');
-                      // debugPrint('End date ----------->>${result.end}');
-                      // debugPrint('range date ----------->>$result');
-                    }
+                    await filterDialogForBillWise(controller, context);
                   },
                 ),
               if (controller.billWiseDecisionKey == 0)
@@ -97,27 +71,30 @@ class BillWiseReportView extends GetView<BillWiseReportController> {
               child: GetBuilder<BillWiseReportController>(builder: (_) {
                 if (EBBools.isLoading) return const LoadingWidget();
 
-                return billReports(_);
+                if (_.billWiseDecisionKey == 4) return cancelReport(_, context);
+
+                return billReports(_, context);
               }),
             ));
       });
     });
   }
 
-  Widget billReports(_) {
+  Widget billReports(_, context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        CustomElevatedButton(
-          isDefaultWidth: true,
-          onPressed: () async {
-            await paymentModeFilterDialog(_);
-          },
-          child: Text(
-            EBAppString.filterByPaymentmode,
-            style: EBAppTextStyle.button,
-          ),
-        ),
+        // CustomElevatedButton(
+        //   btnColor: Colors.pink,
+        //   isDefaultWidth: true,
+        //   onPressed: () async {
+        //     await filterDialog(_, context);
+        //   },
+        //   child: Text(
+        //     EBAppString.filterByPaymentmode,
+        //     style: EBAppTextStyle.button,
+        //   ),
+        // ),
         EBSizeConfig.sizedBoxH15,
         GetBuilder<BillWiseReportController>(builder: (_) {
           if (_.filterableBillReports == null ||
@@ -129,8 +106,10 @@ class BillWiseReportView extends GetView<BillWiseReportController> {
                   Reports reports = _.filterableBillReports![index];
                   return GestureDetector(
                     onTap: () async {
+                      if (_.billWiseDecisionKey != -1){
                       _.getBillWiseFromReportType(reports);
                       await detailedbillDetailedInfoSheet(context);
+                      }
                     },
                     child: CustomContainer(
                       noHeight: true,
@@ -139,10 +118,10 @@ class BillWiseReportView extends GetView<BillWiseReportController> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Shop Bill Id : ${reports.shopbillid}',
+                              Text('Bill No: ${reports.shopbillid}',
                                   style: EBAppTextStyle.catStyle),
                               Text(
-                                'Quantity : ${reports.quantity}',
+                                'Quantity: ${reports.quantity}',
                                 style: EBAppTextStyle.bodyText,
                               ),
                             ],
@@ -152,29 +131,33 @@ class BillWiseReportView extends GetView<BillWiseReportController> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                  'Bill Date : ${_.formateBillDate(reports.billdate!)}',
+                                  'Bill Date: ${_.formateBillDate(reports.billdate!)}',
                                   style: EBAppTextStyle.bodyText),
                               Text(
-                                'PaymentMode : ${reports.paymentmode}',
+                                'PaymentMode: ${reports.paymentmode}',
                                 style: EBAppTextStyle.catStyle,
                               ),
                             ],
                           ),
+                          if (controller.billWiseDecisionKey == -1 ||
+                              controller.billWiseDecisionKey == 2)
+                            EBSizeConfig.sizedBoxH15,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Total : ${reports.totalquantityamount}',
+                                'Total: ${reports.totalquantityamount}',
                                 style: EBAppTextStyle.bodyText,
                               ),
-                              IconButton(
-                                onPressed: () => _deleteAlertDialof(reports),
-                                icon: const Icon(
-                                  Icons.delete,
-                                  size: 20,
-                                  color: EBTheme.redColor,
-                                ),
-                              )
+                              if (controller.billWiseDecisionKey == 0)
+                                IconButton(
+                                  onPressed: () => _deleteAlertDialof(reports),
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    size: 20,
+                                    color: EBTheme.redColor,
+                                  ),
+                                )
                             ],
                           ),
                           if (_.billWiseDecisionKey == -1)
@@ -203,7 +186,7 @@ class BillWiseReportView extends GetView<BillWiseReportController> {
                       ),
                     ),
                   );
-                
+
                   // ListTile(
                   //   title: Text('Bill ${index + 1}'),
                   //   subtitle: Text('Amount: ${billInfo.billtype}'),
@@ -215,6 +198,88 @@ class BillWiseReportView extends GetView<BillWiseReportController> {
           );
         }),
         EBSizeConfig.sizedBoxH15,
+      ],
+    );
+  }
+
+  Widget cancelReport(BillWiseReportController _, context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        //EBSizeConfig.sizedBoxH15,
+        // CustomElevatedButton(
+        //   isDefaultWidth: true,
+        //   onPressed: () async {
+        //     await filterDialog(_, context);
+        //   },
+        //   child: Text(
+        //     EBAppString.filterByPaymentmode,
+        //     style: EBAppTextStyle.button,
+        //   ),
+        // ),
+        EBSizeConfig.sizedBoxH15,
+        GetBuilder<BillWiseReportController>(builder: (_) {
+          if (_.filterableBillReports == null ||
+              _.filterableBillReports!.isEmpty) return customMessageWidget();
+          return Expanded(
+            child: ListView.builder(
+                itemCount: _.filterableBillReports!.length,
+                itemBuilder: (context, index) {
+                  Reports reports = _.filterableBillReports![index];
+                  return GestureDetector(
+                    onTap: () async {
+                      _.getBillWiseFromReportType(reports);
+                      await detailedbillDetailedInfoSheet(context);
+                    },
+                    child: CustomContainer(
+                      noHeight: true,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Canceled Bill Id : ${reports.shopbillid}',
+                                  style: EBAppTextStyle.catStyle),
+                              Text(
+                                'Quantity : ${reports.quantity}',
+                                style: EBAppTextStyle.bodyText,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Total : ${reports.totalquantityamount}',
+                                style: EBAppTextStyle.bodyText,
+                              ),
+                            ],
+                          ),
+                          // Row(
+                          //   mainAxisAlignment:
+                          //       MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Text(
+                          //       'Date-Time : ${filterableBillInfo.datetime}',
+                          //       style: EBAppTextStyle.bodyText,
+                          //     ),
+                          //   ],
+                          // ),
+                        ],
+                      ),
+                    ),
+                  );
+
+                  // ListTile(
+                  //   title: Text('Bill ${index + 1}'),
+                  //   subtitle: Text('Amount: ${billInfo.billtype}'),
+                  //   onTap: () {
+                  //     // Handle onTap if needed
+                  //   },
+                  // );
+                }),
+          );
+        }),
       ],
     );
   }

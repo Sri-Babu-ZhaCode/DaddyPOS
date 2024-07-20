@@ -16,6 +16,8 @@ class EBSizeConfig {
 
   static  MediaQueryData? mediaQueryData;
 
+  
+
 
   // static late double safeBlockHorizontal;
 //  static late double safeBlockVertical;
@@ -76,6 +78,8 @@ class EBSizeConfig {
   static const sizedBoxW15 = SizedBox(width: 15);
   static const sizedBoxH20 = SizedBox(height: 20);
   static const sizedBoxH30 = SizedBox(height: 30);
+  static const sizedBoxH40 = SizedBox(height: 40);
+  static const sizedBoxH50 = SizedBox(height: 50);
   static const sizedBoxW30 = SizedBox(width: 30);
   static const sizedBoxW20 = SizedBox(width: 20);
   static const sizedBoxH100 = SizedBox(height: 100);

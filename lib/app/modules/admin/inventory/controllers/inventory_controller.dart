@@ -21,6 +21,8 @@ class InventoryController extends GetxController {
   List<Product>? seachableProductList;
   List<Units>? unitList;
   List<TaxType>? taxType;
+
+  final searchController = TextEditingController();
   InventoryController();
 
   List<Product>? categoryProductsList(int catId) =>
@@ -29,6 +31,9 @@ class InventoryController extends GetxController {
   TextEditingController categoryController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
+  final GlobalKey expansionTileKey = GlobalKey();
+  final ScrollController scrollController = ScrollController();
+  double? previousOffset;
 
   @override
   void onInit() {
@@ -49,7 +54,8 @@ class InventoryController extends GetxController {
       seachableProductList = x;
       getCategories();
       for (var element in productList!) {
-        debugPrint('product names ----------->>  ${element.productnameEnglish}');
+        debugPrint(
+            'product names ----------->>  ${element.productnameEnglish}');
       }
       update();
     } catch (e) {
@@ -198,7 +204,8 @@ class InventoryController extends GetxController {
   void addPressed() {
     debugPrint('add category validation called ----------------->>      ');
     if (formKey.currentState?.validate() == true) {
-      debugPrint('inside add category validation called ----------------->>      ');
+      debugPrint(
+          'inside add category validation called ----------------->>      ');
       addCategory();
       update();
     }
@@ -287,9 +294,19 @@ class InventoryController extends GetxController {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       final file = File(result.files.single.path!);
-
     } else {
       ebCustomTtoastMsg(message: 'No File Selected');
+    }
+  }
+
+ void scrollToSelectedContent( int index,bool isExpanded) {
+    final keyContext = expansionTileKey.currentContext;
+
+    if (keyContext != null) {
+      // make sure that your widget is visible
+      final box = keyContext.findRenderObject() as RenderBox;
+      scrollController.animateTo(isExpanded ? (box.size.height * index) : previousOffset!,
+          duration: const Duration(milliseconds: 500), curve: Curves.linear);
     }
   }
 }

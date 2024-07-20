@@ -23,13 +23,20 @@ class LoginController extends GetxController {
 
   bool isStaffTabTapped = false;
   bool pwdVisibility = false;
+  bool aMobileFlag = false;
+  bool aPwdFlag = false;
+  bool sMobileFlag = false;
+  bool sPwdFlag = false;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  int? tappedIndex;
 
   @override
   void onInit() {
     print('Login init called --------------->>');
     super.onInit();
+    EBBools.isLoading = false;
     getDeviceInfo();
   }
 
@@ -50,6 +57,7 @@ class LoginController extends GetxController {
   Future<void> login() async {
     try {
       EBBools.isLoading = true;
+      update();
       final login = Login(
         loginmobilenumber: isStaffTabTapped
             ? staffMobileController.text.trim()
@@ -132,7 +140,13 @@ class LoginController extends GetxController {
       debugPrint(e.toString());
     } finally {
       EBBools.isLoading = false;
+      aPwdFlag = false;
+      sPwdFlag = false;
+      aMobileFlag = false;
+      sMobileFlag = false;
       update();
+      debugPrint(
+          ' finally executed ------------------>>  ${EBBools.isLoading}');
     }
   }
 
@@ -205,14 +219,31 @@ class LoginController extends GetxController {
   void loginPressed({String? pwd}) {
     print(
         'Local storage User register id -------------->>  ${LocalStorage.registeredUserId}');
-    if (formKey.currentState?.validate() == true) {
+    if ((aMobileFlag && aPwdFlag) || (sMobileFlag && sPwdFlag)) {
       if (pwd != null) {
         setPassword(pwd);
       } else {
         login();
       }
-      update();
     }
+  }
+
+  String? validateMobile(String value) {
+    if (value.trim().length != 10) {
+      return 'Mobile number must be of 10 digit';
+    }
+    aMobileFlag = true;
+    sMobileFlag = true;
+    return null;
+  }
+
+  String? validateIsEmpty(String value) {
+    if (value.trim().isEmpty) {
+      return 'This field is required';
+    }
+    aPwdFlag = true;
+    sPwdFlag = true;
+    return null;
   }
 
   Future<void> setPassword(String pwd) async {
@@ -262,17 +293,28 @@ class LoginController extends GetxController {
   }
 
   void onTabChanged(int index) {
-    formKey = GlobalKey<FormState>();
+    // if(tappedIndex != index){
+    print('form key updated ====================>>  ');
+
+    // }
+    //formKey = GlobalKey<FormState>();
 
     if (index == 1) {
       mobileController.clear();
       pwdController.clear();
+      // formKey.currentState?.reset();
+
       isStaffTabTapped = true;
-    } else {
+    }
+
+    if (index == 0) {
       staffMobileController.clear();
       staffPwdController.clear();
+      //formKey.currentState?.reset();
+      //  formKey.currentState?.reset();
       isStaffTabTapped = false;
     }
+    //  formKey.currentState?.reset();
   }
 
   changePwdVisibility() {

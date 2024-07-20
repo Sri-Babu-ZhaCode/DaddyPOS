@@ -1,11 +1,8 @@
 import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/data/models/day_end_report.dart';
-import 'package:easybill_app/app/modules/admin/inventory/views/product_tab.dart';
 import 'package:easybill_app/app/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-
 import '../../../../constants/app_text_style.dart';
 import '../../../../constants/size_config.dart';
 import '../../../../constants/themes.dart';
@@ -21,47 +18,56 @@ class DayEndReportView extends GetView<DayEndReportController> {
       return DefaultTabController(
         length: 2,
         child: EBCustomScaffold(
-            body: Padding(
-          padding: EBSizeConfig.edgeInsetsActivities,
-          child: Column(
-            children: [
-              TabBar(
-                controller: _.tabController,
-                onTap: (index) {
-                  _.updateDayEndReport(index);
+            actionWidgetList: [
+              IconButton(
+                onPressed: () {
+                  _.getDayEndReports();
                 },
-                overlayColor:
-                    MaterialStatePropertyAll(EBTheme.kPrimaryLightColor),
-                labelColor: EBTheme.kPrimaryColor,
-                indicatorSize: TabBarIndicatorSize.tab,
-                indicatorColor: EBTheme.kPrimaryColor,
-                tabs: ["Product", 'Payment Mode', 'Cashier']
-                    .map((e) => Tab(
-                          child: Text(
-                            e,
-                            overflow: TextOverflow.ellipsis,
-                            style: EBAppTextStyle.billItemStyle,
-                          ),
-                        ))
-                    .toList(),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EBSizeConfig.edgeInsetsOnlyH10,
-                  child: TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: _.tabController,
-                    children: [
-                      dayEndBillReports(controller),
-                      dayEndBillReports(controller),
-                      dayEndBillReports(controller),
-                    ],
-                  ),
-                ),
+                icon: const Icon(Icons.refresh_outlined),
               ),
             ],
-          ),
-        )),
+            body: Padding(
+              padding: EBSizeConfig.edgeInsetsActivities,
+              child: Column(
+                children: [
+                  TabBar(
+                    controller: _.tabController,
+                    onTap: (index) {
+                      _.tabIndex = index;
+                      _.updateDayEndReport(index);
+                    },
+                    overlayColor:
+                        MaterialStatePropertyAll(EBTheme.kPrimaryLightColor),
+                    labelColor: EBTheme.kPrimaryColor,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicatorColor: EBTheme.kPrimaryColor,
+                    tabs: ["Product", 'Payment Mode', 'Cashier']
+                        .map((e) => Tab(
+                              child: Text(
+                                e,
+                                overflow: TextOverflow.ellipsis,
+                                style: EBAppTextStyle.billItemStyle,
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EBSizeConfig.edgeInsetsOnlyH10,
+                      child: TabBarView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        controller: _.tabController,
+                        children: [
+                          dayEndBillReports(controller),
+                          dayEndBillReports(controller),
+                          dayEndBillReports(controller),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )),
       );
     });
   }
@@ -75,9 +81,9 @@ class DayEndReportView extends GetView<DayEndReportController> {
           debugPrint(
               " length of ------------->> ${_.filteredDayReports!.length}");
 
-          DayEndReport dayReports = _.filteredDayReports!.length == 1
-              ? _.filteredDayReports![0]
-              : _.filteredDayReports![dayEndIndex];
+          DayEndReport dayReports = dayEndIndex < _.filteredDayReports!.length
+              ? _.filteredDayReports![dayEndIndex]
+              : _.filteredDayReports![0];
           return Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -88,18 +94,22 @@ class DayEndReportView extends GetView<DayEndReportController> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(' Bills : ${dayReports.bills}',
-                            style: EBAppTextStyle.catStyle),
-                        Text(
-                          'Report Name : ${dayReports.reportname}',
-                          style: EBAppTextStyle.bodyText,
+                        Flexible(
+                          child: Text(
+                            // '${dayReports.report == 'Product'? 'Product Name: ' :  dayReports.report == 'paymentMode'?  'Payment Mode: ' : 'Report Name:'} ${dayReports.reportname}',
+
+                            'Report: ${dayReports.reportname}',
+                            style: EBAppTextStyle.bodyText,
+                          ),
                         ),
                       ],
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Amount : ${dayReports.amount}',
+                        Text('Bills: ${dayReports.bills}',
+                            style: EBAppTextStyle.catStyle),
+                        Text('Amount: ${dayReports.amount}',
                             style: EBAppTextStyle.avtiveTxt),
                       ],
                     ),

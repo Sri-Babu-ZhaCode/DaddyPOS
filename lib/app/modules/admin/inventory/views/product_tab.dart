@@ -24,8 +24,8 @@ class ProductTab extends GetView<InventoryController> {
           children: [
             CustomElevatedIconButton(
               onPressed: () {
-                print('Add product bottn tapped ------------->> ');
-                print('${controller.unitList}');
+                debugPrint('Add product bottn tapped ------------->> ');
+                debugPrint('${controller.unitList}');
                 Get.toNamed(Routes.PRODUCT_MANAGEMENT, arguments: {
                   'isEditMode': true,
                   'categoryList': controller.categoryList,
@@ -48,6 +48,7 @@ class ProductTab extends GetView<InventoryController> {
                   children: [
                     Expanded(
                       child: CustomTextFormField(
+                        controller: _.searchController,
                         labelText: EBAppString.search,
                         validator: (value) {
                           return null;
@@ -81,6 +82,7 @@ class ProductTab extends GetView<InventoryController> {
                             .toList();
                       },
                       onSelected: (value) {
+                        controller.searchController.clear();
                         controller.filterProdutListByCatId(value.categoryid!);
                       },
                       

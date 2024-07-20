@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../../../constants/app_string.dart';
 import '../../../../../constants/app_text_style.dart';
 import '../../../../../constants/themes.dart';
@@ -29,7 +28,7 @@ class ProductListWidget extends GetView<CashierBillsController> {
               crossAxisCount: Responsive.isTablet(context) == true ? 3 : 2,
               crossAxisSpacing: 10.0, // Spacing between columns
               mainAxisSpacing: 10.0, // Spacing between rows
-              childAspectRatio: 2,
+              childAspectRatio: 1.5, //1.5
             ),
             itemCount: _.inventoryController.seachableProductList!
                 .length, // Total number of items
@@ -42,11 +41,11 @@ class ProductListWidget extends GetView<CashierBillsController> {
                   Product product =
                       _.inventoryController.seachableProductList![index];
 
-                  print(
+                  debugPrint(
                       "${product.productnameEnglish} has popup ===========>> : ${product.showQuantityPopup}");
-                  print(
+                  debugPrint(
                       "${product.productnameEnglish} has decimal ===========>> : ${product.isDecimalAllowed}");
-                  print(
+                  debugPrint(
                       "${product.productnameEnglish} shopProduct Id ===========>> : ${product.shopproductid}");
                   product.showQuantityPopup == true
                       ? Get.toNamed(Routes.QUNATITY_BILL_CALCULATOR,

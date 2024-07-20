@@ -24,6 +24,7 @@ class AdminSettingsController extends GetxController {
   TextEditingController businessAddressController = TextEditingController();
   TextEditingController mobilController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController upiController = TextEditingController();
   TextEditingController gstController = TextEditingController();
   TextEditingController currenctSymbleContoller = TextEditingController();
   TextEditingController footerController = TextEditingController();
@@ -43,7 +44,9 @@ class AdminSettingsController extends GetxController {
       isFooter,
       isWhatsapp,
       isBusinessName,
-      isAddress;
+      isAddress,
+      isUPI,
+      isLogo;
 
   bool readOnly = true, gstFlag = true;
 
@@ -154,6 +157,7 @@ class AdminSettingsController extends GetxController {
           businessaddress: businessAddressController.text,
           businessmobile: mobilController.text,
           businessemail: emailController.text,
+          upi: upiController.text,
           footer: footerController.text,
           //--------------->> todo choosed
           // printername: '',
@@ -163,6 +167,8 @@ class AdminSettingsController extends GetxController {
           emailenable: isEmail,
           mobileenable: isMobile,
           gstenable: isGst,
+          upienable: isUPI,
+          logoenable: isLogo,
           footerenable: isFooter,
           addressenable: isAddress,
           nameenable: isBusinessName,
@@ -213,6 +219,7 @@ class AdminSettingsController extends GetxController {
         mobilController.text = data.businessmobile ?? "";
         emailController.text = data.businessemail ?? "";
         gstController.text = data.gst ?? "";
+        upiController.text = data.upi ?? "";
         gstFlag = data.gst == null || data.gst!.isEmpty ? false : true;
         footerController.text = data.footer ?? "";
         selectedPrinterSize =
@@ -230,6 +237,8 @@ class AdminSettingsController extends GetxController {
                 : data.settimeinterval!;
 
         isGst = data.gstenable ?? false;
+        isUPI = data.upienable ?? false;
+        isLogo = data.logoenable ?? false;
         isMobile = data.mobileenable ?? false;
         isEmail = data.emailenable ?? false;
         isFooter = data.footerenable ?? false;

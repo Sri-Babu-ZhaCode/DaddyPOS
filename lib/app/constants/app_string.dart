@@ -23,6 +23,7 @@ class EBAppString {
   static const String mobile = 'Mobile Number';
   static const String pass = 'Password';
   static const String email = 'Email';
+  static const String upiId = 'UPI ID';
   static const String business = 'Business Name';
   static const String address = 'Address';
   static const String gst = 'GST No';
@@ -110,6 +111,7 @@ class EBAppString {
 // App assets Images
   static const String businessLogoImg = 'assets/icons/add_image.png';
   static const String profileImg = 'assets/icons/profile.png';
+  static const String daddyPosImg = 'assets/icons/icons_lancher.png';
 
   static String units = 'Units';
 
@@ -145,4 +147,6 @@ class EBAppString {
   static String? settimeinterval;
 
   static const String changePaymentMode = 'Change Payment Mode';
+
+  static const String filter = 'Filter';
 }

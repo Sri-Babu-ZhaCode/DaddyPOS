@@ -48,7 +48,7 @@ class EBAppDrawer extends StatelessWidget {
                     Get.back();
                     Get.toNamed(
                       Routes.BILL_WISE_REPORT,
-                      arguments: {"billWiseDecisionKey": 2},
+                      arguments: {"billWiseDecisionKey": 0},
                     );
                   },
                 ),
@@ -62,7 +62,7 @@ class EBAppDrawer extends StatelessWidget {
                     Get.back();
                     Get.toNamed(
                       Routes.BILL_WISE_REPORT,
-                      arguments: {"billWiseDecisionKey": 2},
+                      arguments: {"billWiseDecisionKey": -1},
                     );
                   },
                 ),
@@ -76,7 +76,7 @@ class EBAppDrawer extends StatelessWidget {
                     Get.back();
                     Get.toNamed(
                       Routes.BILL_WISE_REPORT,
-                      arguments: {"billWiseDecisionKey": 5},
+                      arguments: {"billWiseDecisionKey": 4},
                     );
                   },
                 ),
@@ -237,11 +237,25 @@ class EBAppDrawer extends StatelessWidget {
                       onTap: () {
                         Get.back();
                         Get.toNamed(
-                          Routes.ADMIN_REPORT,
-                          arguments: {"otherReportsDecisionKey": 3},
+                          Routes.BILL_WISE_REPORT,
+                          arguments: {"billWiseDecisionKey": 4},
                         );
                       },
                     ),
+                    // EBCustomListTile(
+                    //   leading: const Icon(
+                    //     Icons.cancel_outlined,
+                    //     size: 40,
+                    //   ),
+                    //   titleName: EBAppString.cancleBill,
+                    //   onTap: () {
+                    //     Get.back();
+                    //     Get.toNamed(
+                    //       Routes.ADMIN_REPORT,
+                    //       arguments: {"otherReportsDecisionKey": 3},
+                    //     );
+                    //   },
+                    // ),
                   ],
                 ),
                 EBCustomListTile(

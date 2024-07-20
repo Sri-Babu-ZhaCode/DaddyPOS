@@ -115,6 +115,7 @@ Widget quantityBillCalculatorWidget(Product product) {
                         double.parse(controller.productQuantity) >= 0.1
                     ? () {
                         controller.nextPressed(product);
+                        Get.back();
                       }
                     : null,
                 child: const Text(EBAppString.next))

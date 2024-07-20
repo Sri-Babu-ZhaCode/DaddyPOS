@@ -86,8 +86,9 @@ class CategoryList extends GetView<InventoryController> {
                               .expand_more), // Default expansion tile arrow-down icon
                         ],
                       ),
-                      children: <Widget>[
+                      children: [
                         ListView.builder(
+                          physics: const ClampingScrollPhysics(),
                           shrinkWrap: true,
                           padding: EBSizeConfig.textContentPadding,
                           itemCount: controller

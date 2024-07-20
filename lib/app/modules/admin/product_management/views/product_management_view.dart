@@ -338,7 +338,7 @@ class ProductManagementView extends GetView<ProductManagementController> {
             height: EBSizeConfig.screenHeight * 0.1 / 1.7,
             child: CustomElevatedButton(
               elevation: 3,
-              btnColor: const Color.fromARGB(255, 233, 45, 45),
+              btnColor: EBTheme.kPrimaryWhiteColor,
               onPressed: () async {
                 debugPrint(' QR_SCANNER ------------------------------->>');
                 final result = await Get.toNamed(Routes.QR_SCANNER);

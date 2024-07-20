@@ -1,9 +1,11 @@
 import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/data/api/local_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../constants/app_string.dart';
 import '../../../../data/models/bill_reports.dart';
 import '../../../../data/models/setting.dart';
 import '../../../../data/repositories/bill_repository.dart';
@@ -122,7 +124,8 @@ class BillWiseReportController extends GetxController {
         debugPrint(detailedReport.productnameEnglish);
         debugPrint(detailedReport.shopbillid.toString());
         reports.uniqueshopbillid = detailedReport.uniqueshopbillid;
-        reports.reporttype = 'billbyid';
+        reports.reporttype =
+            billWiseDecisionKey == 4 ? 'detailcancelbill' : 'billbyid';
         final x = await _billRepo.getBillDetailed(reports);
         billDetailedReports = x;
         if (billDetailedReports != null) {
@@ -139,7 +142,16 @@ class BillWiseReportController extends GetxController {
       }
 
       if (otherReports == null) {
-        reports.reporttype = 'bill';
+        if (billWiseDecisionKey == 4) {
+          if (EBAppString.userRole == 'Staff') {
+            reports.reporttype = 'cancelbillstaff';
+            reports.credentialsid = int.parse(LocalStorage.usercredentialsid!);
+          } else {
+            reports.reporttype = 'cancel';
+          }
+        } else {
+          reports.reporttype = 'bill';
+        }
       } else {
         switch (billWiseDecisionKey) {
           case 1:
@@ -156,10 +168,10 @@ class BillWiseReportController extends GetxController {
           case 3:
             // cancel bill detailed
             reports.shopbillid = otherReports!.shopbillid;
-          case 5:
-            reports.reporttype = 'cancelbillstaff';
-            reports.credentialsid = int.parse(LocalStorage.usercredentialsid!);
-            break;
+          // case 4:
+
+          //  // reports.credentialsid = int.parse(LocalStorage.usercredentialsid!);
+          //   break;
           default:
             debugPrint('some this went wrong  ----------->> ');
         }
@@ -258,6 +270,7 @@ class BillWiseReportController extends GetxController {
       final resultList = await _billRepo.filterBills(reports);
       if (resultList != null) {
         filterableBillReports = resultList;
+     //   ebCustomTtoastMsg(message: 'Bills filtered by dates');
       } else {
         ebCustomTtoastMsg(message: 'No bills in Found');
       }
@@ -266,6 +279,22 @@ class BillWiseReportController extends GetxController {
     } finally {
       EBBools.isLoading = false;
       update();
+    }
+  }
+
+  Future<void> showDateCalender(context) async {
+    final result = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2024),
+      lastDate: DateTime.now().add(
+        const Duration(days: 365),
+      ),
+    );
+    if (result != null) {
+      String startDate = formateBillDate(result.start.toString());
+      String endDate = formateBillDate(result.end.toString());
+      filterByDateOrPaymentmode(fromDate: startDate, toDate: endDate);
+      debugPrint('start date ------------------>>  $startDate');
     }
   }
 }

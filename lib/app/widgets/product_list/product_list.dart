@@ -1,3 +1,4 @@
+import 'package:easybill_app/app/constants/size_config.dart';
 import 'package:easybill_app/app/modules/admin/inventory/controllers/inventory_controller.dart';
 import 'package:easybill_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,7 @@ class ProductList extends GetView<InventoryController> {
                     ),
                   ],
                 ),
+                EBSizeConfig.sizedBoxH10,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -75,20 +77,21 @@ class ProductList extends GetView<InventoryController> {
                     ),
                   ],
                 ),
+                EBSizeConfig.sizedBoxH10,
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
                       'Rs . ${controller.seachableProductList![index].price}',
                       style: EBAppTextStyle.heading2,
                     ),
-                    IconButton(
-                      onPressed: () {
-                        _deleteAlertDialof(
-                            controller.seachableProductList![index]);
-                      },
-                      icon: const Icon(Icons.delete_forever, color: Colors.red),
-                    ),
+                    // IconButton(
+                    //   onPressed: () {
+                    //     _deleteAlertDialof(
+                    //         controller.seachableProductList![index]);
+                    //   },
+                    //   icon: const Icon(Icons.delete_forever, color: Colors.red),
+                    // ),
                   ],
                 ),
               ],

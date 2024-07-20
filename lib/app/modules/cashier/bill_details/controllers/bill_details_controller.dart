@@ -2,7 +2,6 @@ import 'package:easybill_app/app/data/api/local_storage.dart';
 import 'package:easybill_app/app/data/models/bill_items.dart';
 import 'package:easybill_app/app/data/repositories/bill_repository.dart';
 import 'package:easybill_app/app/modules/cashier/cashier_bills/controllers/cashier_bills_controller.dart';
-import 'package:easybill_app/app/routes/app_pages.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -40,9 +39,9 @@ class BillDetailsController extends GetxController {
 
       ebCustomTtoastMsg(message: 'Bill Items Printed');
       cashierBillsController.billItems.clear();
-      cashierBillsController.getTotalPriceOfBill();
+      cashierBillsController.getTotalPriceAndQtyOfBill();
       update();
-      Get.offNamed(Routes.CASHIER_BILLS);
+      Get.back();
     } catch (e) {
       debugPrint(e.toString());
     }

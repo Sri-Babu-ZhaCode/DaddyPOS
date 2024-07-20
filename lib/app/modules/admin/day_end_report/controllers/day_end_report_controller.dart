@@ -14,6 +14,8 @@ class DayEndReportController extends GetxController
   List<DayEndReport>? filteredDayReports;
 
   final _billRepo = BillRepo();
+
+  int? tabIndex;
   @override
   void onInit() {
     super.onInit();
@@ -27,10 +29,11 @@ class DayEndReportController extends GetxController
   Future<void> getDayEndReports() async {
     try {
       EBBools.isLoading = true;
+      update();
       final x = await _billRepo.getDayEndReport();
       dayReportList = x;
       filteredDayReports = x;
-      updateDayEndReport(0);
+      updateDayEndReport(tabIndex ?? 0);
     } catch (e) {
       debugPrint(e.toString());
     } finally {
@@ -52,19 +55,21 @@ class DayEndReportController extends GetxController
   void updateDayEndReport(int index) {
     EBBools.isLoading = true;
     update();
-    debugPrint('updateDayEndReport called -------------->> & tab index : $index');
-    String? report;
+    debugPrint(
+        'updateDayEndReport called -------------->> & tab index : $index');
+    String? reportType;
 
     if (index == 0) {
-      report = 'Product';
+      reportType = 'Product';
     } else if (index == 1) {
-      report = 'cashier';
+      reportType = 'paymentMode';
     } else {
-      report = 'paymentMode';
+      reportType = 'cashier';
     }
 
-    final resultList =
-        dayReportList?.where((element) => element.report == report).toList();
+    final resultList = dayReportList
+        ?.where((element) => element.report == reportType)
+        .toList();
 
     filteredDayReports = resultList;
 
