@@ -1,6 +1,8 @@
 import 'package:easybill_app/app/constants/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:thermal_printer_sdk/models/printer_template_settings.dart';
+import 'package:thermal_printer_sdk/thermal_printer_sdk.dart';
 
 import '../../../../constants/app_string.dart';
 import '../../../../constants/app_text_style.dart';
@@ -24,39 +26,44 @@ class BillDetailsView extends GetView<BillDetailsController> {
           padding: EBSizeConfig.edgeInsetsActivities,
           child: ListView(
             shrinkWrap: true,
-           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
                   height: EBSizeConfig.screenHeight * 0.8,
                   child: const BillDetailsItemList()),
-               EBSizeConfig.dividerTH2,
-                  SizedBox(
-                  height: EBSizeConfig.screenHeight * 0.2,
-                  child:  BillCalculatorWidget(
-                    crossAxisCount: 3,
-                    itemCount: controller.paymentMode.length,
-                    itemBuilder: (context, index) => GestureDetector(
-                      onTap: () {
-                        controller.currentIndex = index;
-                        controller.update();
-                        controller.addBillInfo();
-                      },
-                      child: CustomContainer(
-                        height: 60,
-                        borderColor: controller.currentIndex == index
-                            ? EBTheme.kPrimaryColor
-                            : Colors.transparent,
-                        child: Center(
-                          child: Text(
-                            controller.paymentMode[index].toUpperCase(),
-                            style: EBAppTextStyle.button,
-                          ),
+              EBSizeConfig.dividerTH2,
+              SizedBox(
+                height: EBSizeConfig.screenHeight * 0.2,
+                child: BillCalculatorWidget(
+                  crossAxisCount: 3,
+                  itemCount: controller.paymentMode.length,
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      ThermalPrinterSdk().print(PrinterTemplateSettings(
+                          deviceAddress: "DC:0D:30:23:0E:00",
+                          template: "template",
+                          printerDpi: 200,
+                          printerWidth: 72,
+                          nbrCharPerLine: 48));
+                      controller.currentIndex = index;
+                      controller.update();
+                      controller.addBillInfo();
+                    },
+                    child: CustomContainer(
+                      height: 60,
+                      borderColor: controller.currentIndex == index
+                          ? EBTheme.kPrimaryColor
+                          : Colors.transparent,
+                      child: Center(
+                        child: Text(
+                          controller.paymentMode[index].toUpperCase(),
+                          style: EBAppTextStyle.button,
                         ),
                       ),
                     ),
                   ),
+                ),
               ),
-
 
               // ListView(
               //   shrinkWrap: true,
