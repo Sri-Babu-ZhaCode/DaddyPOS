@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:thermal_printer_sdk/models/printer_template_settings.dart';
+import 'package:thermal_printer_sdk/models/text_to_image_args.dart';
 import 'package:thermal_printer_sdk/thermal_printer_sdk.dart';
 
 void main() {
@@ -33,14 +34,26 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      _isBluetoothEnabled = await _thermalPrinterSdkPlugin.print(
-              PrinterTemplateSettings(
-                  deviceAddress: "DC:0D:30:23:0E:00",
-                  template: "template",
-                  printerDpi: 200,
-                  printerWidth: 72,
-                  nbrCharPerLine: 48)) ??
-          false;
+      // _isBluetoothEnabled = await _thermalPrinterSdkPlugin.print(
+      //         PrinterTemplateSettings(
+      //             deviceAddress: "DC:0D:30:23:0E:00",
+      //             template: "template",
+      //             printerDpi: 200,
+      //             printerWidth: 72,
+      //             nbrCharPerLine: 48)) ??
+      final imageString = await _thermalPrinterSdkPlugin.textToImg(
+          TextToImageArgs(
+              text: "text",
+              textSize: 36,
+              interfaceType: "BOLD",
+              alignment: "CENTER"));
+      print(imageString);
+      _thermalPrinterSdkPlugin.printUsb(PrinterTemplateSettings(
+          template: "template",
+          printerDpi: 200,
+          printerWidth: 72,
+          nbrCharPerLine: 48));
+      false;
       platformVersion = await _thermalPrinterSdkPlugin.getPlatformVersion() ??
           'Unknown platform version';
     } on PlatformException {

@@ -44,8 +44,16 @@ public class ThermalPrinterSdkPlugin implements FlutterPlugin, MethodCallHandler
               deviceAddress,template,printerDpi,printerWidth,nbr
               );
       printerMainActivity.print(settings);
+    }else if(call.method.equals("printUsb")){
+      printerMainActivity.printUsb(activityContext.getApplicationContext());
+    }else if(call.method.equals("textToImg")){
+      String content = call.argument("text");
+      int textSize = call.argument("textSize");
+      String interfaceType = call.argument("interfaceType");
+      String alignment = call.argument("alignment");
+      String text = printerMainActivity.changeTextToImageString(content,textSize,interfaceType,alignment);
+      result.success(text);
     }
-
     else {
       result.notImplemented();
     }

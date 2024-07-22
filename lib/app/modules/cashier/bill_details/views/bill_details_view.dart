@@ -2,6 +2,7 @@ import 'package:easybill_app/app/constants/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thermal_printer_sdk/models/printer_template_settings.dart';
+import 'package:thermal_printer_sdk/models/text_to_image_args.dart';
 import 'package:thermal_printer_sdk/thermal_printer_sdk.dart';
 
 import '../../../../constants/app_string.dart';
@@ -38,13 +39,27 @@ class BillDetailsView extends GetView<BillDetailsController> {
                   crossAxisCount: 3,
                   itemCount: controller.paymentMode.length,
                   itemBuilder: (context, index) => GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      final maduraiText = await ThermalPrinterSdk().textToImg(
+                              TextToImageArgs(
+                                  text: "மதுரை",
+                                  textSize: 36,
+                                  interfaceType: "BOLD",
+                                  alignment: "CENTER")) ??
+                          "";
+                      ThermalPrinterSdk().printUsb(PrinterTemplateSettings(
+                          template: "template",
+                          printerDpi: 200,
+                          printerWidth: 72,
+                          nbrCharPerLine: 48));
+
                       ThermalPrinterSdk().print(PrinterTemplateSettings(
                           deviceAddress: "DC:0D:30:23:0E:00",
                           template: "template",
                           printerDpi: 200,
                           printerWidth: 72,
                           nbrCharPerLine: 48));
+
                       controller.currentIndex = index;
                       controller.update();
                       controller.addBillInfo();
