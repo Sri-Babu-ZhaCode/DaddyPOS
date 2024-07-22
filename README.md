@@ -1,4 +1,4 @@
-# easybill_app
+# Daddy-POS
 
 A new Flutter project.
 
