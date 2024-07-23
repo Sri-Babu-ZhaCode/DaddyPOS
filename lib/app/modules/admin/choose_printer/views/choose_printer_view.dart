@@ -1,5 +1,4 @@
 import 'package:easybill_app/app/widgets/custom_widgets/custom_scaffold.dart';
-import 'package:easybill_app/app/widgets/custom_widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../constants/app_string.dart';
@@ -9,7 +8,6 @@ import '../../../../constants/themes.dart';
 import '../../../../widgets/custom_widgets/custom_container.dart';
 import '../../../../widgets/custom_widgets/custom_elevated_icon_button.dart';
 import '../../../../widgets/custom_widgets/custom_list_tile.dart';
-import '../../../../widgets/loading_widget.dart';
 import '../controllers/choose_printer_controller.dart';
 
 class ChoosePrinterView extends GetView<ChoosePrinterController> {
@@ -55,26 +53,32 @@ class ChoosePrinterView extends GetView<ChoosePrinterController> {
                     return ListView.builder(
                         itemCount: _.devices!.length,
                         itemBuilder: (context, index) {
-                          print(
+                          debugPrint(
                               '---------------------->> device name : ${_.devices![index].name}');
 
-                          return CustomContainer(
-                            color: EBTheme.kPrimaryWhiteColor,
-                            noHeight: true,
-                            borderColor: EBTheme.kPrimaryColor,
-                            borderWidth: 0.5,
-                            child: EBCustomListTile(
-                              leading: const Icon(
-                                Icons.print_rounded,
-                                size: 25,
+                          return GestureDetector(
+                            onTap: (){
+                              _.selectedPrinter(_.devices?[index]);
+                              _.update();
+                            },
+                            child: CustomContainer(
+                              color: EBTheme.kPrimaryWhiteColor,
+                              noHeight: true,
+                              borderColor: EBTheme.kPrimaryColor,
+                              borderWidth: 0.5,
+                              child: EBCustomListTile(
+                                leading: const Icon(
+                                  Icons.print_rounded,
+                                  size: 25,
+                                ),
+                                titleName: '${_.devices![index].name}',
+                                subtitle: Text(
+                                  '${_.devices![index].address}',
+                                  style: EBAppTextStyle.bodyText,
+                                ),
+                                trailingIcon: Icons.add,
+                                trailingIconSize: 25,
                               ),
-                              titleName: ' ${_.devices![index].name}',
-                              subtitle: Text(
-                                '${_.devices![index].address}',
-                                style: EBAppTextStyle.bodyText,
-                              ),
-                              trailingIcon: Icons.add,
-                              trailingIconSize: 25,
                             ),
                           );
                         });

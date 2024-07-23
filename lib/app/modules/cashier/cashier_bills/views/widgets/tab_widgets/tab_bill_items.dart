@@ -34,7 +34,7 @@ Widget tabBillItemsWidget(context) {
                 Flexible(
                   child: Text(
                       '${EBAppString.productlanguage == 'English' ? controller.billItems[index].productNameEnglish : controller.billItems[index].productnameTamil} ( ${controller.converDecimalConditionally(controller.billItems[index].quantity!)} )',
-                      style: EBAppTextStyle.billItemStyle),
+                      style: EBAppTextStyle.billItemsText),
                 ),
                 Row(
                   children: [

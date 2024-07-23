@@ -29,14 +29,14 @@ Widget billTopWidget(_, Setting billConfig, context) {
           ),
         Flexible(
             child: Text(billConfig.businessname ?? '-',
-                style: EBAppTextStyle.heading2, textAlign: TextAlign.center)),
+                style: EBAppTextStyle.customeTextStyleWTNR(fontSize: 24,fontWeigh: FontWeight.w700), textAlign: TextAlign.center)),
         Flexible(
           child: Text(billConfig.businessaddress ?? '-',
-              style: EBAppTextStyle.heading2, textAlign: TextAlign.center),
+              style: EBAppTextStyle.customeTextStyleWTNR(fontSize: 24,fontWeigh: FontWeight.w700), textAlign: TextAlign.center),
         ),
         Flexible(
-          child: Text('Ph: ${billConfig.businessmobile ?? '-'}',
-              style: EBAppTextStyle.heading2, textAlign: TextAlign.center),
+          child: Text('Mob: ${billConfig.businessmobile ?? '-'}',
+              style: EBAppTextStyle.billItemsText, textAlign: TextAlign.center),
         ),
         if (_ is BillWiseReportController)
           Row(
@@ -44,7 +44,7 @@ Widget billTopWidget(_, Setting billConfig, context) {
             children: [
               Flexible(
                 child: Text('Bill No:  ${_.billDetailedReports![0].shopbillid}',
-                    textAlign: TextAlign.right, style: EBAppTextStyle.heading2),
+                    textAlign: TextAlign.right, style: EBAppTextStyle.customeTextStyleWTNR(fontSize: 24,fontWeigh: FontWeight.w700)),
               ),
             ],
           ),

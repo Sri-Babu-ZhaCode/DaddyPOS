@@ -46,7 +46,7 @@ class DayEndReportView extends GetView<DayEndReportController> {
                               child: Text(
                                 e,
                                 overflow: TextOverflow.ellipsis,
-                                style: EBAppTextStyle.billItemStyle,
+                                style: EBAppTextStyle.billItemsText,
                               ),
                             ))
                         .toList(),

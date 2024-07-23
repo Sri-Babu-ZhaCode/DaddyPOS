@@ -34,7 +34,7 @@ class BillDetailsView extends GetView<BillDetailsController> {
                   child: const BillDetailsItemList()),
               EBSizeConfig.dividerTH2,
               SizedBox(
-                height: EBSizeConfig.screenHeight * 0.2,
+                height: EBSizeConfig.screenHeight * 0.1 /1,
                 child: BillCalculatorWidget(
                   crossAxisCount: 3,
                   itemCount: controller.paymentMode.length,
@@ -47,18 +47,19 @@ class BillDetailsView extends GetView<BillDetailsController> {
                                   interfaceType: "BOLD",
                                   alignment: "CENTER")) ??
                           "";
-                      ThermalPrinterSdk().printUsb(PrinterTemplateSettings(
-                          template: "template",
-                          printerDpi: 200,
-                          printerWidth: 72,
-                          nbrCharPerLine: 48));
+                      // ThermalPrinterSdk().printUsb(PrinterTemplateSettings(
+                      //     template: "template",
+                      //     printerDpi: 200,
+                      //     printerWidth: 72,
+                      //     nbrCharPerLine: 48));
 
-                      ThermalPrinterSdk().print(PrinterTemplateSettings(
-                          deviceAddress: "DC:0D:30:23:0E:00",
-                          template: "template",
-                          printerDpi: 200,
-                          printerWidth: 72,
-                          nbrCharPerLine: 48));
+                      // ThermalPrinterSdk().print(PrinterTemplateSettings(
+                      //     deviceAddress: "DC:0D:30:23:0E:00",
+                      //     template: "template",
+                      //     printerDpi: 200,
+                      //     printerWidth: 72,
+                      //     nbrCharPerLine: 48));
+                      
 
                       controller.currentIndex = index;
                       controller.update();
@@ -173,7 +174,7 @@ class BillDetailsView extends GetView<BillDetailsController> {
       formKey: key,
       confirmButtonText: EBAppString.allClear,
       confirmOnPressed: () {
-        controller.cashierBillsController.cancelOrderPressed();
+        controller.cashierCtrl.cancelOrderPressed();
         Get.close(2);
       },
       cancelButtonText: EBAppString.cancel,

@@ -70,16 +70,15 @@ class AdminSettingsView extends GetView<AdminSettingsController> {
               labelColor: EBTheme.kPrimaryColor,
               indicatorSize: TabBarIndicatorSize.tab,
               indicatorColor: EBTheme.kPrimaryColor,
-              tabs:
-                  [EBAppString.invoice, EBAppString.printer]
-                      .map((e) => Tab(
-                            child: Text(
-                              e,
-                              overflow: TextOverflow.ellipsis,
-                              style: EBAppTextStyle.heading2,
-                            ),
-                          ))
-                      .toList(),
+              tabs: [EBAppString.invoice, EBAppString.printer]
+                  .map((e) => Tab(
+                        child: Text(
+                          e,
+                          overflow: TextOverflow.ellipsis,
+                          style: EBAppTextStyle.heading2,
+                        ),
+                      ))
+                  .toList(),
             ),
             Expanded(
               child: Padding(
@@ -150,7 +149,8 @@ class AdminSettingsView extends GetView<AdminSettingsController> {
                             child: Center(
                               child: EBBools.isImageSelected
                                   ? const LoadingWidget()
-                                  : controller.imageInBytes == null || controller.imageInBytes!.isEmpty
+                                  : controller.imageInBytes == null ||
+                                          controller.imageInBytes!.isEmpty
                                       ? Image.asset(
                                           fit: BoxFit.fill,
                                           EBAppString.businessLogoImg,
@@ -233,8 +233,6 @@ class AdminSettingsView extends GetView<AdminSettingsController> {
   }
 }
 
-
-
 Widget themePrinter() {
   return GetBuilder<AdminSettingsController>(builder: (controller) {
     if (EBBools.isLoading) return const LoadingWidget();
@@ -303,15 +301,29 @@ Widget themePrinter() {
                   noHeight: true,
                   borderColor: EBTheme.kPrimaryColor,
                   borderWidth: 0.5,
-                  child: const EBCustomListTile(
-                    leading: Icon(
-                      Icons.print_rounded,
-                      size: 25,
-                    ),
-                    titleName: 'Choose ${EBAppString.printer}',
-                    trailingIcon: Icons.add,
-                    trailingIconSize: 25,
-                  ),
+                  child: controller.printerAddress != null
+                      ? EBCustomListTile(
+                          leading: const Icon(
+                            Icons.print_rounded,
+                            size: 25,
+                          ),
+                          titleName: controller.printerName ?? '-',
+                          subtitle: Text(
+                            controller.printerAddress ?? '-',
+                            style: EBAppTextStyle.bodyText,
+                          ),
+                          trailingIcon: Icons.radio_button_checked_outlined,
+                          trailingIconSize: 25,
+                        )
+                      : const EBCustomListTile(
+                          leading: Icon(
+                            Icons.print_rounded,
+                            size: 25,
+                          ),
+                          titleName: 'Choose ${EBAppString.printer}',
+                          trailingIcon: Icons.add,
+                          trailingIconSize: 25,
+                        ),
                 ),
               ),
             ),
@@ -435,7 +447,7 @@ Widget themePrinter() {
                           ? null
                           : (value) {
                               controller.printVia = value!;
-                               debugPrint("value ---------->> $value");
+                              debugPrint("value ---------->> $value");
                               controller.update();
                             }),
                 ),
