@@ -1,12 +1,10 @@
-class PrinterTemplateSettings {
+class PrinterSettings {
   String? deviceAddress;
-  String template;
   num printerDpi;
   num printerWidth;
   num nbrCharPerLine;
-  PrinterTemplateSettings({
+  PrinterSettings({
     this.deviceAddress,
-    required this.template,
     required this.printerDpi,
     required this.printerWidth,
     required this.nbrCharPerLine,

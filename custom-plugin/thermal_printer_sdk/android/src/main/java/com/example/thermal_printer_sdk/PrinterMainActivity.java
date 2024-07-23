@@ -1,5 +1,6 @@
 package com.example.thermal_printer_sdk;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,23 +23,34 @@ import androidx.annotation.RequiresApi;
 
 import com.example.thermal_printer_sdk.bluetooth.BluetoothConnection;
 import com.example.thermal_printer_sdk.bluetooth.BluetoothPrintersConnections;
+import com.example.thermal_printer_sdk.exceptions.EscPosConnectionException;
+import com.example.thermal_printer_sdk.textparser.PrinterTextParserImg;
 import com.example.thermal_printer_sdk.usb.UsbConnection;
 import com.example.thermal_printer_sdk.usb.UsbPrintersConnections;
 
+import java.util.InvalidPropertiesFormatException;
+
 class TemplateSettings {
-    String deviceAddress;
     String template;
+
+    TemplateSettings(
+                     String template) {
+        this.template = template;
+    }
+
+}
+class PrinterSettings {
+    String deviceAddress;
     int printerDpi;
     float printerWidth;
     int nbrCharPerLine;
 
-    TemplateSettings(String deviceAddress,
-                     String template,
-                     int printerDpi,
-                     float printerWidth,
-                     int nbrCharPerLine) {
+    PrinterSettings(
+            String deviceAddress,
+            int printerDpi,
+            float printerWidth,
+            int nbrCharPerLine) {
         this.deviceAddress = deviceAddress;
-        this.template = template;
         this.printerDpi = printerDpi;
         this.printerWidth = printerWidth;
         this.nbrCharPerLine = nbrCharPerLine;
@@ -46,37 +58,51 @@ class TemplateSettings {
 
 }
 
+abstract class UsbReceiverCallback{
+    void onComplete(UsbManager usbManager, UsbDevice usbDevice){}
+    void onComplete(){}
+    void onComplete(String content){}
+    void onFailed(Exception e){}
+}
+
+interface TextToImageCallBackListerner{
+    void onSuccess(String content);
+    void onFailure(Exception e);
+}
+
+class DeviceNotFoundException extends Exception{
+    DeviceNotFoundException(String message){
+        super(message);
+    }
+}
+
 public class PrinterMainActivity {
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
-    private Context _context;
     private TemplateSettings templateSettings;
+    private PrinterSettings printerSettings;
+    private UsbManager usbManagerGlobal;
+    private UsbDevice usbDeviceGlobal;
+    private static PrinterMainActivity instance;
+    private DeviceConnection selectedDevice;
 
-    private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
-        @RequiresApi(api = Build.VERSION_CODES.N)
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (ACTION_USB_PERMISSION.equals(action)) {
-                synchronized (this) {
-                    UsbManager usbManager = (UsbManager) _context.getSystemService(Context.USB_SERVICE);
-                    UsbDevice usbDevice = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        if (usbManager != null && usbDevice != null) {
-                            try {
-                                EscPosPrinter printer;
-                                if(templateSettings==null) throw new Exception("Invalid TemplateSettings");
-                                printer =  new EscPosPrinter(new UsbConnection(usbManager, usbDevice), templateSettings.printerDpi, templateSettings.printerWidth, templateSettings.nbrCharPerLine);
-                                printer.printFormattedTextAndCut("templateSettings.template");
-                            } catch (Exception e) {
-                                Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
+    public static PrinterMainActivity getInstance(){
+        if(instance ==null){
+            synchronized (PrinterMainActivity.class){
+                if (instance == null){
+                    instance = new PrinterMainActivity();
                 }
             }
         }
-    };
-    private BluetoothConnection getDeviceFromAddress(String deviceAddress) {
+        return instance;
+    }
+
+    public void init(Context context,PrinterSettings settings) {
+        printerSettings = settings;
+        getSelectedDevice(context);
+
+    }
+
+    private static BluetoothConnection getDeviceFromAddress(String deviceAddress) {
         BluetoothConnection[] list = new BluetoothPrintersConnections().getList();
 
         if (list != null) {
@@ -92,26 +118,24 @@ public class PrinterMainActivity {
     void print(TemplateSettings templateSettings) {
         try {
             EscPosPrinter printer;
-            DeviceConnection deviceConnection = getDeviceFromAddress(templateSettings.deviceAddress);
-            if (deviceConnection == null) {
-
+//            DeviceConnection deviceConnection = getDeviceFromAddress(printerSettings.deviceAddress);
+            if (selectedDevice == null) {
+                throw new DeviceNotFoundException("DEVICE_NOT_FOUND");
             }
-            printer = new EscPosPrinter(deviceConnection, templateSettings.printerDpi, templateSettings.printerWidth, templateSettings.nbrCharPerLine);
+            printer = new EscPosPrinter(selectedDevice, printerSettings.printerDpi, printerSettings.printerWidth, printerSettings.nbrCharPerLine);
             printer.printFormattedTextAndCut(templateSettings.template);
         } catch (Exception e) {
 
             throw new RuntimeException(e);
         }
     }
-    public void printUsb(Context context,TemplateSettings settings) {
-        _context = context;
-        templateSettings = settings;
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    private void checkUsbConnection(Context context,UsbReceiverCallback usbReceiverCallback) throws DeviceNotFoundException {
         UsbConnection usbConnection = UsbPrintersConnections.selectFirstConnected(context);
         UsbManager usbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
 
         if (usbConnection == null || usbManager == null) {
-            Log.d("PrintUSB","Failed");
-            return;
+            throw new DeviceNotFoundException("USB Device not found");
         }
 
         PendingIntent permissionIntent = PendingIntent.getBroadcast(
@@ -121,8 +145,84 @@ public class PrinterMainActivity {
                 android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S ? PendingIntent.FLAG_MUTABLE : 0
         );
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-        context.registerReceiver(this.usbReceiver, filter);
+        context.registerReceiver(new BroadcastReceiver() {
+
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            public void onReceive(Context _context, Intent intent) {
+                String action = intent.getAction();
+                if (ACTION_USB_PERMISSION.equals(action)) {
+                    synchronized (this) {
+                        UsbManager usbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+                        UsbDevice usbDevice = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                        if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                            if (usbManager != null && usbDevice != null) {
+                               usbReceiverCallback.onComplete(usbManager,usbDevice);
+                               return;
+                            }
+                        }
+                    }
+                }
+                usbReceiverCallback.onFailed(new DeviceNotFoundException("USB_DEVICE_NOT_FOUND"));
+            }
+
+        }, filter);
         usbManager.requestPermission(usbConnection.getDevice(), permissionIntent);
+    }
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    public void printUsb(Context  context, TemplateSettings settings, UsbReceiverCallback usbReceiverCallback) throws DeviceNotFoundException {
+
+        templateSettings = settings;
+        checkUsbConnection(context, new UsbReceiverCallback() {
+
+
+            @Override
+            public void onComplete(UsbManager usbManager, UsbDevice usbDevice)  {
+                try {
+                    EscPosPrinter printer;
+                    if(templateSettings==null) usbReceiverCallback.onFailed(new InvalidPropertiesFormatException("Invalid Template settings"));
+                    printer =  new EscPosPrinter(new UsbConnection(usbManager, usbDevice), printerSettings.printerDpi, printerSettings.printerWidth, printerSettings.nbrCharPerLine);
+                    printer.printFormattedTextAndCut("templateSettings.template");
+                    usbReceiverCallback.onComplete();
+                } catch (Exception e) {
+                    try {
+                        usbReceiverCallback.onFailed(e);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }
+
+            @Override
+            void onFailed(Exception e)  {
+                try {
+                    usbReceiverCallback.onFailed(e);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+    }
+
+    private void getSelectedDevice(Context context){
+        if(printerSettings.deviceAddress !=null){
+            DeviceConnection deviceConnection = getDeviceFromAddress(printerSettings.deviceAddress);
+            if (deviceConnection != null) {
+               selectedDevice = deviceConnection;
+            }
+
+        }else{
+            try {
+                checkUsbConnection(context, new UsbReceiverCallback() {
+                    @Override
+                    void onComplete(UsbManager usbManager, UsbDevice usbDevice)  {
+                        selectedDevice = new UsbConnection(usbManager,usbDevice);
+                    }
+                });
+            } catch (DeviceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
@@ -132,11 +232,13 @@ public class PrinterMainActivity {
      * @param alignment     CENTER,NORMAL
      * @return
      */
-    public String changeTextToImageString(String text, int textSize, String interfaceType, String alignment){
-
-        return bitmapToHexadecimalString(bitmapToBytes(72,getMultiLangTextAsImage(text, textSize, interfaceType.contains("BOLD")?
+    public String changeTextToImageString(String text, int textSize, String interfaceType, String alignment) throws EscPosConnectionException {
+        EscPosPrinter printer;
+        printer= new EscPosPrinter(selectedDevice, printerSettings.printerDpi, printerSettings.printerWidth, printerSettings.nbrCharPerLine);
+        String content = PrinterTextParserImg.bitmapToHexadecimalString(printer,getMultiLangTextAsImage(text, textSize, interfaceType.contains("BOLD")?
                 Typeface.defaultFromStyle(Typeface.BOLD):Typeface.defaultFromStyle(Typeface.NORMAL), alignment.contains("CENTER")?
-                Layout.Alignment.ALIGN_CENTER:Layout.Alignment.ALIGN_NORMAL)));
+                Layout.Alignment.ALIGN_CENTER:Layout.Alignment.ALIGN_NORMAL));
+        return content;
 
     }
 
@@ -174,7 +276,7 @@ public class PrinterMainActivity {
 
         return EscPosPrinterCommands.bitmapToBytes(bitmap, false);
     }
-    Bitmap getMultiLangTextAsImage(String text, float textSize, Typeface typeface, Layout.Alignment alignment)  {
+    Bitmap getMultiLangTextAsImage(String text, int textSize, Typeface typeface, Layout.Alignment alignment)  {
         TextPaint mPaint = new TextPaint();
         mPaint.setColor(Color.BLACK);
         if (typeface != null) mPaint.setTypeface(typeface);
