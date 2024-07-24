@@ -33,7 +33,6 @@ class MethodChannelThermalPrinterSdk extends ThermalPrinterSdkPlatform {
   @override
   Future<bool?> printUsb(PrinterTemplateSettings settings) async {
     final status = await methodChannel.invokeMethod<bool>('printUsb', {
-      "deviceAddress": settings.deviceAddress,
       "template": settings.template,
       "printerDpi": settings.printerDpi,
       "printerWidth": settings.printerWidth,

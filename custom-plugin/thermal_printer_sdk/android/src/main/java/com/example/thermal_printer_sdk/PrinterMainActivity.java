@@ -49,6 +49,7 @@ class TemplateSettings {
 public class PrinterMainActivity {
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     private Context _context;
+    private TemplateSettings templateSettings;
 
     private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -60,10 +61,10 @@ public class PrinterMainActivity {
                     UsbDevice usbDevice = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                         if (usbManager != null && usbDevice != null) {
-
                             try {
                                 EscPosPrinter printer;
-                                printer =  new EscPosPrinter(new UsbConnection(usbManager, usbDevice), 200, 48f, 32);
+                                if(templateSettings==null) throw new Exception("Invalid TemplateSettings");
+                                printer =  new EscPosPrinter(new UsbConnection(usbManager, usbDevice), templateSettings.printerDpi, templateSettings.printerWidth, templateSettings.nbrCharPerLine);
                                 printer.printFormattedTextAndCut("templateSettings.template");
                             } catch (Exception e) {
                                 Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
@@ -102,8 +103,9 @@ public class PrinterMainActivity {
             throw new RuntimeException(e);
         }
     }
-    public void printUsb(Context context) {
+    public void printUsb(Context context,TemplateSettings settings) {
         _context = context;
+        templateSettings = settings;
         UsbConnection usbConnection = UsbPrintersConnections.selectFirstConnected(context);
         UsbManager usbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
 

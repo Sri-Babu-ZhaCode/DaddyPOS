@@ -35,24 +35,48 @@ public class ThermalPrinterSdkPlugin implements FlutterPlugin, MethodCallHandler
       result.success("Android " + android.os.Build.VERSION.RELEASE);
     }
     else if (call.method.equals("print")){
-      String deviceAddress = call.argument("deviceAddress");
-              String template = call.argument("template");
-              int printerDpi = call.argument("printerDpi");
-              int printerWidth = call.argument("printerWidth");
-              int nbr = call.argument("nbrCharPerLine");
-      TemplateSettings settings = new TemplateSettings(
-              deviceAddress,template,printerDpi,printerWidth,nbr
-              );
-      printerMainActivity.print(settings);
+      try {
+        String deviceAddress = call.argument("deviceAddress");
+        String template = call.argument("template");
+        int printerDpi = call.argument("printerDpi");
+        int printerWidth = call.argument("printerWidth");
+        int nbr = call.argument("nbrCharPerLine");
+        TemplateSettings settings = new TemplateSettings(
+                deviceAddress,template,printerDpi,printerWidth,nbr
+        );
+        printerMainActivity.print(settings);
+        result.success(true);
+      }catch (Exception e){
+        result.error("Exception","Print Bluetooth",e);
+      }
+
     }else if(call.method.equals("printUsb")){
-      printerMainActivity.printUsb(activityContext.getApplicationContext());
+      try {
+        String template = call.argument("template");
+        int printerDpi = call.argument("printerDpi");
+        int printerWidth = call.argument("printerWidth");
+        int nbr = call.argument("nbrCharPerLine");
+        TemplateSettings settings = new TemplateSettings(
+                null,template,printerDpi,printerWidth,nbr
+        );
+        printerMainActivity.printUsb(activityContext.getApplicationContext(),settings);
+        result.success(true);
+      }catch (Exception e){
+        result.error("Exception","PrintUSB",e);
+      }
+
     }else if(call.method.equals("textToImg")){
-      String content = call.argument("text");
-      int textSize = call.argument("textSize");
-      String interfaceType = call.argument("interfaceType");
-      String alignment = call.argument("alignment");
-      String text = printerMainActivity.changeTextToImageString(content,textSize,interfaceType,alignment);
-      result.success(text);
+      try {
+        String content = call.argument("text");
+        int textSize = call.argument("textSize");
+        String interfaceType = call.argument("interfaceType");
+        String alignment = call.argument("alignment");
+        String text = printerMainActivity.changeTextToImageString(content,textSize,interfaceType,alignment);
+        result.success(text);
+      }catch (Exception e){
+        result.error("Exception","PrintUSB",e);
+
+      }
     }
     else {
       result.notImplemented();
