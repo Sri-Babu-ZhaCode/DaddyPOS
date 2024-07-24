@@ -40,13 +40,13 @@ class BillDetailsView extends GetView<BillDetailsController> {
                   itemCount: controller.paymentMode.length,
                   itemBuilder: (context, index) => GestureDetector(
                     onTap: () async {
-                      final maduraiText = await ThermalPrinterSdk().textToImg(
-                              TextToImageArgs(
-                                  text: "மதுரை",
-                                  textSize: 36,
-                                  interfaceType: "BOLD",
-                                  alignment: "CENTER")) ??
-                          "";
+                      // final maduraiText = await ThermalPrinterSdk().textToImg(
+                      //         TextToImageArgs(
+                      //             text: "மதுரை",
+                      //             textSize: 36,
+                      //             interfaceType: "BOLD",
+                      //             alignment: "CENTER")) ??
+                      //     "";
                       // ThermalPrinterSdk().printUsb(PrinterTemplateSettings(
                       //     template: "template",
                       //     printerDpi: 200,

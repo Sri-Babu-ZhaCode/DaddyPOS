@@ -20,7 +20,7 @@ class EBAppTextStyle {
 
   static const billItemsText = TextStyle(
     fontFamily: 'TimesNewRoman',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: FontWeight.w600,
   );
   // static final billItemStyle = GoogleFonts.poppins(
@@ -48,7 +48,7 @@ class EBAppTextStyle {
   static final TextStyle catStyle = GoogleFonts.poppins(
     fontSize: 14,
     fontWeight: FontWeight.w500,
-    color: Colors.blue,
+    color: EBTheme.kPrimaryColor,
   );
   static final TextStyle subStyle = GoogleFonts.poppins(
     fontSize: 18,

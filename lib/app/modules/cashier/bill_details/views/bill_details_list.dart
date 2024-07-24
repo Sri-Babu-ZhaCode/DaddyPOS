@@ -123,7 +123,7 @@ Widget newBillDetailedWidget(
             // defaultVerticalAlignment:
             //  TableCellVerticalAlignment.middle,
             columnWidths: const {
-              0: FlexColumnWidth(0.8),
+              0: FlexColumnWidth(0.6),
               1: FlexColumnWidth(5),
               2: FlexColumnWidth(1.5),
               3: FlexColumnWidth(1.5),
@@ -162,7 +162,7 @@ Widget newBillDetailedWidget(
               TableRow(
                 children: [
                   Text(
-                    '${index + 1}.',
+                    '${index + 1}',
                     style: EBAppTextStyle.billItemsText,
                   ),
                   Text(

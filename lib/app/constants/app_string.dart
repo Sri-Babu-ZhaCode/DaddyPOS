@@ -153,40 +153,40 @@ class EBAppString {
 
   static const String filter = 'Filter';
 
-  static const String template = '';
-  static const String billData = '';
-  static const String rate = '';
-  static const String qty = '';
-  static const String totlaQty = '';
-  static const String amt = '';
-  static const String totlaAmt = '';
+  // static const String billTemplate = '';
+  // static const String billData = '';
+  // static const String rate = '';
+  // static const String qty = '';
+  // static const String totlaQty = '';
+  // static const String amt = '';
+  // static const String totlaAmt = '';
 
-  static const String imageTagW1linebreak = "[C]<img>$billData</img>"+"\n";
-  static const String imageTagW2linebreak =
-      "[C]<img>$billData</img>" + "\n\n";
-  static const String billPhone = "[C]<b>Mob: $billData</b>"+"\n\n";
-  static const String billNo =
-      "[L]<b><font size='big'>Bill No: $billData</font></b>"+"\n\n";
-  static const String inch2divider =
-      "[C]<b>--------------------------------</b>\n";
-  static const String inch3divider =
-      "[C]<b>------------------------------------------------</b>\n";
-  static const String billDateTime =
-      "[L]<b><font size='normal'>Date: $billData</font></b>[R]<b>Time: $billData</font></b>"+"\n";
-  static const String inch2billTopColumn =
-      "[L]<b><font size='normal'>Sr</font></b>[L]<b><font size='normal'>Name</font></b>[R]<b><font size='normal'>Rate</font></b>[C]<b><font size='normal'>Qty</font></b>[C]<b><font size='normal'>Amount</font></b>\n";
-  static const String inch3billTopColumn =
-      "[L]<b><font size='normal'>Sr</font></b>[L]<b><font size='normal'>Name</font></b>[R]<b><font size='normal'>Rate</font></b>[R]<b><font size='normal'>Qty</font></b>[R]<b><font size='normal'>Amount</font></b>\n";
-  static const String billProduct = '[L]<img>"$billData"</img>''\n';
-  static const String inch2billPriceQtyAmt =
-      "[L][L][R]<b><font size='normal'>$rate</font></b>[C]<b><font size='normal'>$qty</font></b>[C]<b><font size='normal'>$amt</font></b>"+"\n";
-  static const String inch3billPriceQtyAmt =
-      "[L][L][R]<b><font size='normal'>$rate</font></b>[R]<b><font size='normal'>$qty</font></b>[R]<b><font size='normal'>$amt</font></b>"+"\n";
-  static const String billBottomColumn =
-      "[L]<b><font size='normal'>Items: $billData</font></b>[C]<b><font size='normal'>Qty:$totlaQty</font></b>[R]<b><font size='normal'>$totlaAmt</font></b>"+"\n";
-  static const String billDataTotalAmt =
-      "[C]<b size='tall'><font size='tall'>Rs $totlaAmt</font></b>" + "\n\n";
-  static const String billFooter =
-     "[C]<b><font size='normal'>$billData</font></b>" +"\n\n\n\n";
+  // static const String imageTagW1linebreak = "[C]<img>$billData</img>"+"\n";
+  // static const String imageTagW2linebreak =
+  //     "[C]<img>$billData</img>" + "\n\n";
+  // static const String billPhone = "[C]<b>Mob: $billData</b>"+"\n\n";
+  // static const String billNo =
+  //     "[L]<b><font size='big'>Bill No: $billData</font></b>"+"\n\n";
+  // static const String inch2divider =
+  //     "[C]<b>--------------------------------</b>\n";
+  // static const String inch3divider =
+  //     "[C]<b>------------------------------------------------</b>\n";
+  // static const String billDateTime =
+  //     "[L]<b><font size='normal'>Date: $billData</font></b>[R]<b>Time: $billData</font></b>"+"\n";
+  // static const String inch2billTopColumn =
+  //     "[L]<b><font size='normal'>Sr</font></b>[L]<b><font size='normal'>Name</font></b>[R]<b><font size='normal'>Rate</font></b>[C]<b><font size='normal'>Qty</font></b>[C]<b><font size='normal'>Amount</font></b>\n";
+  // static const String inch3billTopColumn =
+  //     "[L]<b><font size='normal'>Sr</font></b>[L]<b><font size='normal'>Name</font></b>[R]<b><font size='normal'>Rate</font></b>[R]<b><font size='normal'>Qty</font></b>[R]<b><font size='normal'>Amount</font></b>\n";
+  // static const String billProduct = '[L]<img>"$billData"</img>''\n';
+  // static const String inch2billPriceQtyAmt =
+  //     "[L][L][R]<b><font size='normal'>$rate</font></b>[C]<b><font size='normal'>$qty</font></b>[C]<b><font size='normal'>$amt</font></b>"+"\n";
+  // static const String inch3billPriceQtyAmt =
+  //     "[L][L][R]<b><font size='normal'>$rate</font></b>[R]<b><font size='normal'>$qty</font></b>[R]<b><font size='normal'>$amt</font></b>"+"\n";
+  // static const String billBottomColumn =
+  //     "[L]<b><font size='normal'>Items: $billData</font></b>[C]<b><font size='normal'>Qty:$totlaQty</font></b>[R]<b><font size='normal'>$totlaAmt</font></b>"+"\n";
+  // static const String billDataTotalAmt =
+  //     "[C]<b size='tall'><font size='tall'>Rs $totlaAmt</font></b>" + "\n\n";
+  // static const String billFooter =
+  //    "[C]<b><font size='normal'>$billData</font></b>" +"\n\n\n\n";
 
 }
