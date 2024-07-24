@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import androidx.annotation.NonNull;
 
+import com.example.thermal_printer_sdk.exceptions.EscPosConnectionException;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -30,57 +32,92 @@ public class ThermalPrinterSdkPlugin implements FlutterPlugin, MethodCallHandler
 
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    PrinterMainActivity printerMainActivity = new PrinterMainActivity();
-    if (call.method.equals("getPlatformVersion")) {
-      result.success("Android " + android.os.Build.VERSION.RELEASE);
-    }
-    else if (call.method.equals("print")){
-      try {
-        String deviceAddress = call.argument("deviceAddress");
-        String template = call.argument("template");
-        int printerDpi = call.argument("printerDpi");
-        int printerWidth = call.argument("printerWidth");
-        int nbr = call.argument("nbrCharPerLine");
-        TemplateSettings settings = new TemplateSettings(
-                deviceAddress,template,printerDpi,printerWidth,nbr
-        );
-        printerMainActivity.print(settings);
-        result.success(true);
-      }catch (Exception e){
-        result.error("Exception","Print Bluetooth",e);
-      }
+    PrinterMainActivity printerMainActivity = PrinterMainActivity.getInstance();
+      switch (call.method) {
+          case "getPlatformVersion":
+              result.success("Android " + android.os.Build.VERSION.RELEASE);
+              break;
+          case "print":
+              try {
+                  String template = call.argument("template");
+                  TemplateSettings settings = new TemplateSettings(
+                          template
+                  );
+                  printerMainActivity.print(settings);
+                  result.success(true);
+              } catch (Exception e) {
+                  result.error("ERROR", "Failed to print to the bluetooth printer. Please try again.", e);
+              }
 
-    }else if(call.method.equals("printUsb")){
-      try {
-        String template = call.argument("template");
-        int printerDpi = call.argument("printerDpi");
-        int printerWidth = call.argument("printerWidth");
-        int nbr = call.argument("nbrCharPerLine");
-        TemplateSettings settings = new TemplateSettings(
-                null,template,printerDpi,printerWidth,nbr
-        );
-        printerMainActivity.printUsb(activityContext.getApplicationContext(),settings);
-        result.success(true);
-      }catch (Exception e){
-        result.error("Exception","PrintUSB",e);
-      }
+              break;
+          case "printUsb":
+              try {
+                  String template = call.argument("template");
 
-    }else if(call.method.equals("textToImg")){
-      try {
-        String content = call.argument("text");
-        int textSize = call.argument("textSize");
-        String interfaceType = call.argument("interfaceType");
-        String alignment = call.argument("alignment");
-        String text = printerMainActivity.changeTextToImageString(content,textSize,interfaceType,alignment);
-        result.success(text);
-      }catch (Exception e){
-        result.error("Exception","PrintUSB",e);
+                  TemplateSettings settings = new TemplateSettings(
+                          template
+                  );
+                  printerMainActivity.printUsb(activityContext.getApplicationContext(), settings, new UsbReceiverCallback() {
+                    @Override
+                    void onComplete() {
+                      result.success(true);
+                    }
 
+                    @Override
+                      public void onFailed(Exception e) {
+                          if (e instanceof DeviceNotFoundException) {
+                              result.error("ERROR", "Failed to detect the device, Please check the printer connection.", e);
+                          } else {
+                              result.error("ERROR", "Failed to print to the usb printer. Please try again.", e);
+                          }
+                      }
+                  });
+
+              } catch (Exception e) {
+                  if (e instanceof DeviceNotFoundException) {
+                      result.error("ERROR", "Failed to detect the device, Please check the printer connection.", e);
+                  } else {
+                      result.error("ERROR", "PrintUSB", e);
+                  }
+
+              }
+
+              break;
+          case "textToImg":
+              try {
+                  String content = call.argument("text");
+                  int textSize = call.argument("textSize");
+                  String interfaceType = call.argument("interfaceType");
+                  String alignment = call.argument("alignment");
+                  String text = printerMainActivity.changeTextToImageString( content, textSize, interfaceType, alignment);
+                  result.success(text);
+              } catch (Exception e) {
+                  if (e instanceof EscPosConnectionException) {
+                      result.error("ERROR", "Failed to detect the device, Please check the printer connection.", e);
+                  } else {
+                      result.error("ERROR", "Failed to convert the text to image", e);
+                  }
+
+
+              }
+              break;
+          case "init":
+              try {
+                  String deviceAddress = call.argument("deviceAddress");
+                  int printerDpi = call.argument("printerDpi");
+                  int printerWidth = call.argument("printerWidth");
+                  int nbr = call.argument("nbrCharPerLine");
+                  printerMainActivity.init(activityContext.getApplicationContext(),new PrinterSettings(deviceAddress, printerDpi, printerWidth, nbr));
+                  result.success(true);
+              } catch (Exception e) {
+                  result.error("ERROR", "Failed to initialise the plugin", e);
+              }
+
+              break;
+          default:
+              result.notImplemented();
+              break;
       }
-    }
-    else {
-      result.notImplemented();
-    }
   }
 
 
