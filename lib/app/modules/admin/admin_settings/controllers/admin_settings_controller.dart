@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:easybill_app/app/constants/app_string.dart';
 import 'package:easybill_app/app/data/repositories/setting_repo.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_toast.dart';
@@ -20,6 +21,8 @@ class AdminSettingsController extends GetxController {
   File? imageFile;
   Uint8List? compressedBytes;
   String? imageInBytes;
+  String? printerAddress;
+  String? printerName;
   TextEditingController businessNameController = TextEditingController();
   TextEditingController businessAddressController = TextEditingController();
   TextEditingController mobilController = TextEditingController();
@@ -54,6 +57,8 @@ class AdminSettingsController extends GetxController {
 
   @override
   void onInit() {
+    debugPrint(
+        '--------------------------------- AdminSettingsController onint called');
     super.onInit();
     selectedLanguage = languageList[0];
     selectedPrinterSize = printerSizeList[0];
@@ -160,8 +165,8 @@ class AdminSettingsController extends GetxController {
           upi: upiController.text,
           footer: footerController.text,
           //--------------->> todo choosed
-          // printername: '',
-          // printeraddress: '',
+          printername: printerName,
+          printeraddress: printerAddress,
           printersize: selectedPrinterSize,
           language: selectedLanguage,
           emailenable: isEmail,
@@ -204,6 +209,12 @@ class AdminSettingsController extends GetxController {
     updateSetings();
   }
 
+  void storeBtData(BluetoothDevice device) {
+    printerAddress = device.address;
+    printerName = device.name;
+    update();
+  }
+
   void onTapOfUnEditable() {
     debugPrint('onTapOfUnEditable method called ------>. ');
 
@@ -220,6 +231,8 @@ class AdminSettingsController extends GetxController {
         emailController.text = data.businessemail ?? "";
         gstController.text = data.gst ?? "";
         upiController.text = data.upi ?? "";
+        printerAddress = data.printeraddress;
+        printerName = data.printername;
         gstFlag = data.gst == null || data.gst!.isEmpty ? false : true;
         footerController.text = data.footer ?? "";
         selectedPrinterSize =

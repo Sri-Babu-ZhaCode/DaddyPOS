@@ -4,7 +4,7 @@ import 'package:easybill_app/app/modules/cashier/cashier_bills/controllers/cashi
 import 'package:easybill_app/app/widgets/custom_widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:upi_payment_qrcode_generator/upi_payment_qrcode_generator.dart';
+
 import '../../../../constants/app_string.dart';
 import '../../../../constants/app_text_style.dart';
 import '../../../../constants/size_config.dart';
@@ -46,7 +46,7 @@ class BillDetailsItemList extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 20),
                   child: Text(
                       ' ${Get.find<CashierBillsController>().converDecimalConditionally(controller.billItems![index].quantity!)} X',
-                      style: EBAppTextStyle.billItemStyle),
+                      style: EBAppTextStyle.billItemsText),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +61,7 @@ class BillDetailsItemList extends StatelessWidget {
                                     .billItems![index].productNameEnglish!
                                 : controller
                                     .billItems![index].productnameTamil!,
-                            style: EBAppTextStyle.billItemStyle,
+                            style: EBAppTextStyle.billItemsText,
                           ),
                         ),
                         IconButton(
@@ -72,10 +72,10 @@ class BillDetailsItemList extends StatelessWidget {
                           ), // 'x' icon
                           onPressed: () async {
                             // edit bottom sheet
-                            controller.cashierBillsController.billItemIndex =
+                            controller.cashierCtrl.billItemIndex =
                                 index;
                             // passing qty to edit bottom sheet itemQuantityController
-                            controller.cashierBillsController
+                            controller.cashierCtrl
                                     .itemQuantityController.text =
                                 controller.billItems![index].quantity
                                     .toString();
@@ -87,7 +87,7 @@ class BillDetailsItemList extends StatelessWidget {
                       ],
                     ),
                     Text(controller.billItems![index].price!.toStringAsFixed(3),
-                        style: EBAppTextStyle.billItemStyle),
+                        style: EBAppTextStyle.billItemsText),
                   ],
                 ),
                 Text(
@@ -123,7 +123,7 @@ Widget newBillDetailedWidget(
             // defaultVerticalAlignment:
             //  TableCellVerticalAlignment.middle,
             columnWidths: const {
-              0: FlexColumnWidth(0.8),
+              0: FlexColumnWidth(0.6),
               1: FlexColumnWidth(5),
               2: FlexColumnWidth(1.5),
               3: FlexColumnWidth(1.5),
@@ -132,64 +132,64 @@ Widget newBillDetailedWidget(
             },
             children: [
               if (index == 0)
-                TableRow(
-                  decoration: const BoxDecoration(
+                const TableRow(
+                  decoration: BoxDecoration(
                     border: Border.symmetric(
                       horizontal:
                           BorderSide(width: 1, color: EBTheme.blackColor),
                     ),
                   ),
                   children: [
-                    Text('Sr ', style: EBAppTextStyle.button),
+                    Text('Sr ', style: EBAppTextStyle.billItemsText),
                     Text(
                       'Name',
-                      style: EBAppTextStyle.button,
+                      style: EBAppTextStyle.billItemsText,
                     ),
                     Text('Rate ',
-                        style: EBAppTextStyle.button,
+                        style: EBAppTextStyle.billItemsText,
                         textAlign: TextAlign.left),
                     Text('Qty ',
-                        style: EBAppTextStyle.button,
+                        style: EBAppTextStyle.billItemsText,
                         textAlign: TextAlign.left),
                     Text('Amt ',
-                        style: EBAppTextStyle.button,
+                        style: EBAppTextStyle.billItemsText,
                         textAlign: TextAlign.right),
                     Text('',
-                        style: EBAppTextStyle.button,
+                        style: EBAppTextStyle.billItemsText,
                         textAlign: TextAlign.right),
                   ],
                 ),
               TableRow(
                 children: [
                   Text(
-                    '${index + 1}.',
+                    '${index + 1}',
                     style: EBAppTextStyle.billItemsText,
                   ),
                   Text(
                       '${EBAppString.productlanguage == 'English' ? billItems.productNameEnglish : billItems.productnameTamil}',
                       style: EBAppTextStyle.billItemsText,
                       textAlign: TextAlign.left),
-                  Text('',
-                      style: EBAppTextStyle.bodyText,
-                      textAlign: TextAlign.left),
-                  Text('',
+                  const Text('',
                       style: EBAppTextStyle.billItemsText,
                       textAlign: TextAlign.left),
-                  Text('',
-                      style: EBAppTextStyle.bodyText,
+                  const Text('',
+                      style: EBAppTextStyle.billItemsText,
                       textAlign: TextAlign.left),
-                  Text('',
-                      style: EBAppTextStyle.bodyText,
+                  const Text('',
+                      style: EBAppTextStyle.billItemsText,
+                      textAlign: TextAlign.left),
+                  const Text('',
+                      style: EBAppTextStyle.billItemsText,
                       textAlign: TextAlign.left),
                 ],
               ),
               TableRow(
                 children: [
-                  Text(
+                  const Text(
                     '',
-                    style: EBAppTextStyle.bodyText,
+                    style: EBAppTextStyle.billItemsText,
                   ),
-                  Text('', style: EBAppTextStyle.bodyText),
+                  const Text('', style: EBAppTextStyle.billItemsText),
                   Text('${billItems.price ?? '-'}',
                       style: EBAppTextStyle.billItemsText,
                       textAlign: TextAlign.left),
@@ -235,13 +235,13 @@ Widget newBillDetailedWidget(
                   ),
                   children: [
                     Text('Items: ${_.billItems!.length}',
-                        style: EBAppTextStyle.button),
+                        style: EBAppTextStyle.billItemsText),
                     Text(
                         'Qty: ${cashierCtrl.billItemsTotalQty.toStringAsFixed(2)}',
-                        style: EBAppTextStyle.button,
+                        style: EBAppTextStyle.billItemsText,
                         textAlign: TextAlign.left),
                     Text(cashierCtrl.billItemsTotalPrice.toStringAsFixed(2),
-                        style: EBAppTextStyle.totalAmt,
+                        style: EBAppTextStyle.billItemsText,
                         textAlign: TextAlign.right),
                   ],
                 ),
@@ -249,24 +249,30 @@ Widget newBillDetailedWidget(
             ),
 
           // --------->>  bill bottom messages
-          if (index == _.billItems!.length - 1) EBSizeConfig.sizedBoxH50,
-          if (index == _.billItems!.length - 1  && cashierCtrl.billConfig?.upienable == true && cashierCtrl.billConfig?.upi != null )
+          if (index == _.billItems!.length - 1)
+            EBSizeConfig.sizedBoxH20,
+          if (index == _.billItems!.length - 1 &&
+             cashierCtrl. billConfig?.upienable == true &&
+               cashierCtrl.billConfig?.upi != null)
+
+            // ----------------->>  payment qr
             paymentQrWidget(
-                upiID: cashierCtrl.billConfig!.upi!,
-                payeeName: cashierCtrl.billConfig?.businessname ?? "-",
-                tolalAmt: cashierCtrl.billItemsTotalPrice),
-          if (index == _.billItems!.length - 1  && cashierCtrl.billConfig?.upienable == true && cashierCtrl.billConfig?.upi != null ) EBSizeConfig.sizedBoxH50,
+                upiID:  cashierCtrl.billConfig!.upi!,
+                payeeName:  cashierCtrl.billConfig?.businessname ?? "-",
+                tolalAmt:  cashierCtrl.billItemsTotalPrice),
+          if (index == _.billItems!.length - 1)
+            EBSizeConfig.sizedBoxH20,
           if (index == _.billItems!.length - 1)
             Text(
-              cashierCtrl.billItemsTotalPrice.toStringAsFixed(2),
-              style: EBAppTextStyle.heading2,
+              'Rs ${cashierCtrl.billItemsTotalPrice.toStringAsFixed(2)}',
+              style: EBAppTextStyle.customeTextStyleWTNR(
+                  fontSize: 33, fontWeigh: FontWeight.w900),
             ),
           if (index == _.billItems!.length - 1)
             Text(
-                cashierCtrl.billConfig?.footerenable == true
-                    ? cashierCtrl.billConfig?.footer ?? '-'
-                    : '',
-                style: EBAppTextStyle.heading2),
+                 cashierCtrl.billConfig?.footerenable == true ?  cashierCtrl.billConfig?.footer ?? '-' : '',
+                style: EBAppTextStyle.customeTextStyleWTNR(
+                    fontSize: 18, fontWeigh: FontWeight.w700)),
         ],
       );
     },

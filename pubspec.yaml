@@ -54,4 +54,7 @@ flutter:
     - assets/icons/icons_lancher.png
     - assets/sounds/beep.mp3
     - assets/images/daddy_poc.png
-
+  fonts:
+    - family: TimesNewRoman
+      fonts:
+        - asset: assets/fonts/times_new_roman.ttf

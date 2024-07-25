@@ -18,14 +18,15 @@ class EBAppTextStyle {
     fontWeight: FontWeight.w500,
   );
 
-  static final billItemsText = GoogleFonts.poppins(
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
+  static const billItemsText = TextStyle(
+    fontFamily: 'TimesNewRoman',
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
   );
-  static final billItemStyle = GoogleFonts.poppins(
-    fontSize: 15,
-    fontWeight: FontWeight.w500,
-  );
+  // static final billItemStyle = GoogleFonts.poppins(
+  //   fontSize: 15,
+  //   fontWeight: FontWeight.w500,
+  // );
   static final avtiveTxt = GoogleFonts.poppins(
     fontSize: 15,
     fontWeight: FontWeight.w500,
@@ -47,7 +48,7 @@ class EBAppTextStyle {
   static final TextStyle catStyle = GoogleFonts.poppins(
     fontSize: 14,
     fontWeight: FontWeight.w500,
-    color: Colors.blue,
+    color: EBTheme.kPrimaryColor,
   );
   static final TextStyle subStyle = GoogleFonts.poppins(
     fontSize: 18,
@@ -76,6 +77,16 @@ class EBAppTextStyle {
   static TextStyle customeTextStyle(
       {double? fontSize, FontWeight? fontWeigh, Color? color}) {
     return GoogleFonts.poppins(
+      fontSize: fontSize,
+      fontWeight: fontWeigh,
+      color: color,
+    );
+  }
+
+  static TextStyle customeTextStyleWTNR(
+      {double? fontSize, FontWeight? fontWeigh, Color? color}) {
+    return TextStyle(
+      fontFamily: 'TimesNewRoman',
       fontSize: fontSize,
       fontWeight: fontWeigh,
       color: color,

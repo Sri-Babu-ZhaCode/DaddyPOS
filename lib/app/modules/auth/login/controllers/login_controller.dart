@@ -230,6 +230,8 @@ class LoginController extends GetxController {
 
   String? validateMobile(String value) {
     if (value.trim().length != 10) {
+      aMobileFlag = false;
+      sMobileFlag = false;
       return 'Mobile number must be of 10 digit';
     }
     aMobileFlag = true;
@@ -239,6 +241,8 @@ class LoginController extends GetxController {
 
   String? validateIsEmpty(String value) {
     if (value.trim().isEmpty) {
+      aPwdFlag = false;
+      sPwdFlag = false;
       return 'This field is required';
     }
     aPwdFlag = true;
@@ -314,6 +318,7 @@ class LoginController extends GetxController {
       //  formKey.currentState?.reset();
       isStaffTabTapped = false;
     }
+    update();
     //  formKey.currentState?.reset();
   }
 

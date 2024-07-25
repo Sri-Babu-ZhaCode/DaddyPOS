@@ -1,5 +1,9 @@
+// ignore_for_file: unnecessary_overrides
+
 import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:easybill_app/app/modules/admin/admin_settings/controllers/admin_settings_controller.dart';
+import 'package:easybill_app/app/widgets/custom_widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -50,7 +54,50 @@ class ChoosePrinterController extends GetxController {
     isBluetoothAvailable = await bluetooth.isOn;
     update();
 
-    print(isBluetoothAvailable);
+    debugPrint(isBluetoothAvailable.toString());
+  }
+
+/*   
+
+
+void _connect() {
+    if (_device != null) {
+      bluetooth.isConnected.then((isConnected) {
+        if (isConnected == true) {
+          bluetooth.connect(_device!).catchError((error) {
+            setState(() => _connected = false);
+          });
+          setState(() => _connected = true);
+        }
+      });
+    } else {
+      show('No device selected.');
+    }
+  }
+
+*/
+  void selectedPrinter(BluetoothDevice? device) {
+    debugPrint('--------------------------->>');
+    if (device != null) {
+      debugPrint(device.name);
+      debugPrint(device.address);
+      Get.find<AdminSettingsController>().storeBtData(device);
+
+      Get.back();
+      // bluetooth.isConnected.then((isConnected) {
+      //   if (isConnected == true) {
+      //     bluetooth.connect(device).catchError((error) {
+      //       ebCustomTtoastMsg(message: 'Check the BLE device is ready to pair');
+      //     });
+      //     ebCustomTtoastMsg(message: 'Connected...');
+      //     debugPrint(device.name);
+      //     debugPrint(device.address);
+      //     // setState(() => _connected = true);
+      //   }
+      // });
+    } else {
+      ebCustomTtoastMsg(message: 'No device selected.');
+    }
   }
 
   // Future<void> initBluetoothState() async {

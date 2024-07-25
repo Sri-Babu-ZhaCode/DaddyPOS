@@ -95,11 +95,11 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                            'Bill Date: ${_.formateBillDate(reports.billdate!)}',
-                                            style: EBAppTextStyle.bodyText),
+                                            'Date: ${_.formateBillDate(reports.billdate!)}',
+                                            style: EBAppTextStyle.billItemsText),
                                         Text(
                                           'Time: ${_.formattedTime ?? '-'}',
-                                          style: EBAppTextStyle.bodyText,
+                                          style: EBAppTextStyle.billItemsText,
                                         ),
                                       ],
                                     ),
@@ -119,8 +119,8 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                     },
                                     children: [
                                       if (index == 0)
-                                        TableRow(
-                                          decoration: const BoxDecoration(
+                                        const TableRow(
+                                          decoration: BoxDecoration(
                                             border: Border.symmetric(
                                               horizontal: BorderSide(
                                                   width: 1,
@@ -129,21 +129,21 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                           ),
                                           children: [
                                             Text('Sr ',
-                                                style: EBAppTextStyle.button),
+                                                style: EBAppTextStyle.billItemsText),
                                             Text(
                                               'Name',
-                                              style: EBAppTextStyle.button,
+                                              style: EBAppTextStyle.billItemsText,
                                             ),
                                             Text(
                                               'Rate ',
-                                              style: EBAppTextStyle.button,
+                                              style: EBAppTextStyle.billItemsText,
                                               textAlign: TextAlign.left
                                             ),
                                             Text('Qty ',
-                                                style: EBAppTextStyle.button,
+                                                style: EBAppTextStyle.billItemsText,
                                                 textAlign: TextAlign.left),
                                             Text('Amt ',
-                                                style: EBAppTextStyle.button,
+                                                style: EBAppTextStyle.billItemsText,
                                                 textAlign: TextAlign.right),
                                           ],
                                         ),
@@ -205,24 +205,24 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                           children: [
                                             Text(
                                                 'Items: ${_.billDetailedReports!.length}',
-                                                style: EBAppTextStyle.button),
+                                                style: EBAppTextStyle.billItemsText),
                                             Text(
                                                 'Qty: ${_.totalQty.toStringAsFixed(2)}',
-                                                style: EBAppTextStyle.button,
+                                                style: EBAppTextStyle.billItemsText,
                                                 textAlign: TextAlign.left),
                                             Text(
                                                 _.totalBillAmt
                                                     .toStringAsFixed(2),
-                                                style: EBAppTextStyle.totalAmt,
+                                                style: EBAppTextStyle.billItemsText,
                                                 textAlign: TextAlign.right),
                                           ],
                                         ),
                                       ],
                                     ),
-                                  // --------->>  bill bottom messages
+                                  // --------->>  bill bottom messages  
                                   if (index ==
                                       _.billDetailedReports!.length - 1)
-                                    EBSizeConfig.sizedBoxH50,
+                                    EBSizeConfig.sizedBoxH20,
                                 if (index == _.billDetailedReports!.length - 1  && billConfig.upienable == true && billConfig.upi != null )
 
                                     // ----------------->>  payment qr
@@ -233,12 +233,12 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                         tolalAmt: _.totalBillAmt),
                                   if (index ==
                                       _.billDetailedReports!.length - 1)
-                                    EBSizeConfig.sizedBoxH50,
+                                    EBSizeConfig.sizedBoxH20,
                                   if (index ==
                                       _.billDetailedReports!.length - 1)
                                     Text(
-                                      _.totalBillAmt.toStringAsFixed(2),
-                                      style: EBAppTextStyle.heading2,
+                                      'Rs ${_.totalBillAmt.toStringAsFixed(2)}',
+                                      style: EBAppTextStyle.customeTextStyleWTNR(fontSize: 33,fontWeigh: FontWeight.w900),
                                     ),
                                   if (index ==
                                       _.billDetailedReports!.length - 1)
@@ -246,7 +246,7 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                         billConfig.footerenable == true
                                             ? billConfig.footer ?? '-'
                                             : '',
-                                        style: EBAppTextStyle.heading2),
+                                        style: EBAppTextStyle.customeTextStyleWTNR(fontSize: 18,fontWeigh: FontWeight.w700)),
                                 ],
                               );
                             }),

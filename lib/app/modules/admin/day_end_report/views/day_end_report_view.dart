@@ -46,7 +46,7 @@ class DayEndReportView extends GetView<DayEndReportController> {
                               child: Text(
                                 e,
                                 overflow: TextOverflow.ellipsis,
-                                style: EBAppTextStyle.billItemStyle,
+                                style: EBAppTextStyle.billItemsText,
                               ),
                             ))
                         .toList(),
@@ -107,10 +107,10 @@ class DayEndReportView extends GetView<DayEndReportController> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Bills: ${dayReports.bills}',
+                        Text('No of bills: ${dayReports.bills}',
                             style: EBAppTextStyle.catStyle),
                         Text('Amount: ${dayReports.amount}',
-                            style: EBAppTextStyle.avtiveTxt),
+                            style: EBAppTextStyle.bodyText),
                       ],
                     ),
                   ],

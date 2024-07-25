@@ -108,8 +108,6 @@ class CashierBillsController extends GetxController
 
   void nextPressed(Product p) async {
     bool isAdded = false;
-
-    // debugPrint('token -------------->>  ${p.istoken}');
     if (EBBools.isTokenPresent &&
         tabIndex == EBAppString.screenAccessList.length - 1) {
       if (billItems.isNotEmpty) {

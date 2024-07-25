@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:upi_payment_qrcode_generator/upi_payment_qrcode_generator.dart';
 
-import '../../../../../constants/app_string.dart';
 import '../../../../../constants/themes.dart';
 
 Widget paymentQrWidget({
@@ -16,12 +15,16 @@ Widget paymentQrWidget({
   );
   return UPIPaymentQRCode(
     upiDetails: upiDetails,
-    size: 130,
-    embeddedImagePath: EBAppString.daddyPosImg,
-    embeddedImageSize: const Size(50, 50),
+    size: 115,
+
+    // embeddedImagePath: EBAppString.daddyPosImg,
+    // embeddedImageSize: const Size(50, 50),
     eyeStyle: const QrEyeStyle(
-        eyeShape: QrEyeShape.square, color: EBTheme.blackColor),
+        eyeShape: QrEyeShape.square,
+        
+         color: EBTheme.blackColor),
     dataModuleStyle: const QrDataModuleStyle(
-        dataModuleShape: QrDataModuleShape.square, color: EBTheme.blackColor),
+      
+        dataModuleShape: QrDataModuleShape.square, color: EBTheme.blackColor  ),
   );
 }
