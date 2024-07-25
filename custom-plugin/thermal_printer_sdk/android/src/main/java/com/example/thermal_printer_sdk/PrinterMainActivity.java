@@ -16,8 +16,7 @@ import android.os.Build;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import android.util.Log;
-import android.widget.Toast;
+import android.util.DisplayMetrics;
 
 import androidx.annotation.RequiresApi;
 
@@ -115,7 +114,7 @@ public class PrinterMainActivity {
         return null;
     }
 
-    void print(TemplateSettings templateSettings) {
+    void print(Context context, TemplateSettings templateSettings) {
         try {
             EscPosPrinter printer;
 //            DeviceConnection deviceConnection = getDeviceFromAddress(printerSettings.deviceAddress);
@@ -123,6 +122,9 @@ public class PrinterMainActivity {
                 throw new DeviceNotFoundException("DEVICE_NOT_FOUND");
             }
             printer = new EscPosPrinter(selectedDevice, printerSettings.printerDpi, printerSettings.printerWidth, printerSettings.nbrCharPerLine);
+            //"[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, this.getApplicationContext().getResources().getDrawableForDensity(R.drawable.logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n" +
+
+            templateSettings.template =  "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, context.getResources().getDrawableForDensity(R.drawable.logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n"+templateSettings.template;
             printer.printFormattedTextAndCut(templateSettings.template);
         } catch (Exception e) {
 
@@ -181,7 +183,8 @@ public class PrinterMainActivity {
                     EscPosPrinter printer;
                     if(templateSettings==null) usbReceiverCallback.onFailed(new InvalidPropertiesFormatException("Invalid Template settings"));
                     printer =  new EscPosPrinter(new UsbConnection(usbManager, usbDevice), printerSettings.printerDpi, printerSettings.printerWidth, printerSettings.nbrCharPerLine);
-                    printer.printFormattedTextAndCut("templateSettings.template");
+                    templateSettings.template =  "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, context.getResources().getDrawableForDensity(R.drawable.logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n"+templateSettings.template;
+                    printer.printFormattedTextAndCut(templateSettings.template);
                     usbReceiverCallback.onComplete();
                 } catch (Exception e) {
                     try {

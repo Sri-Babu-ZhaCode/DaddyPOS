@@ -43,7 +43,7 @@ public class ThermalPrinterSdkPlugin implements FlutterPlugin, MethodCallHandler
                   TemplateSettings settings = new TemplateSettings(
                           template
                   );
-                  printerMainActivity.print(settings);
+                  printerMainActivity.print(activityContext.getApplicationContext(),settings);
                   result.success(true);
               } catch (Exception e) {
                   result.error("ERROR", "Failed to print to the bluetooth printer. Please try again.", e);
