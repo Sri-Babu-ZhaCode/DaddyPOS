@@ -7,6 +7,7 @@ import '../../../../../../constants/size_config.dart';
 import '../../../../../../constants/themes.dart';
 import '../../../../../../widgets/custom_widgets/custom_text_button.dart';
 import '../../../controllers/cashier_bills_controller.dart';
+import '../../cashier_bills_view.dart';
 import '../bill_tab.dart';
 import '../delete_dialog.dart';
 import '../sales_tab.dart';
@@ -16,7 +17,7 @@ Widget tabBottomSheet(CashierBillsController controller, BuildContext context) {
   EBSizeConfig.init(context);
   controller.deviceScreenHeight = EBSizeConfig.screenHeight;
   controller.screenWidth = EBSizeConfig.screenWidth;
-  
+
   if (!controller.isExpanded) {
     controller.sheetHeight = EBSizeConfig.screenHeight * 0.60;
   }
@@ -69,62 +70,64 @@ Widget tabBottomSheet(CashierBillsController controller, BuildContext context) {
           ),
         ),
         Expanded(
-          child: DefaultTabController(
-            length: 3,
-            initialIndex: 0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TabBar(
-                  controller: controller.tabController,
-                  onTap: (index) {
-                    controller.updateseachableProductList(index);
-                  },
-                  overlayColor:
-                      WidgetStatePropertyAll(EBTheme.kPrimaryLightColor),
-                  labelColor: EBTheme.kPrimaryColor,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  indicatorColor: EBTheme.kPrimaryColor,
-                  tabs: [
-                    if (EBBools.isSalePresent) EBAppString.salesAll,
-                    if (EBBools.isQuickPresent) EBAppString.quickSale,
-                    if (EBBools.isTokenPresent) EBAppString.token
-                  ]
-                      .map(
-                        (e) => Tab(
-                          child: Text(
-                            e,
-                            overflow: TextOverflow.ellipsis,
-                            style: EBAppTextStyle.bodyText,
-                          ),
+          child: controller.showScanner
+              ? qrScannerWidget(controller, context)
+              : DefaultTabController(
+                  length: 3,
+                  initialIndex: 0,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TabBar(
+                        controller: controller.tabController,
+                        onTap: (index) {
+                          controller.updateseachableProductList(index);
+                        },
+                        overlayColor:
+                            WidgetStatePropertyAll(EBTheme.kPrimaryLightColor),
+                        labelColor: EBTheme.kPrimaryColor,
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        indicatorColor: EBTheme.kPrimaryColor,
+                        tabs: [
+                          if (EBBools.isSalePresent) EBAppString.salesAll,
+                          if (EBBools.isQuickPresent) EBAppString.quickSale,
+                          if (EBBools.isTokenPresent) EBAppString.token
+                        ]
+                            .map(
+                              (e) => Tab(
+                                child: Text(
+                                  e,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: EBAppTextStyle.bodyText,
+                                ),
+                              ),
+                            )
+                            .toList(),
+                        // onTap: (index) {
+                        //   controller.pageController.jumpToPage(index);
+                        //   controller.updateseachableProductList(index);
+                        //   controller.update();
+                        //   print('current index -------------->>  $index');
+                        // }
+                      ),
+                      Expanded(
+                        child: TabBarView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          controller: controller.tabController,
+                          //  controller: controller.pageController,
+                          children: [
+                            if (EBBools.isSalePresent) saleTab(context),
+                            if (EBBools.isQuickPresent) billTab(),
+                            if (EBBools.isTokenPresent) tokenTab(),
+                          ],
+                          // onPageChanged: (index) {
+                          //   controller.updateseachableProductList(index);
+                          // },
                         ),
                       )
-                      .toList(),
-                  // onTap: (index) {
-                  //   controller.pageController.jumpToPage(index);
-                  //   controller.updateseachableProductList(index);
-                  //   controller.update();
-                  //   print('current index -------------->>  $index');
-                  // }
-                ),
-                Expanded(
-                  child: TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: controller.tabController,
-                    //  controller: controller.pageController,
-                    children: [
-                      if (EBBools.isSalePresent) saleTab(context),
-                      if (EBBools.isQuickPresent) billTab(),
-                      if (EBBools.isTokenPresent) tokenTab(),
                     ],
-                    // onPageChanged: (index) {
-                    //   controller.updateseachableProductList(index);
-                    // },
                   ),
-                )
-              ],
-            ),
-          ),
+                ),
         ),
       ],
     ),

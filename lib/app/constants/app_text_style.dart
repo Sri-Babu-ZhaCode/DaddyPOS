@@ -14,14 +14,14 @@ class EBAppTextStyle {
   );
 
   static final bodyText = GoogleFonts.poppins(
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: FontWeight.w500,
   );
 
   static const billItemsText = TextStyle(
     fontFamily: 'TimesNewRoman',
-    fontSize: 18,
-    fontWeight: FontWeight.w600,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
   );
   // static final billItemStyle = GoogleFonts.poppins(
   //   fontSize: 15,
@@ -46,7 +46,7 @@ class EBAppTextStyle {
     fontWeight: FontWeight.w400,
   );
   static final TextStyle catStyle = GoogleFonts.poppins(
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: FontWeight.w500,
     color: EBTheme.kPrimaryColor,
   );

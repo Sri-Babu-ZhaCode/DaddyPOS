@@ -13,6 +13,9 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
 /** ThermalPrinterSdkPlugin */
 public class ThermalPrinterSdkPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -39,11 +42,24 @@ public class ThermalPrinterSdkPlugin implements FlutterPlugin, MethodCallHandler
               break;
           case "print":
               try {
+//                  String base64Image = call.argument("template"); // base64
+                 // System.out.println('------------------------------------>> base 64 image templeate <<---------------------------');
+                 // System.out.println(base64Image);\
+
+//                  byte[] decodedBytes = Base64.decode(base64Image, Base64.DEFAULT);
+//                  Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+//                  System.out.println(decodedBitmap);
+//                  // todo --> convert base64 img to bitmap
+//                    String template = printerMainActivity.changeLogoToHex(decodedBitmap); // online hexa to img
+
+//                  TemplateSettings settings = new TemplateSettings(
+//                       " [L]n\n\n" +   template + "</img>\n\n"
+//                  );
                   String template = call.argument("template");
-                  TemplateSettings settings = new TemplateSettings(
-                          template
-                  );
-                  printerMainActivity.print(activityContext.getApplicationContext(),settings);
+                  TemplateSettings settings = new TemplateSettings(template);
+
+
+                printerMainActivity.print(activityContext.getApplicationContext(),settings);
                   result.success(true);
               } catch (Exception e) {
                   result.error("ERROR", "Failed to print to the bluetooth printer. Please try again.", e);

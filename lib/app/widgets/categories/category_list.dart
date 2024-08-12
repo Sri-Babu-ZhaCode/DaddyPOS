@@ -38,6 +38,8 @@ class CategoryList extends GetView<InventoryController> {
                   children: [
                     ExpansionTile(
                       title: Text(
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                         controller.categoryList![index].categoryname == null
                             ? ''
                             : controller.categoryList![index].categoryname!
@@ -105,11 +107,19 @@ class CategoryList extends GetView<InventoryController> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
+                                    Flexible(
+                                      child: Text(
                                         EBAppString.productlanguage == 'English'
                                             ? p.productnameEnglish!
-                                            : p.productnameTamil!),
-                                    Text(p.price!)
+                                            : p.productnameTamil!,
+                                        style: EBAppTextStyle.bodyText,
+                                      ),
+                                    ),
+                                    Flexible(
+                                        child: Text(
+                                      p.price!,
+                                      style: EBAppTextStyle.catStyle,
+                                    ))
                                   ],
                                 ),
                                 EBSizeConfig.dividerTH2,

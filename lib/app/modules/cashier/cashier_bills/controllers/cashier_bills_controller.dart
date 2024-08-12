@@ -10,6 +10,7 @@ import 'package:easybill_app/app/widgets/custom_widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../../constants/size_config.dart';
 import '../../../../data/repositories/setting_repo.dart';
 import '../../../admin/inventory/controllers/inventory_controller.dart';
@@ -72,6 +73,7 @@ class CashierBillsController extends GetxController
     '5',
     '6',
     const Icon(
+      
       Icons.close,
       size: 30,
       weight: 100,
@@ -105,16 +107,19 @@ class CashierBillsController extends GetxController
 
   Setting? billConfig;
 
+  MobileScannerController? mobileScannerCtrl;
 
   void nextPressed(Product p) async {
     bool isAdded = false;
+    debugPrint('next pressed outside if ------------------->>');
     if (EBBools.isTokenPresent &&
         tabIndex == EBAppString.screenAccessList.length - 1) {
+      debugPrint('next pressed inside if ------------------->>');
       if (billItems.isNotEmpty) {
         await deteteBillItemsIfTokenAdded(p);
       } else {
         addBillItem(p);
-        Get.offNamed(Routes.BILL_DETAILS, arguments: {'billItems': billItems});
+        Get.toNamed(Routes.BILL_DETAILS, arguments: {'billItems': billItems});
       }
     } else {
       for (var item in billItems) {
@@ -136,6 +141,9 @@ class CashierBillsController extends GetxController
         update();
       }
     }
+    // if (EBAppString.screenAccessList.length == 2 && tabIndex != 1) {
+    //   Get.back();
+    // }
   }
 
   void addBillItem(Product p) {
@@ -418,6 +426,7 @@ class CashierBillsController extends GetxController
       ebCustomTtoastMsg(
           message: '${product.productnameEnglish} added in Bill Items');
       qrQuantity++;
+
       playBeepSound();
       update();
     } else {
@@ -484,6 +493,4 @@ class CashierBillsController extends GetxController
       return num.toString();
     }
   }
-
-  
 }

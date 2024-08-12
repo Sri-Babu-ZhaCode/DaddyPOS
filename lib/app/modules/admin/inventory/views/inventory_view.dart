@@ -16,14 +16,14 @@ class InventoryView extends GetView<InventoryController> {
       return DefaultTabController(
         length: 2,
         child: EBCustomScaffold(
-          actionWidgetList: [
-            IconButton(onPressed: (){
-                _.downloadProduct();
-            }, icon: const Icon(Icons.download_rounded)),
-            IconButton(onPressed: (){
-              _.chooeseFile();
-            }, icon: const Icon(Icons.upload_file_outlined)),
-          ],
+            // actionWidgetList: [
+            //   IconButton(onPressed: (){
+            //       _.downloadProduct();
+            //   }, icon: const Icon(Icons.download_rounded)),
+            //   IconButton(onPressed: (){
+            //     _.chooeseFile();
+            //   }, icon: const Icon(Icons.upload_file_outlined)),
+            // ],
             body: Padding(
           padding: EBSizeConfig.edgeInsetsActivities,
           child: Column(
@@ -47,9 +47,7 @@ class InventoryView extends GetView<InventoryController> {
               const Expanded(
                 child: Padding(
                   padding: EBSizeConfig.edgeInsetsOnlyH10,
-                  child:  
-                  
-                  TabBarView(
+                  child: TabBarView(
                     children: [
                       CategoryTab(),
                       ProductTab(),

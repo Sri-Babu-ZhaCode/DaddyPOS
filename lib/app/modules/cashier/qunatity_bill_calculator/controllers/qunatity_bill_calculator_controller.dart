@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_overrides
+
 import 'package:easybill_app/app/data/models/product.dart';
 import 'package:get/get.dart';
 

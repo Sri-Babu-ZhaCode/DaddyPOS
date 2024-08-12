@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:easybill_app/app/constants/app_string.dart';
+import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/data/models/login.dart';
 import 'package:easybill_app/app/data/models/subscription.dart';
 import 'package:easybill_app/app/data/repositories/subscription_repo.dart';
@@ -76,6 +77,7 @@ class SubscriptionController extends GetxController {
 
   Future<void> getSubscriptionPlans() async {
     try {
+      EBBools.isLoading = true;
       final x = await _subscriptionRepo.getSubscription();
       subscriptionList = x;
       if (subscriptionList != null) {
@@ -90,6 +92,9 @@ class SubscriptionController extends GetxController {
       }
     } catch (e) {
       debugPrint(e.toString());
+    } finally {
+      EBBools.isLoading = false;
+      update();
     }
   }
 
@@ -131,6 +136,9 @@ class SubscriptionController extends GetxController {
       update();
     } catch (e) {
       debugPrint(e.toString());
+    } finally {
+      EBBools.isLoading = false;
+      update();
     }
   }
 
@@ -145,6 +153,8 @@ class SubscriptionController extends GetxController {
 
   Future<void> setPassword(String pwd) async {
     try {
+      EBBools.isLoading = true;
+      update();
       debugPrint(
           'Local storage in Sub controller -------------->>  ${LocalStorage.registeredUserId}');
 
@@ -158,6 +168,9 @@ class SubscriptionController extends GetxController {
       navigationForSettingPwd(res);
     } catch (e) {
       debugPrint(e.toString());
+    } finally {
+      EBBools.isLoading = false;
+      update();
     }
   }
 
@@ -167,21 +180,22 @@ class SubscriptionController extends GetxController {
     switch (decisionKey) {
       case 0:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('Not Registered');
+        ebCustomTtoastMsg(message: 'Not Registered');
         Get.toNamed(Routes.REGISTER);
         break;
       case 1:
-        debugPrint('decision key --------------->>  $decisionKey');
+        debugPrint(
+            'decision key for Subscription --------------->>  $decisionKey');
         Get.offAllNamed(Routes.LOGIN);
         break;
       case 2:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('No subscription');
+        ebCustomTtoastMsg(message: 'No subscription');
         Get.toNamed(Routes.SUBSCRIPTION);
         break;
       case 3:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('Password already created');
+        ebCustomTtoastMsg(message: 'Password already created');
         break;
       default:
         debugPrint('decision key --------------->>  $decisionKey');
@@ -194,6 +208,8 @@ class SubscriptionController extends GetxController {
   void onNextBtnPressed() async {
     // ----------->>  ON successful payment
 
+    EBBools.isLoading = true;
+    update();
     String receiptId = "${Random().nextInt(99999) + 10000}";
 
     // subscription amount
@@ -209,55 +225,63 @@ class SubscriptionController extends GetxController {
       }
     }
 
-    debugPrint(
-        'selected paln ${selectedSubscription?.price}  ${selectedSubscription?.planname}');
+    try {
+      debugPrint(
+          'selected paln ${selectedSubscription?.price}  ${selectedSubscription?.planname}');
 
-    if (selectedSubscription != null) {
-      subscriptionAmt = int.tryParse(selectedSubscription!.price!);
-    }
-
-    if (subscriptionAmt == 0) {
-      Subscription subscription = Subscription(
-        paymentStatus: 'success',
-        paymentId: '1234',
-        orderId: "sdfhakjshdfkjashdfksdh",
-        razorpaySignature: '_free_signature_123456',
-        transactionMessage: 'transaction was successful',
-        price: selectedSubscription?.price,
-        description: 'payment done with razor pay',
-        subscriptionId: selectedSubscription?.subscriptionId,
-      );
-      final updateTransaction =
-          await _subscriptionRepo.updateSubscriptionPlan(subscription);
-
-      if (updateTransaction != null) {
-        SetPasswordAlertDialog.setPasswordAlertDialof(
-            formKey: formKey,
-            // loginmobile number will be updated while resgistion and login
-            loginMobileNum:
-             EBAppString.loginmobilenumber != null
-                ? EBAppString.loginmobilenumber!
-                : "--"
-                );
+      if (selectedSubscription != null) {
+        subscriptionAmt = int.tryParse(selectedSubscription!.price!);
       }
-    }
 
-    if (subscriptionAmt != null && subscriptionAmt != 0) {
-      final respose =
-          await _subscriptionRepo.razorPayApi(subscriptionAmt, receiptId);
-      if (respose != null) {
-        orderid = respose.id;
-        debugPrint("order id ===================================>>  $orderid");
-        if (orderid != null) {
-          _checkOut(orderid!);
-        } else {
-          debugPrint('some thing went wrong ---------->>');
+      if (subscriptionAmt == 0) {
+        Subscription subscription = Subscription(
+          paymentStatus: 'success',
+          paymentId: '1234',
+          orderId: "sdfhakjshdfkjashdfksdh",
+          razorpaySignature: '_free_signature_123456',
+          transactionMessage: 'transaction was successful',
+          price: selectedSubscription?.price,
+          description: 'payment done with razor pay',
+          subscriptionId: selectedSubscription?.subscriptionId,
+        );
+        final updateTransaction =
+            await _subscriptionRepo.updateSubscriptionPlan(subscription);
+
+        if (updateTransaction != null) {
+          SetPasswordAlertDialog.setPasswordAlertDialof(
+              formKey: formKey,
+              // loginmobile number will be updated while resgistion and login
+              loginMobileNum: EBAppString.loginmobilenumber != null
+                  ? EBAppString.loginmobilenumber!
+                  : "--");
         }
       }
+
+      if (subscriptionAmt != null && subscriptionAmt != 0) {
+        final respose =
+            await _subscriptionRepo.razorPayApi(subscriptionAmt, receiptId);
+        if (respose != null) {
+          orderid = respose.id;
+          debugPrint(
+              "order id ===================================>>  $orderid");
+          if (orderid != null) {
+            _checkOut(orderid!);
+          } else {
+            debugPrint('some thing went wrong ---------->>');
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      EBBools.isLoading = false;
+      update();
     }
   }
 
   void _checkOut(String orderId) {
+    EBBools.isLoading = true;
+    update();
     var options = {
       'key': razorPay_Api,
       'amount': 1,
@@ -270,6 +294,9 @@ class SubscriptionController extends GetxController {
       _razorpay.open(options);
     } catch (e) {
       debugPrint('Exception occured --------->>  $e');
+    } finally {
+      EBBools.isLoading = false;
+      update();
     }
   }
 

@@ -38,7 +38,7 @@ class EBCustomScaffold extends StatelessWidget {
               color: EBTheme.kPrimaryWhiteColor, // Change the color here
             ),
             title: Text(
-              'Easy Bill',
+              'Daddy POS',
               style: EBAppTextStyle.appBarTxt,
             ),
             systemOverlayStyle: const SystemUiOverlayStyle(

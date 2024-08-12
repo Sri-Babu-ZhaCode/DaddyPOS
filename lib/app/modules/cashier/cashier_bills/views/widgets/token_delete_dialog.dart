@@ -17,7 +17,7 @@ Future deteteBillItemsIfTokenAdded(Product p) {
       Get.back();
       Get.find<CashierBillsController>().billItems.clear();
       Get.find<CashierBillsController>().addBillItem(p);
-      Get.offNamed(Routes.BILL_DETAILS, arguments: {
+      Get.toNamed(Routes.BILL_DETAILS, arguments: {
         'billItems': Get.find<CashierBillsController>().billItems
       });
     },

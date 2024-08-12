@@ -302,7 +302,7 @@ public class EscPosPrinterCommands {
      * Create new instance of EscPosPrinterCommands.
      *
      * @param printerConnection an instance of a class which implement DeviceConnection
-     * @param charsetEncoding   Set the charset encoding.
+     * @param charsetEncoding Set the charset encoding.
      */
     public EscPosPrinterCommands(DeviceConnection printerConnection, EscPosCharsetEncoding charsetEncoding) {
         this.printerConnection = printerConnection;

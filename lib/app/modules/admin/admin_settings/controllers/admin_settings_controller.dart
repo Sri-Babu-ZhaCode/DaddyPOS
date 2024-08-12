@@ -35,7 +35,7 @@ class AdminSettingsController extends GetxController {
   final _settingsRepo = SettingsRepo();
   List<Setting>? settingsList;
 
-  List<String> printerSizeList = ['80MM (3 inch)', '52MM (2 inch)'];
+  List<String> printerSizeList = ['80MM (3 inch)', '58MM (2 inch)'];
   List<String> languageList = ['English', 'Others'];
   List<int> timeinterval = [];
   late String selectedPrinterSize;
@@ -246,7 +246,7 @@ class AdminSettingsController extends GetxController {
         // todp part -------------------------->>
         settimeinterval =
             data.settimeinterval == null || data.settimeinterval!.isEmpty
-                ? data.timeinterval![0].toString()
+                ? data.timeinterval![1].toString()
                 : data.settimeinterval!;
 
         isGst = data.gstenable ?? false;
@@ -267,7 +267,7 @@ class AdminSettingsController extends GetxController {
         // storing set time intervel globally
         EBAppString.settimeinterval =
             data.settimeinterval == null || data.settimeinterval == ''
-                ? '1'
+                ? '2'
                 : data.settimeinterval;
       }
     }

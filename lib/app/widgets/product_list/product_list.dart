@@ -24,7 +24,7 @@ class ProductList extends GetView<InventoryController> {
             Get.toNamed(Routes.PRODUCT_MANAGEMENT, arguments: {
               'isEditMode': false,
               'categoryList': controller.categoryList,
-              'selectedProduct': controller.productList![index],
+              'selectedProduct': controller.seachableProductList![index],
               'unitList': controller.unitList,
               'taxType': controller.taxType,
             });
@@ -36,16 +36,18 @@ class ProductList extends GetView<InventoryController> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      // if user change language in settings it will be affected here
-                      EBAppString.productlanguage == 'English'
-                          ? controller.seachableProductList![index]
-                                  .productnameEnglish ??
-                              ''
-                          : controller.seachableProductList![index]
-                                  .productnameTamil ??
-                              '',
-                      style: EBAppTextStyle.button,
+                    Flexible(
+                      child: Text(
+                        // if user change language in settings it will be affected here
+                        EBAppString.productlanguage == 'English'
+                            ? controller.seachableProductList![index]
+                                    .productnameEnglish ??
+                                ''
+                            : controller.seachableProductList![index]
+                                    .productnameTamil ??
+                                '',
+                        style: EBAppTextStyle.button,
+                      ),
                     ),
                     Text(
                       '${controller.seachableProductList![index].shopproductid}',

@@ -34,12 +34,10 @@ class ProductListWidget extends GetView<CashierBillsController> {
                 .length, // Total number of items
             itemBuilder: (BuildContext context, int index) {
               // Return a widget for each item
-
               return GestureDetector(
                 onTap: () {
                   controller.productQuantity = '';
-                  Product product =
-                      _.inventoryController.seachableProductList![index];
+                  Product product = _.inventoryController.seachableProductList![index];
 
                   debugPrint(
                       "${product.productnameEnglish} has popup ===========>> : ${product.showQuantityPopup}");
@@ -47,6 +45,8 @@ class ProductListWidget extends GetView<CashierBillsController> {
                       "${product.productnameEnglish} has decimal ===========>> : ${product.isDecimalAllowed}");
                   debugPrint(
                       "${product.productnameEnglish} shopProduct Id ===========>> : ${product.shopproductid}");
+                  debugPrint(
+                      "${product.productnameEnglish} shopProduct Id ===========>> : ${product.qrbarcode}");
                   product.showQuantityPopup == true
                       ? Get.toNamed(Routes.QUNATITY_BILL_CALCULATOR,
                           arguments: {
@@ -62,6 +62,9 @@ class ProductListWidget extends GetView<CashierBillsController> {
                         children: [
                           Flexible(
                             child: Text(
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
+                              softWrap: true,
                               EBAppString.productlanguage == 'English'
                                   ? _
                                       .inventoryController

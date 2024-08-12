@@ -1,3 +1,5 @@
+// ignore_for_file: no_wildcard_variable_uses
+
 import 'package:easybill_app/app/constants/app_string.dart';
 import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/data/models/bill_reports.dart';
@@ -96,7 +98,8 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                       children: [
                                         Text(
                                             'Date: ${_.formateBillDate(reports.billdate!)}',
-                                            style: EBAppTextStyle.billItemsText),
+                                            style:
+                                                EBAppTextStyle.billItemsText),
                                         Text(
                                           'Time: ${_.formattedTime ?? '-'}',
                                           style: EBAppTextStyle.billItemsText,
@@ -111,11 +114,11 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                     // defaultVerticalAlignment:
                                     //  TableCellVerticalAlignment.middle,
                                     columnWidths: const {
-                                      0: FlexColumnWidth(0.8),
+                                      0: FlexColumnWidth(0.6),
                                       1: FlexColumnWidth(4),
                                       2: FlexColumnWidth(1.2),
                                       3: FlexColumnWidth(1.2),
-                                      4: FlexColumnWidth(1.5),
+                                      4: FlexColumnWidth(1.8),
                                     },
                                     children: [
                                       if (index == 0)
@@ -128,34 +131,51 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                             ),
                                           ),
                                           children: [
-                                            Text('Sr ',
-                                                style: EBAppTextStyle.billItemsText),
+                                            Text('Sr',
+                                                style: EBAppTextStyle
+                                                    .billItemsText),
                                             Text(
                                               'Name',
-                                              style: EBAppTextStyle.billItemsText,
+                                              style:
+                                                  EBAppTextStyle.billItemsText,
                                             ),
-                                            Text(
-                                              'Rate ',
-                                              style: EBAppTextStyle.billItemsText,
-                                              textAlign: TextAlign.left
-                                            ),
-                                            Text('Qty ',
-                                                style: EBAppTextStyle.billItemsText,
+                                            Text('Rate',
+                                                style: EBAppTextStyle
+                                                    .billItemsText,
                                                 textAlign: TextAlign.left),
-                                            Text('Amt ',
-                                                style: EBAppTextStyle.billItemsText,
+                                            Text('Qty',
+                                                style: EBAppTextStyle
+                                                    .billItemsText,
+                                                textAlign: TextAlign.left),
+                                            Text('Amount',
+                                                style: EBAppTextStyle
+                                                    .billItemsText,
                                                 textAlign: TextAlign.right),
                                           ],
                                         ),
+                                    ],
+                                  ),
+
+                                  Table(
+                                    columnWidths: const {
+                                      0: FlexColumnWidth(2.2),
+                                      1: FlexColumnWidth(26),
+                                      // 2: FlexColumnWidth(0),
+                                      //3: FlexColumnWidth(0),
+                                      //4: FlexColumnWidth(0),
+                                    },
+                                    children: [
                                       TableRow(
                                         children: [
                                           Text(
-                                            '${index + 1}.',
+                                            '${index + 1}',
                                             style: EBAppTextStyle.billItemsText,
                                           ),
                                           Text(
                                               '${EBAppString.productlanguage == 'English' ? reports.productnameEnglish : reports.productnameTamil}',
-                                              style: EBAppTextStyle.billItemsText),
+                                              //  'thoewire woierowern oweirowuer owei owieurowie owieuroiwer',
+                                              style:
+                                                  EBAppTextStyle.billItemsText),
                                           Text('',
                                               style: EBAppTextStyle.bodyText,
                                               textAlign: TextAlign.right),
@@ -167,6 +187,18 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                               textAlign: TextAlign.right),
                                         ],
                                       ),
+                                    ],
+                                  ),
+
+                                  Table(
+                                    columnWidths: const {
+                                      0: FlexColumnWidth(0.8),
+                                      1: FlexColumnWidth(4),
+                                      2: FlexColumnWidth(1.2),
+                                      3: FlexColumnWidth(1.2),
+                                      4: FlexColumnWidth(1.8),
+                                    },
+                                    children: [
                                       TableRow(
                                         children: [
                                           Text(
@@ -176,20 +208,24 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                           Text('',
                                               style: EBAppTextStyle.bodyText),
                                           Text(reports.rateperitem ?? '-',
-                                              style: EBAppTextStyle.billItemsText,
+                                              style:
+                                                  EBAppTextStyle.billItemsText,
                                               textAlign: TextAlign.left),
                                           Text(
                                               reports.quantity!
                                                   .toStringAsFixed(2),
-                                              style: EBAppTextStyle.billItemsText,
+                                              style:
+                                                  EBAppTextStyle.billItemsText,
                                               textAlign: TextAlign.left),
                                           Text('${reports.totalquantityamount}',
-                                              style: EBAppTextStyle.billItemsText,
+                                              style:
+                                                  EBAppTextStyle.billItemsText,
                                               textAlign: TextAlign.right),
                                         ],
                                       ),
                                     ],
                                   ),
+
                                   if (index ==
                                       _.billDetailedReports!.length - 1)
                                     Table(
@@ -205,25 +241,31 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                           children: [
                                             Text(
                                                 'Items: ${_.billDetailedReports!.length}',
-                                                style: EBAppTextStyle.billItemsText),
+                                                style: EBAppTextStyle
+                                                    .billItemsText),
                                             Text(
                                                 'Qty: ${_.totalQty.toStringAsFixed(2)}',
-                                                style: EBAppTextStyle.billItemsText,
+                                                style: EBAppTextStyle
+                                                    .billItemsText,
                                                 textAlign: TextAlign.left),
                                             Text(
                                                 _.totalBillAmt
                                                     .toStringAsFixed(2),
-                                                style: EBAppTextStyle.billItemsText,
+                                                style: EBAppTextStyle
+                                                    .billItemsText,
                                                 textAlign: TextAlign.right),
                                           ],
                                         ),
                                       ],
                                     ),
-                                  // --------->>  bill bottom messages  
+                                  // --------->>  bill bottom messages
                                   if (index ==
                                       _.billDetailedReports!.length - 1)
                                     EBSizeConfig.sizedBoxH20,
-                                if (index == _.billDetailedReports!.length - 1  && billConfig.upienable == true && billConfig.upi != null )
+                                  if (index ==
+                                          _.billDetailedReports!.length - 1 &&
+                                      billConfig.upienable == true &&
+                                      billConfig.upi != null)
 
                                     // ----------------->>  payment qr
                                     paymentQrWidget(
@@ -238,7 +280,10 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                       _.billDetailedReports!.length - 1)
                                     Text(
                                       'Rs ${_.totalBillAmt.toStringAsFixed(2)}',
-                                      style: EBAppTextStyle.customeTextStyleWTNR(fontSize: 33,fontWeigh: FontWeight.w900),
+                                      style:
+                                          EBAppTextStyle.customeTextStyleWTNR(
+                                              fontSize: 33,
+                                              fontWeigh: FontWeight.w900),
                                     ),
                                   if (index ==
                                       _.billDetailedReports!.length - 1)
@@ -246,7 +291,10 @@ Future<void> detailedbillDetailedInfoSheet(context) {
                                         billConfig.footerenable == true
                                             ? billConfig.footer ?? '-'
                                             : '',
-                                        style: EBAppTextStyle.customeTextStyleWTNR(fontSize: 18,fontWeigh: FontWeight.w700)),
+                                        style:
+                                            EBAppTextStyle.customeTextStyleWTNR(
+                                                fontSize: 18,
+                                                fontWeigh: FontWeight.w700)),
                                 ],
                               );
                             }),

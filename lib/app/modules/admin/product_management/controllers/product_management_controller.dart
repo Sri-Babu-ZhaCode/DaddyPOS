@@ -14,6 +14,8 @@ import '../../../../constants/bools.dart';
 class ProductManagementController extends GetxController {
   bool isTaxFieldNeeded = false;
 
+  bool tokenFlag = true;
+
   ProductManagementController({
     required this.isEditMode,
     required this.categoryList,
@@ -91,6 +93,12 @@ class ProductManagementController extends GetxController {
 
   String? validateProductName(String val) {
     if (val.trim().isEmpty) return 'This field is required';
+    if (val.trim().length >= 50) {
+      return 'Maximum upto 50 charectes';
+    }
+    if (!RegExp(r'^[a-zA-Z0-9\s]+$').hasMatch(val)) {
+      return 'Please enter text in English only';
+    }
     if (isEditMode) return null;
     bool isProductFound = Get.find<InventoryController>().productList!.any(
         (product) =>
@@ -117,11 +125,13 @@ class ProductManagementController extends GetxController {
 
   Future<void> addProduct() async {
     try {
+      EBBools.isLoading = true;
+      update();
       Product product = Product(
           productnameEnglish: productNameEnglishController.text,
           productnameTamil: productNameTamilController.text,
           categoryid: selectedCategory?.categoryid,
-          istoken: tokenVal,
+          istoken: tokenFlag == false ? true : tokenVal,
           qrbarcode: scannerController.text,
           price: priceController.text,
           unitid: selectedUnits?.unitid,
@@ -136,6 +146,9 @@ class ProductManagementController extends GetxController {
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
+    } finally {
+      EBBools.isLoading = false;
+      update();
     }
   }
 
@@ -155,6 +168,8 @@ class ProductManagementController extends GetxController {
 
   Future<void> updateProduct() async {
     try {
+      EBBools.isLoading = true;
+      update();
       Product p = Product(
           shopproductid: selectedProduct!.shopproductid,
           productnameEnglish: productNameEnglishController.text,
@@ -172,6 +187,9 @@ class ProductManagementController extends GetxController {
       Get.back();
     } catch (e) {
       debugPrint(e.toString());
+    } finally {
+      EBBools.isLoading = false;
+      update();
     }
   }
 
@@ -187,6 +205,14 @@ class ProductManagementController extends GetxController {
     EBBools.isSalePresent = EBAppString.screenAccessList.contains("sale");
     EBBools.isQuickPresent = EBAppString.screenAccessList.contains("quick");
     EBBools.isTokenPresent = EBAppString.screenAccessList.contains("token");
+
+    if (EBBools.isTokenPresent &&
+        !EBBools.isQuickPresent &&
+        !EBBools.isSalePresent) {
+      tokenFlag = false;
+      selectedUnits = unitList[0];
+      update();
+    }
 
     debugPrint("sales ----------------->> ${EBBools.isSalePresent}");
     debugPrint("quick -------------------->> ${EBBools.isQuickPresent}");

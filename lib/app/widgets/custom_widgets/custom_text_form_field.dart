@@ -17,7 +17,7 @@ class CustomTextFormField extends StatelessWidget {
   final Function()? onTap;
   final bool? enabled;
   final TextEditingController? controller;
-  final bool? autofocus = false;
+  final bool? autofocus;
   final bool readOnly;
   final AutovalidateMode? autovalidateMode;
   final TextInputType? keyboardType;
@@ -44,6 +44,7 @@ class CustomTextFormField extends StatelessWidget {
       this.decoration,
       this.errorText,
       this.readOnly = false,
+      this.autofocus = false,
       this.onTap,
       this.enabled,
       this.initialValue,
@@ -51,6 +52,7 @@ class CustomTextFormField extends StatelessWidget {
       this.maxLines = 1,
       this.suffixIcon,
       this.validator,
+      
       this.inputFormatters,
       this.obscureText = false,
       this.expand = false,
@@ -60,6 +62,7 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autofocus: autofocus!,
       expands: expand!,
       validator: validator,
       maxLines: maxLines,

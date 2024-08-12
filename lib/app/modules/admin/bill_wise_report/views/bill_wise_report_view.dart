@@ -1,3 +1,5 @@
+// ignore_for_file: no_wildcard_variable_uses
+
 import 'package:easybill_app/app/modules/admin/bill_wise_report/views/widgets/billwise_filter_dialog.dart';
 import 'package:easybill_app/app/modules/admin/bill_wise_report/views/widgets/detailed_bill.dart';
 import 'package:flutter/material.dart';
@@ -48,16 +50,16 @@ class BillWiseReportView extends GetView<BillWiseReportController> {
                     await filterDialogForBillWise(controller, context);
                   },
                 ),
-              if (controller.billWiseDecisionKey == 0)
-                IconButton(
-                  icon: const Icon(
-                    Icons.download_rounded,
-                    size: 20,
-                  ),
-                  onPressed: () {
-                    controller.downLoadReports();
-                  },
-                ),
+              // if (controller.billWiseDecisionKey == 0)
+              //   IconButton(
+              //     icon: const Icon(
+              //       Icons.download_rounded,
+              //       size: 20,
+              //     ),
+              //     onPressed: () {
+              //       controller.downLoadReports();
+              //     },
+              //   ),
               IconButton(
                 icon: const Icon(
                   Icons.print_outlined,
@@ -106,9 +108,9 @@ class BillWiseReportView extends GetView<BillWiseReportController> {
                   Reports reports = _.filterableBillReports![index];
                   return GestureDetector(
                     onTap: () async {
-                      if (_.billWiseDecisionKey != -1){
-                      _.getBillWiseFromReportType(reports);
-                      await detailedbillDetailedInfoSheet(context);
+                      if (_.billWiseDecisionKey != -1) {
+                        _.getBillWiseFromReportType(reports);
+                        await detailedbillDetailedInfoSheet(context);
                       }
                     },
                     child: CustomContainer(
@@ -131,7 +133,7 @@ class BillWiseReportView extends GetView<BillWiseReportController> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                  'Bill Date: ${_.formateBillDate(reports.billdate!)}',
+                                  'Bill Date: ${_.formateBillDate(reports.billdate ?? '').isEmpty ? "-" : _.formateBillDate(reports.billdate ?? '')}',
                                   style: EBAppTextStyle.bodyText),
                               Text(
                                 'PaymentMode: ${reports.paymentmode}',

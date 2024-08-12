@@ -1,3 +1,5 @@
+// ignore_for_file: no_wildcard_variable_uses
+
 import 'package:easybill_app/app/constants/app_string.dart';
 import 'package:easybill_app/app/constants/app_text_style.dart';
 import 'package:easybill_app/app/constants/size_config.dart';
@@ -7,6 +9,7 @@ import 'package:easybill_app/app/widgets/custom_widgets/custom_scaffold.dart';
 import 'package:easybill_app/app/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../constants/bools.dart';
 import '../../../../widgets/custom_widgets/custom_elevated_button.dart';
 import '../controllers/subscription_controller.dart';
 
@@ -40,10 +43,12 @@ class SubscriptionView extends GetView<SubscriptionController> {
                     _.onNextBtnPressed();
                   },
                   // : null,
-                  child: Text(
-                    EBAppString.next,
-                    style: EBAppTextStyle.button,
-                  ),
+                  child: EBBools.isLoading
+                      ? const LoadingWidget(color: EBTheme.kPrimaryWhiteColor)
+                      : Text(
+                          EBAppString.next,
+                          style: EBAppTextStyle.button,
+                        ),
                 );
               }),
         ),
@@ -123,15 +128,15 @@ class SubscriptionListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     EBSizeConfig.init(context);
     return GetBuilder<SubscriptionController>(builder: (_) {
-      if (_.subscriptionList == null) return const LoadingWidget();
+      if (EBBools.isLoading) return const LoadingWidget();
       return Padding(
         padding: EBSizeConfig.edgeInsetsActivities,
         child: ListView.builder(
-          addRepaintBoundaries: true,
+            addRepaintBoundaries: true,
             shrinkWrap: true,
             itemCount: _.subscriptionList!.length,
             itemBuilder: (context, index) {
-              print(
+              debugPrint(
                   "screen width of this container ------------->> ${EBSizeConfig.screenWidth}");
               return GestureDetector(
                 onTap: () {
@@ -162,7 +167,7 @@ class SubscriptionListWidget extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Screens',style: EBAppTextStyle.bodyText),
+                            Text('Screens', style: EBAppTextStyle.bodyText),
                             ListView.builder(
                               shrinkWrap: true,
                               itemCount: _

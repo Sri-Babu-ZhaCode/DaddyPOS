@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_adjacent_string_concatenation
 
+
+
 class EBAppString {
   // App title
-  static const String tile = 'Easy Bill';
+  static const String tile = 'Daddy POS';
   static const String createUser = 'Create User';
   static const String businessLogo = 'Business Logo';
 
@@ -115,6 +117,7 @@ class EBAppString {
   static const String businessLogoImg = 'assets/icons/add_image.png';
   static const String profileImg = 'assets/icons/profile.png';
   static const String daddyPosImg = 'assets/icons/icons_lancher.png';
+  static const String ogDaddyPosImg = 'assets/images/daddy_poc.png';
 
   static String units = 'Units';
 

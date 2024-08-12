@@ -8,6 +8,7 @@ import '../../../../data/models/login.dart';
 import '../../../../data/repositories/auth_repository.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../../widgets/custom_widgets/custom_snackbar.dart';
+import '../../../../widgets/custom_widgets/custom_toast.dart';
 
 class LogoutController extends GetxController {
   final authRepo = AuthRepo();
@@ -32,7 +33,7 @@ class LogoutController extends GetxController {
     try {
       await authRepo.logOut(login);
       Get.back();
-      EBCustomSnackbar.show('${EBAppString.responseMsg}');
+      ebCustomTtoastMsg(message:'${EBAppString.responseMsg}');
       Get.toNamed(Routes.LOGIN);
     } catch (e) {
       debugPrint(e.toString());

@@ -1,3 +1,5 @@
+// ignore_for_file: no_wildcard_variable_uses
+
 import 'package:easybill_app/app/modules/admin/bill_wise_report/views/widgets/bill_top_widget.dart';
 import 'package:easybill_app/app/modules/cashier/bill_details/views/wigdets/payment_qr.dart';
 import 'package:easybill_app/app/modules/cashier/cashier_bills/controllers/cashier_bills_controller.dart';
@@ -72,11 +74,9 @@ class BillDetailsItemList extends StatelessWidget {
                           ), // 'x' icon
                           onPressed: () async {
                             // edit bottom sheet
-                            controller.cashierCtrl.billItemIndex =
-                                index;
+                            controller.cashierCtrl.billItemIndex = index;
                             // passing qty to edit bottom sheet itemQuantityController
-                            controller.cashierCtrl
-                                    .itemQuantityController.text =
+                            controller.cashierCtrl.itemQuantityController.text =
                                 controller.billItems![index].quantity
                                     .toString();
                             await billItemEditorBottomSheet(
@@ -123,11 +123,11 @@ Widget newBillDetailedWidget(
             // defaultVerticalAlignment:
             //  TableCellVerticalAlignment.middle,
             columnWidths: const {
-              0: FlexColumnWidth(0.6),
+              0: FlexColumnWidth(0.7),
               1: FlexColumnWidth(5),
               2: FlexColumnWidth(1.5),
               3: FlexColumnWidth(1.5),
-              4: FlexColumnWidth(1.8),
+              4: FlexColumnWidth(2.1),
               5: FlexColumnWidth(0.8),
             },
             children: [
@@ -140,18 +140,18 @@ Widget newBillDetailedWidget(
                     ),
                   ),
                   children: [
-                    Text('Sr ', style: EBAppTextStyle.billItemsText),
+                    Text('Sr', style: EBAppTextStyle.billItemsText),
                     Text(
                       'Name',
                       style: EBAppTextStyle.billItemsText,
                     ),
-                    Text('Rate ',
+                    Text('Rate',
                         style: EBAppTextStyle.billItemsText,
                         textAlign: TextAlign.left),
-                    Text('Qty ',
+                    Text('Qty',
                         style: EBAppTextStyle.billItemsText,
                         textAlign: TextAlign.left),
-                    Text('Amt ',
+                    Text('Amount',
                         style: EBAppTextStyle.billItemsText,
                         textAlign: TextAlign.right),
                     Text('',
@@ -159,6 +159,18 @@ Widget newBillDetailedWidget(
                         textAlign: TextAlign.right),
                   ],
                 ),
+            ],
+          ),
+
+          Table(
+            columnWidths: const {
+              0: FlexColumnWidth(2),
+              1: FlexColumnWidth(26),
+              // 2: FlexColumnWidth(0),
+              //3: FlexColumnWidth(0),
+              //4: FlexColumnWidth(0),
+            },
+            children: [
               TableRow(
                 children: [
                   Text(
@@ -183,6 +195,19 @@ Widget newBillDetailedWidget(
                       textAlign: TextAlign.left),
                 ],
               ),
+            ],
+          ),
+
+          Table(
+            columnWidths: const {
+              0: FlexColumnWidth(0.6),
+              1: FlexColumnWidth(5),
+              2: FlexColumnWidth(1.5),
+              3: FlexColumnWidth(1.5),
+              4: FlexColumnWidth(2.1),
+              5: FlexColumnWidth(0.8),
+            },
+            children: [
               TableRow(
                 children: [
                   const Text(
@@ -223,6 +248,7 @@ Widget newBillDetailedWidget(
               ),
             ],
           ),
+
           if (index == _.billItems!.length - 1)
             Table(
               children: [
@@ -249,19 +275,17 @@ Widget newBillDetailedWidget(
             ),
 
           // --------->>  bill bottom messages
-          if (index == _.billItems!.length - 1)
-            EBSizeConfig.sizedBoxH20,
+          if (index == _.billItems!.length - 1) EBSizeConfig.sizedBoxH20,
           if (index == _.billItems!.length - 1 &&
-             cashierCtrl. billConfig?.upienable == true &&
-               cashierCtrl.billConfig?.upi != null)
+              cashierCtrl.billConfig?.upienable == true &&
+              cashierCtrl.billConfig?.upi != null)
 
             // ----------------->>  payment qr
             paymentQrWidget(
-                upiID:  cashierCtrl.billConfig!.upi!,
-                payeeName:  cashierCtrl.billConfig?.businessname ?? "-",
-                tolalAmt:  cashierCtrl.billItemsTotalPrice),
-          if (index == _.billItems!.length - 1)
-            EBSizeConfig.sizedBoxH20,
+                upiID: cashierCtrl.billConfig!.upi!,
+                payeeName: cashierCtrl.billConfig?.businessname ?? "-",
+                tolalAmt: cashierCtrl.billItemsTotalPrice),
+          if (index == _.billItems!.length - 1) EBSizeConfig.sizedBoxH20,
           if (index == _.billItems!.length - 1)
             Text(
               'Rs ${cashierCtrl.billItemsTotalPrice.toStringAsFixed(2)}',
@@ -270,7 +294,9 @@ Widget newBillDetailedWidget(
             ),
           if (index == _.billItems!.length - 1)
             Text(
-                 cashierCtrl.billConfig?.footerenable == true ?  cashierCtrl.billConfig?.footer ?? '-' : '',
+                cashierCtrl.billConfig?.footerenable == true
+                    ? cashierCtrl.billConfig?.footer ?? '-'
+                    : '',
                 style: EBAppTextStyle.customeTextStyleWTNR(
                     fontSize: 18, fontWeigh: FontWeight.w700)),
         ],

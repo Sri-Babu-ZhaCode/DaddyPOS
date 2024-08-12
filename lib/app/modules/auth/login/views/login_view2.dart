@@ -1,6 +1,7 @@
+// ignore_for_file: no_wildcard_variable_uses
+
 import 'package:easybill_app/app/constants/app_string.dart';
 import 'package:easybill_app/app/constants/bools.dart';
-import 'package:easybill_app/app/constants/validation.dart';
 import 'package:easybill_app/app/routes/app_pages.dart';
 import 'package:easybill_app/app/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -19,14 +20,29 @@ class LoginView2 extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
     EBSizeConfig.init(context);
-    return GetBuilder<LoginController>(builder: (controller) {
+    return GetBuilder<LoginController>(builder: (_) {
       return Scaffold(
         resizeToAvoidBottomInset: false,
         body: Padding(
           padding: EBSizeConfig.edgeInsetsActivities,
           child: Column(
             children: [
-              SizedBox(height: EBSizeConfig.screenHeight * 0.2),
+              SizedBox(height: EBSizeConfig.screenHeight * 0.1 / 2),
+              AspectRatio(
+                aspectRatio: 2.6,
+                child: Image.asset(
+                  EBAppString.ogDaddyPosImg,
+                ),
+              ),
+              SizedBox(height: EBSizeConfig.screenHeight * 0.1 / 5),
+              Text(
+                'FAST  AND  EASY  BILLING',
+                style: EBAppTextStyle.customeTextStyleWTNR(
+                    color: Colors.grey.shade500,
+                    fontSize: 16,
+                    fontWeigh: FontWeight.w800),
+              ),
+              SizedBox(height: EBSizeConfig.screenHeight * 0.1 / 8),
               Expanded(
                 child: DefaultTabController(
                   length: 2,
@@ -36,9 +52,10 @@ class LoginView2 extends GetView<LoginController> {
                       children: [
                         TabBar(
                           onTap: (index) {
-                            controller.tappedIndex = index;
-                            controller.onTabChanged(index);
+                            _.tappedIndex = index;
+                            _.onTabChanged(index);
                           },
+                          controller: _.tabController,
                           overlayColor: WidgetStatePropertyAll(
                               EBTheme.kPrimaryLightColor),
                           labelColor: EBTheme.kPrimaryColor,
@@ -54,12 +71,13 @@ class LoginView2 extends GetView<LoginController> {
                                   ))
                               .toList(),
                         ),
-                        const Expanded(
+                         Expanded(
                           child: Padding(
                             padding: EBSizeConfig.edgeInsetsOnlyH30,
                             child: TabBarView(
-                              physics: NeverScrollableScrollPhysics(),
-                              children: [
+                              controller: _.tabController,
+                              physics: const NeverScrollableScrollPhysics(),
+                              children: const [
                                 LoginForm(),
                                 LoginForm(),
                               ],
@@ -86,39 +104,39 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<LoginController>(builder: (controller) {
+    return GetBuilder<LoginController>(builder: (_) {
       return Padding(
         padding: EBSizeConfig.edgeInsetsActivities,
         child: Column(
-          children: <Widget>[
+          children: [
             CustomTextFormField(
-              controller: controller.isStaffTabTapped
-                  ? controller.staffMobileController
-                  : controller.mobileController,
+              controller: _.isStaffTabTapped
+                  ? _.staffMobileController
+                  : _.mobileController,
               labelText: EBAppString.mobile,
               maxLength: 10,
               keyboardType: TextInputType.phone,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
               ],
-              validator: (value) => controller.validateMobile(value!),
+              validator: (value) => _.validateMobile(value!),
             ),
             CustomTextFormField(
-              obscureText: controller.pwdVisibility,
-              controller: controller.isStaffTabTapped
-                  ? controller.staffPwdController
-                  : controller.pwdController,
+              obscureText: _.pwdVisibility,
+              controller: _.isStaffTabTapped
+                  ? _.staffPwdController
+                  : _.pwdController,
               labelText: EBAppString.pass,
               suffixIcon: IconButton(
-                icon: Icon(controller.pwdVisibility
+                icon: Icon(_.pwdVisibility
                     ? Icons.visibility_off_outlined
                     : Icons.visibility_outlined),
-                onPressed: () => controller.changePwdVisibility(),
+                onPressed: () => _.changePwdVisibility(),
               ),
-              validator: (value) => controller.validateIsEmpty(value!),
+              validator: (value) => _.validateIsEmpty(value!),
             ),
-            loginButton(controller),
-            if (!controller.isStaffTabTapped) const LoginOrRegister(),
+            loginButton(_),
+            if (!_.isStaffTabTapped) const LoginOrRegister(),
           ]
               .expand(
                 (element) => [
@@ -140,7 +158,7 @@ class LoginOrRegister extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<LoginController>(builder: (controller) {
+    return GetBuilder<LoginController>(builder: (_) {
       return Column(children: [
         Text(
           "or",
@@ -168,21 +186,21 @@ class LoginOrRegister extends StatelessWidget {
 
 // Login Button
 
-Widget loginButton(LoginController controller) {
+Widget loginButton(LoginController _) {
   debugPrint('login button build method called ----------------------->>');
- // debugPrint( ' is loading --------------------->>  ${EBBools.isLoading}');
+  // debugPrint( ' is loading --------------------->>  ${EBBools.isLoading}');
 
   return Padding(
     padding: EBSizeConfig.edgeInsetsAll20,
     child: CustomElevatedButton(
         minWidth: EBSizeConfig.screenWidthForEle,
         onPressed: () {
-          controller.loginPressed();
+          _.loginPressed();
         },
         child: EBBools.isLoading
             ? const LoadingWidget(color: EBTheme.kPrimaryWhiteColor)
             : Text(
-                !controller.isStaffTabTapped
+                !_.isStaffTabTapped
                     ? EBAppString.login
                     : EBAppString.staffLogin,
                 style: EBAppTextStyle.button,
@@ -199,11 +217,11 @@ Widget loginButton(LoginController controller) {
   //     dialogContent: 'Please update password',
   //     formChildren: [
   //       Form(
-  //         key: controller.formKey,
+  //         key: _.formKey,
   //         child: Column(
   //           children: [
   //             CustomTextFormField(
-  //               controller: controller.mobileController,
+  //               _: _.mobileController,
   //               readOnly: true,
   //               labelText: EBAppString.mobile,
   //               maxLength: 10,
@@ -214,7 +232,7 @@ Widget loginButton(LoginController controller) {
   //             ),
   //             EBSizeConfig.sizedBoxH15,
   //             CustomTextFormField(
-  //                 controller: controller.passwordController,
+  //                 _: _.passwordController,
   //                 labelText: EBAppString.pass,
   //                 validator: (value) => EBValidation.validateIsEmpty(value!)),
   //           ],
@@ -223,7 +241,7 @@ Widget loginButton(LoginController controller) {
   //     ],
   //     confirmButtonText: EBAppString.update,
   //     confirmOnPressed: () {
-  //       controller.onUpdatePressed();
+  //       _.onUpdatePressed();
   //     },
   //     cancelButtonText: EBAppString.cancel,
   //     cancelOnPressed: () {

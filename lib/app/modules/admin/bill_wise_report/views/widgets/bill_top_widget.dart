@@ -1,3 +1,5 @@
+// ignore_for_file: no_wildcard_variable_uses
+
 import 'dart:convert';
 
 import 'package:easybill_app/app/constants/size_config.dart';
@@ -15,7 +17,7 @@ Widget billTopWidget(_, Setting billConfig, context) {
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-       if ( billConfig.logoenable == true && billConfig.businesslogo != null)
+        if (billConfig.logoenable == true && billConfig.businesslogo != null)
           CustomContainer(
             padding: EBSizeConfig.edgeInsetsZero,
             color: EBTheme.kPrimaryWhiteColor,
@@ -29,22 +31,30 @@ Widget billTopWidget(_, Setting billConfig, context) {
           ),
         Flexible(
             child: Text(billConfig.businessname ?? '-',
-                style: EBAppTextStyle.customeTextStyleWTNR(fontSize: 24,fontWeigh: FontWeight.w700), textAlign: TextAlign.center)),
+                style: EBAppTextStyle.customeTextStyleWTNR(
+                    fontSize: 24, fontWeigh: FontWeight.w700),
+                textAlign: TextAlign.center)),
         Flexible(
           child: Text(billConfig.businessaddress ?? '-',
-              style: EBAppTextStyle.customeTextStyleWTNR(fontSize: 24,fontWeigh: FontWeight.w700), textAlign: TextAlign.center),
+              style: EBAppTextStyle.customeTextStyleWTNR(
+                  fontSize: 24, fontWeigh: FontWeight.w700),
+              textAlign: TextAlign.center),
         ),
-        Flexible(
-          child: Text('Mob: ${billConfig.businessmobile ?? '-'}',
-              style: EBAppTextStyle.billItemsText, textAlign: TextAlign.center),
-        ),
+        if (billConfig.mobileenable == true)
+          Flexible(
+            child: Text('Mob: ${billConfig.businessmobile ?? '-'}',
+                style: EBAppTextStyle.billItemsText,
+                textAlign: TextAlign.center),
+          ),
         if (_ is BillWiseReportController)
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Flexible(
                 child: Text('Bill No:  ${_.billDetailedReports![0].shopbillid}',
-                    textAlign: TextAlign.right, style: EBAppTextStyle.customeTextStyleWTNR(fontSize: 24,fontWeigh: FontWeight.w700)),
+                    textAlign: TextAlign.right,
+                    style: EBAppTextStyle.customeTextStyleWTNR(
+                        fontSize: 24, fontWeigh: FontWeight.w700)),
               ),
             ],
           ),

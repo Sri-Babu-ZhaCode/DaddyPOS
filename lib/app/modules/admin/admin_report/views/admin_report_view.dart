@@ -40,13 +40,13 @@ class AdminReportView extends GetView<AdminReportController> {
                   onPressed: () async {
                     filterDialogForAdminReport(controller, context);
                   }),
-              IconButton(
-                icon: const Icon(
-                  Icons.download_rounded,
-                  size: 20,
-                ),
-                onPressed: () {},
-              ),
+              // IconButton(
+              //   icon: const Icon(
+              //     Icons.download_rounded,
+              //     size: 20,
+              //   ),
+              //   onPressed: () {},
+              // ),
               IconButton(
                 icon: const Icon(
                   Icons.print_outlined,

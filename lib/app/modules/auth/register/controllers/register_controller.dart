@@ -1,4 +1,7 @@
+// ignore_for_file: avoid_print, unnecessary_overrides
+
 import 'package:easybill_app/app/constants/app_string.dart';
+import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/data/repositories/auth_repository.dart';
 import 'package:easybill_app/app/routes/app_pages.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_snackbar.dart';
@@ -7,6 +10,7 @@ import 'package:get/get.dart';
 import '../../../../constants/utils.dart';
 import '../../../../data/api/local_storage.dart';
 import '../../../../data/models/user.dart';
+import '../../../../widgets/custom_widgets/custom_toast.dart';
 
 class RegisterController extends GetxController {
   final businessController = TextEditingController();
@@ -47,6 +51,8 @@ class RegisterController extends GetxController {
 
   Future<void> userRegister() async {
     try {
+      EBBools.isLoading = true;
+      update();
       final user = User(
         businessname: businessController.text,
         devicename: deviceName,
@@ -63,7 +69,7 @@ class RegisterController extends GetxController {
       userRegiserId = userList![0].userregistrationid;
       EBAppString.loginmobilenumber = userList![0].loginmobilenumber;
       print(
-                'login mobile number  ---------------- >> ${EBAppString.loginmobilenumber}');
+          'login mobile number  ---------------- >> ${EBAppString.loginmobilenumber}');
       print('userregister id-------------->>  $userRegiserId');
       LocalStorage.writeUserId(userRegiserId.toString());
       String? userId = await LocalStorage.getUserId();
@@ -74,6 +80,9 @@ class RegisterController extends GetxController {
       navigationForRegister(userList);
     } catch (e) {
       debugPrint(e.toString());
+    } finally {
+      EBBools.isLoading = false;
+      update();
     }
   }
 
@@ -82,16 +91,16 @@ class RegisterController extends GetxController {
     int decisionKey = userList[0].decisionkey!;
     switch (decisionKey) {
       case 1:
-        EBCustomSnackbar.show('Registeration Success');
+        ebCustomTtoastMsg(message:'Registeration Success');
         Get.toNamed(Routes.SUBSCRIPTION);
         break;
       case 2:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('Already registered login to continue');
+        ebCustomTtoastMsg(message:'Already registered login to continue');
         Get.offAllNamed(Routes.LOGIN);
         break;
       case 3:
-        EBCustomSnackbar.show('Missing required fields');
+        ebCustomTtoastMsg(message:'Missing required fields');
         break;
       default:
         print('Something went Wrong No decision key matches');

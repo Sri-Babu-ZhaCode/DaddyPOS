@@ -61,10 +61,18 @@ class BillWiseReportController extends GetxController {
   }
 
   String formateBillDate(String date) {
-    DateTime dateTime = DateTime.parse(date);
-    DateFormat timeFormat = DateFormat('HH:mm');
-    formattedTime = timeFormat.format(dateTime);
-    return DateFormat('yyyy-MM-dd').format(dateTime);
+    try {
+      DateTime dateTime = DateTime.parse(date);
+
+      formattedTime = DateFormat('hh:mm').format(dateTime);
+      
+      formattedTime = '$formattedTime ${DateFormat('a').format(dateTime)}' ;
+      return DateFormat('dd-MMM-yyyy').format(dateTime);
+    } catch (e) {
+      debugPrint(e.toString());
+      debugPrint('invalid date format');
+      return "";
+    }
   }
 
   @override
@@ -150,7 +158,12 @@ class BillWiseReportController extends GetxController {
             reports.reporttype = 'cancel';
           }
         } else {
-          reports.reporttype = 'bill';
+          if (EBAppString.userRole == 'Staff') {
+            reports.credentialsid = int.parse(LocalStorage.usercredentialsid!);
+            reports.reporttype = 'billsunderstaff';
+          } else {
+            reports.reporttype = 'bill';
+          }
         }
       } else {
         switch (billWiseDecisionKey) {
@@ -270,7 +283,7 @@ class BillWiseReportController extends GetxController {
       final resultList = await _billRepo.filterBills(reports);
       if (resultList != null) {
         filterableBillReports = resultList;
-     //   ebCustomTtoastMsg(message: 'Bills filtered by dates');
+        //   ebCustomTtoastMsg(message: 'Bills filtered by dates');
       } else {
         ebCustomTtoastMsg(message: 'No bills in Found');
       }

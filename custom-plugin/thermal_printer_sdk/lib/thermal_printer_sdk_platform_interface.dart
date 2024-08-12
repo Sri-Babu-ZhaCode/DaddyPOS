@@ -30,7 +30,7 @@ abstract class ThermalPrinterSdkPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  Future<bool?> print(TemplateSettings settings) {
+  Future<bool?> print(TemplateSettings  settings) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 

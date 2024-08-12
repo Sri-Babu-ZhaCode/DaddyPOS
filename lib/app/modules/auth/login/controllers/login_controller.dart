@@ -10,9 +10,10 @@ import '../../../../data/api/local_storage.dart';
 import '../../../../data/models/login.dart';
 import '../../../../data/repositories/auth_repository.dart';
 import '../../../../routes/app_pages.dart';
-import '../../../../widgets/custom_widgets/custom_snackbar.dart';
+import '../../../../widgets/custom_widgets/custom_toast.dart';
 
-class LoginController extends GetxController {
+class LoginController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   TextEditingController mobileController = TextEditingController();
   TextEditingController pwdController = TextEditingController();
   TextEditingController staffMobileController = TextEditingController();
@@ -22,20 +23,29 @@ class LoginController extends GetxController {
   List<Login>? loginList;
 
   bool isStaffTabTapped = false;
-  bool pwdVisibility = false;
+  bool pwdVisibility = true;
   bool aMobileFlag = false;
   bool aPwdFlag = false;
   bool sMobileFlag = false;
   bool sPwdFlag = false;
 
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
   int? tappedIndex;
+
+  late TabController tabController;
 
   @override
   void onInit() {
     print('Login init called --------------->>');
     super.onInit();
+    tabController = TabController(
+      length: 2,
+      initialIndex: 0,
+      vsync: this,
+    );
+    mobileController.clear();
+    pwdController.clear();
+    staffPwdController.clear();
+    staffMobileController.clear();
     EBBools.isLoading = false;
     getDeviceInfo();
   }
@@ -47,10 +57,10 @@ class LoginController extends GetxController {
 
   @override
   void onClose() {
-    //   mobileController.dispose();
-    // pwdController.dispose();
-    // staffPwdController.dispose();
-    // staffMobileController.dispose();
+    mobileController.clear();
+    pwdController.clear();
+    staffPwdController.clear();
+    staffMobileController.clear();
     super.onClose();
   }
 
@@ -156,8 +166,12 @@ class LoginController extends GetxController {
     switch (decisionKey) {
       case 0:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('Not Registered');
+        ebCustomTtoastMsg(message: 'Not Registered');
         Get.toNamed(Routes.REGISTER);
+        mobileController.clear();
+        pwdController.clear();
+        staffPwdController.clear();
+        staffMobileController.clear();
         break;
       case 1:
         debugPrint('decision key --------------->>  $decisionKey');
@@ -169,16 +183,22 @@ class LoginController extends GetxController {
           EBBools.triggeredFromStaff = isStaffTabTapped;
           Get.offAllNamed(Routes.DAY_END_REPORT);
         }
+
+        mobileController.clear();
+        pwdController.clear();
+        staffPwdController.clear();
+        staffMobileController.clear();
         break;
+
       case 2:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('No subscription');
+        ebCustomTtoastMsg(message: 'No subscription');
         Get.toNamed(Routes.SUBSCRIPTION);
 
         break;
       case 3:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('Invalid credentials');
+        ebCustomTtoastMsg(message: 'Invalid credentials');
         break;
       case 4:
         debugPrint('decision key --------------->>  $decisionKey');
@@ -186,11 +206,11 @@ class LoginController extends GetxController {
             formKey: GlobalKey<FormState>(),
             loginMobileNum: mobileController.text,
             triggeredFromLogin: true);
-        EBCustomSnackbar.show('Create password');
+        ebCustomTtoastMsg(message: 'Create password');
         break;
       case 5:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('Subscription expired');
+        ebCustomTtoastMsg(message: 'Subscription expired');
         break;
       case 6:
         debugPrint('decision key --------------->>  $decisionKey');
@@ -202,11 +222,11 @@ class LoginController extends GetxController {
         // logout form all devices in here
 
         Get.toNamed(Routes.LOGOUT);
-        // EBCustomSnackbar.show('${EBAppString.responseMsg}');
+        // ebCustomTtoastMsg(message:'${EBAppString.responseMsg}');
         break;
       case 7:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('Contact adminstrator');
+        ebCustomTtoastMsg(message: 'Contact adminstrator');
         break;
       default:
         debugPrint('decision key --------------->>  $decisionKey');
@@ -272,7 +292,7 @@ class LoginController extends GetxController {
     switch (decisionKey) {
       case 0:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('Not Registered');
+        ebCustomTtoastMsg(message: 'Not Registered');
         Get.toNamed(Routes.REGISTER);
         break;
       case 1:
@@ -281,12 +301,12 @@ class LoginController extends GetxController {
         break;
       case 2:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('No subscription');
+        ebCustomTtoastMsg(message: 'No subscription');
         Get.toNamed(Routes.SUBSCRIPTION);
         break;
       case 3:
         debugPrint('decision key --------------->>  $decisionKey');
-        EBCustomSnackbar.show('Password already created');
+        ebCustomTtoastMsg(message: 'Password already created');
         break;
       default:
         debugPrint('decision key --------------->>  $decisionKey');

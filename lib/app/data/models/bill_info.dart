@@ -2,6 +2,7 @@ import 'package:easybill_app/app/data/models/bill_items.dart';
 import 'package:easybill_app/app/data/models/response_model.dart';
 
 class BillInfo extends BaseModel {
+  int? billno;
   String? userregistrationid;
   String? usercredentialsid;
   String? paymentmode;
@@ -11,6 +12,7 @@ class BillInfo extends BaseModel {
   bool? istoken;
   List<BillItems>? items;
   String? datetime;
+  String? tab;
 
   BillInfo(
       {this.userregistrationid,
@@ -21,7 +23,9 @@ class BillInfo extends BaseModel {
       this.issuccess,
       this.istoken,
       this.items,
-      this.datetime
+      this.datetime,
+      this.billno,
+      this.tab
       });
 
   BillInfo.fromJson(Map<String, dynamic> json) {
@@ -32,7 +36,9 @@ class BillInfo extends BaseModel {
     billtemplate = json['billtemplate'];
     issuccess = json['issuccess'];
     istoken = json['istoken'];
-    datetime = json['datetime'];
+    datetime = json['billdate'];
+    billno = json['billno'];
+    tab = json['tab'];
     if (json['items'] != null) {
       items = <BillItems>[];
       json['items'].forEach((v) {
@@ -52,6 +58,7 @@ class BillInfo extends BaseModel {
     data['issuccess'] = issuccess;
     data['istoken'] = istoken;
     data['datetime'] = datetime;
+    data['tab'] = tab;
     if (items != null) {
       data['items'] = items!.map((v) => v.toJson()).toList();
     }

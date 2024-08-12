@@ -241,7 +241,17 @@ public class PrinterMainActivity {
         String content = PrinterTextParserImg.bitmapToHexadecimalString(printer,getMultiLangTextAsImage(text, textSize, interfaceType.contains("BOLD")?
                 Typeface.defaultFromStyle(Typeface.BOLD):Typeface.defaultFromStyle(Typeface.NORMAL), alignment.contains("CENTER")?
                 Layout.Alignment.ALIGN_CENTER:Layout.Alignment.ALIGN_NORMAL));
+         // PrinterTextParserImg.bitmapToHexadecimalString(printer,// bitmap) --> hexadecimal String
         return content;
+
+    }
+
+    public String changeLogoToHex(Bitmap bitmap) throws EscPosConnectionException {
+        EscPosPrinter printer;
+        printer= new EscPosPrinter(selectedDevice, printerSettings.printerDpi, printerSettings.printerWidth, printerSettings.nbrCharPerLine);
+
+        return PrinterTextParserImg.bitmapToHexadecimalString(printer, bitmap); //--> hexadecimal String
+
 
     }
 

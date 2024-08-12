@@ -1,4 +1,5 @@
 import 'package:easybill_app/app/constants/themes.dart';
+import 'package:easybill_app/app/modules/auth/login/controllers/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,7 @@ Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: EBTheme.kPrimaryColor,
   ));
+  Get.put(LoginController());
   runApp(const MyApp());
   DependencyInjection.init();
 }
@@ -39,7 +41,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Easy Bill",
+      title: "Daddy POS",
       theme: ThemeData(
         primaryColor: EBTheme.kPrimaryColor,
         scaffoldBackgroundColor: Colors.white,

@@ -5,10 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../../constants/app_string.dart';
 import '../../../../constants/app_text_style.dart';
+import '../../../../constants/bools.dart';
 import '../../../../constants/size_config.dart';
 import '../../../../constants/themes.dart';
 import '../../../../widgets/custom_widgets/custom_elevated_button.dart';
 import '../../../../widgets/custom_widgets/custom_text_form_field.dart';
+import '../../../../widgets/loading_widget.dart';
 
 class RegisterView extends GetView<RegisterController> {
   const RegisterView({super.key});
@@ -60,10 +62,12 @@ class RegisterView extends GetView<RegisterController> {
             onPressed: () {
               controller.onRegisterButtonPressed();
             },
-            child: Text(
-              EBAppString.register,
-              style: EBAppTextStyle.button,
-            ),
+            child: EBBools.isLoading
+                ? const LoadingWidget(color: EBTheme.kPrimaryWhiteColor)
+                : Text(
+                    EBAppString.register,
+                    style: EBAppTextStyle.button,
+                  ),
           );
         }),
       ),

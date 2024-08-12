@@ -59,8 +59,9 @@ Widget quantityBillCalculatorWidget(Product product) {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      EBAppString.productlanguage == 'English'?
-                      product.productnameEnglish ?? '-' : product.productnameTamil ?? '-',
+                      EBAppString.productlanguage == 'English'
+                          ? product.productnameEnglish ?? '-'
+                          : product.productnameTamil ?? '-',
                       style: EBAppTextStyle.heading2,
                     ),
                     Expanded(
@@ -110,15 +111,23 @@ Widget quantityBillCalculatorWidget(Product product) {
             QuantityCalulater(p: product),
             EBSizeConfig.sizedBoxH20,
             CustomElevatedButton(
-                minWidth: double.infinity,
-                onPressed: controller.productQuantity.isNotEmpty &&
-                        double.parse(controller.productQuantity) >= 0.1
-                    ? () {
-                        controller.nextPressed(product);
-                        Get.back();
-                      }
-                    : null,
-                child: const Text(EBAppString.next))
+              minWidth: double.infinity,
+              onPressed: controller.productQuantity.isNotEmpty &&
+                      double.parse(controller.productQuantity) >= 0.1
+                  ? () {
+                      Get.back();
+                      controller.nextPressed(product);
+                      // if (EBBools.isTokenPresent &&
+                      //     controller.tabIndex !=
+                      //         EBAppString.screenAccessList.length - 1) {
+                      //           debugPrint('inside if and called back ------------------->> ');
+                      //           debugPrint('Screnn access list length ${EBAppString.screenAccessList.length}');
+                      //   Get.back();
+                      // }
+                    }
+                  : null,
+              child: const Text(EBAppString.next),
+            ),
           ],
         ),
       );
@@ -155,12 +164,12 @@ class QuantityCalulater extends GetView<CashierBillsController> {
                 controller.productQuantity = controller.productQuantity +
                     controller.quantityButtons[index];
                 double.parse(controller.productQuantity);
-                 controller.update();
+                controller.update();
               } catch (e) {
                 print('erroe occured ----->> $e');
                 controller.productQuantity = '';
                 ebCustomTtoastMsg(message: 'Enter valid Quantity');
-              } 
+              }
             },
           );
           // } else {

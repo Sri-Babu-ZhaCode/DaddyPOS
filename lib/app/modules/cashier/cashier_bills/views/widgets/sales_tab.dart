@@ -64,6 +64,7 @@ Widget saleTab(context) {
                                     ),
                               child: Center(
                                 child: Text(
+                                  
                                     _
                                         .inventoryController
                                         .filterableCategoryList![index]

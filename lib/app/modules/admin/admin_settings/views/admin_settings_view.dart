@@ -286,7 +286,7 @@ Widget themePrinter() {
 
                   // statuses.forEach((permission, status) {
                   //   if (status.isDenied) {
-                  //     EBCustomSnackbar.show(
+                  //     ebCustomTtoastMsg(message:
                   //         'The ${permission.toString().split('.').last} permission was denied. Please allow it to use this feature.');
                   //   } else if (status.isPermanentlyDenied) {
                   //     openAppSettings();
