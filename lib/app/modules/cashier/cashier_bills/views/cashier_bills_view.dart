@@ -34,7 +34,7 @@ class CashierBillsView extends GetView<CashierBillsController> {
         return EBCustomScaffold(
           resizeToAvoidBottomInset: false,
           bottomNavBar: Container(
-            height: 85,
+            height: 70,
             decoration: const BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -46,7 +46,7 @@ class CashierBillsView extends GetView<CashierBillsController> {
               ],
             ),
             child: Padding(
-              padding: EBSizeConfig.edgeInsetsAll20,
+              padding: EBSizeConfig.edgeInsetsAll08,
               child: Row(
                 children: [
                   Expanded(

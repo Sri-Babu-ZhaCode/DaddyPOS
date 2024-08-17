@@ -129,6 +129,19 @@ class BillDetailsController extends GetxController {
     //bt.template += billConfig.businesslogo;
     //  await thermalPrinterSdkPlugin.print(TemplateSettings(
     //       template: billConfig.businesslogo));
+    int j = 1;
+    for (var item in billItems!) {
+      print('Item ----->> $j');
+
+      print('product name english : ${item.productNameEnglish}');
+      print('product name tamil : ${item.productnameTamil}');
+      print('rate : ${item.price}');
+      print('quantity : ${item.quantity}');
+      print('amount : ${item.totalprice}');
+      print('-----------------------------------------');
+      j++;
+    }
+
     bt.billData = await printerTextToImg(
         size: 30, txt: billConfig.businessname ?? "", allignment: 'CENTER');
     bt.template += bt.imageTagW1linebreak;

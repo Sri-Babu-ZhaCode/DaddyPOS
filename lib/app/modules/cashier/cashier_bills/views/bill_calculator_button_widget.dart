@@ -45,6 +45,8 @@
 //   }
 // }
 
+import 'dart:ffi';
+
 import 'package:easybill_app/app/constants/app_string.dart';
 import 'package:easybill_app/app/constants/app_text_style.dart';
 import 'package:easybill_app/app/constants/size_config.dart';
@@ -52,14 +54,13 @@ import 'package:easybill_app/app/constants/themes.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../widgets/responsive.dart';
-
 class CalculatorButton extends StatelessWidget {
   final String? btnText;
   final Icon? btnIcon;
   final Color? btnColor;
   final bool? isAddItemBtn;
   final GestureTapCallback? onButtonPressed;
+  final double? aspectRatio;
 
   const CalculatorButton({
     super.key,
@@ -68,6 +69,7 @@ class CalculatorButton extends StatelessWidget {
     this.isAddItemBtn,
     this.onButtonPressed,
     this.btnColor,
+    this.aspectRatio,
   });
 
   @override
@@ -76,35 +78,42 @@ class CalculatorButton extends StatelessWidget {
     return isAddItemBtn == true
         ? GestureDetector(
             onTap: onButtonPressed,
-            child: CustomContainer(
-              height:   EBSizeConfig.screenWidth > 900 ? 162 : Responsive.isTablet(context) == true ?  348 : 210,
-              color: EBTheme.kPrintBtnColor,
-              child: Center(
-                child: Text(
-                  EBAppString.addItems,
-                  textAlign: TextAlign.center,
-                  style: EBAppTextStyle.customeTextStyle(
-                      color: EBTheme.kPrimaryWhiteColor,
-                      fontSize: 22,
-                      fontWeigh: FontWeight.bold),
+            child: AspectRatio(
+              aspectRatio: 2 / 4.6,
+              child: CustomContainer(
+                noHeight: true,
+                // height:   EBSizeConfig.screenWidth > 900 ? 162 : Responsive.isTablet(context) == true ?  348 : 210,
+                color: EBTheme.kPrintBtnColor,
+                child: Center(
+                  child: Text(
+                    EBAppString.addItems,
+                    textAlign: TextAlign.center,
+                    style: EBAppTextStyle.customeTextStyle(
+                        color: EBTheme.kPrimaryWhiteColor,
+                        fontSize: 17,),
+                  ),
                 ),
               ),
             ),
           )
         : GestureDetector(
             onTap: onButtonPressed,
-            child: CustomContainer(
-              height: EBSizeConfig.screenWidth > 900 ? 75 : Responsive.isTablet(context) == true ? 168: 100,
-              color: btnColor ?? EBTheme.listColor,
-              child: Center(
-                child: btnIcon ??
-                    Text(
-                      btnText!,
-                      style: EBAppTextStyle.customeTextStyle(
-                          color: Colors.black,
-                          fontSize: 45,
-                          fontWeigh: FontWeight.w600),
-                    ),
+            child: AspectRatio(
+              aspectRatio: aspectRatio ?? 1,
+              child: CustomContainer(
+                noHeight: true,
+                //     height: EBSizeConfig.screenWidth > 900 ? 75 : Responsive.isTablet(context) == true ? 168: 100,
+                color: btnColor ?? EBTheme.listColor,
+                child: Center(
+                  child: btnIcon ??
+                      Text(
+                        btnText!,
+                        style: EBAppTextStyle.customeTextStyle(
+                            color: Colors.black,
+                            fontSize: 45,
+                            fontWeigh: FontWeight.w600),
+                      ),
+                ),
               ),
             ),
           );
