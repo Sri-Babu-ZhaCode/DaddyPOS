@@ -1,3 +1,5 @@
+// ignore_for_file: no_wildcard_variable_uses
+
 import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/data/models/day_end_report.dart';
 import 'package:easybill_app/app/widgets/loading_widget.dart';

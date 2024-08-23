@@ -9,9 +9,11 @@ import '../../../../constants/size_config.dart';
 import '../../../../constants/themes.dart';
 import '../../../../widgets/custom_widgets/custom_elevated_button.dart';
 import '../../../../widgets/custom_widgets/custom_round_btn.dart';
+import '../../bill_details/controllers/bill_details_controller.dart';
 import '../controllers/cashier_bills_controller.dart';
 
-Future<void> billItemEditorBottomSheet(context, BillItems billItem) {
+Future<void> billItemEditorBottomSheet(context, BillItems billItem,
+    [List<BillItems>? billItmes]) {
   return showModalBottomSheet<void>(
     backgroundColor: EBTheme.kPrimaryWhiteColor,
     context: context,
@@ -23,7 +25,7 @@ Future<void> billItemEditorBottomSheet(context, BillItems billItem) {
               ? billItem.productNameEnglish!
               : billItem.productnameTamil!;
       cashierController.itemPriceController.text = billItem.price.toString();
-      print(
+      debugPrint(
           'billItemEditorBottomSheet called ------------------------------------->>  ');
       return GetBuilder<CashierBillsController>(builder: (controller) {
         return FractionallySizedBox(
@@ -93,7 +95,7 @@ Future<void> billItemEditorBottomSheet(context, BillItems billItem) {
                               RegExp(r'^\d+\.?\d{0,3}'))
                         ],
                         onChanged: (value) {
-                            controller.update();
+                          controller.update();
                         },
                       ),
                     ),
@@ -121,6 +123,10 @@ Future<void> billItemEditorBottomSheet(context, BillItems billItem) {
                 CustomElevatedButton(
                   onPressed: () {
                     controller.updateBillItem(billItem);
+                    if (billItmes != null) {
+                      Get.find<BillDetailsController>()
+                          .calculateGSTByBillItmes(billItmes);
+                    }
                   },
                   child: Text(
                     EBAppString.update,
@@ -132,6 +138,10 @@ Future<void> billItemEditorBottomSheet(context, BillItems billItem) {
                   btnColor: EBTheme.kCancelBtnColor,
                   onPressed: () {
                     controller.deleteBillItem(billItem);
+                    if (billItmes != null) {
+                      Get.find<BillDetailsController>()
+                          .calculateGSTByBillItmes(billItmes);
+                    }
                   },
                   child: Text(
                     EBAppString.delete,

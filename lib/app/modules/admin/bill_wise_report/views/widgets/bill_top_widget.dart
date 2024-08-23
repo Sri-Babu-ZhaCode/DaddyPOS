@@ -32,12 +32,12 @@ Widget billTopWidget(_, Setting billConfig, context) {
         Flexible(
             child: Text(billConfig.businessname ?? '-',
                 style: EBAppTextStyle.customeTextStyleWTNR(
-                    fontSize: 24, fontWeigh: FontWeight.w700),
+                    fontSize: 20, fontWeigh: FontWeight.bold),
                 textAlign: TextAlign.center)),
         Flexible(
           child: Text(billConfig.businessaddress ?? '-',
               style: EBAppTextStyle.customeTextStyleWTNR(
-                  fontSize: 24, fontWeigh: FontWeight.w700),
+                  fontSize: 20, fontWeigh: FontWeight.bold),
               textAlign: TextAlign.center),
         ),
         if (billConfig.mobileenable == true)
@@ -54,7 +54,7 @@ Widget billTopWidget(_, Setting billConfig, context) {
                 child: Text('Bill No:  ${_.billDetailedReports![0].shopbillid}',
                     textAlign: TextAlign.right,
                     style: EBAppTextStyle.customeTextStyleWTNR(
-                        fontSize: 24, fontWeigh: FontWeight.w700)),
+                        fontSize: 20, fontWeigh: FontWeight.bold)),
               ),
             ],
           ),

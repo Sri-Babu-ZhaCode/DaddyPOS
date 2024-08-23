@@ -63,8 +63,8 @@ class BillWiseReportController extends GetxController {
       DateTime dateTime = DateTime.parse(date);
 
       formattedTime = DateFormat('hh:mm').format(dateTime);
-      
-      formattedTime = '$formattedTime ${DateFormat('a').format(dateTime)}' ;
+
+      formattedTime = '$formattedTime ${DateFormat('a').format(dateTime)}';
       return DateFormat('dd-MMM-yyyy').format(dateTime);
     } catch (e) {
       debugPrint(e.toString());

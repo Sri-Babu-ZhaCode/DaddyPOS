@@ -27,6 +27,7 @@ class CategoryList extends GetView<InventoryController> {
       return controller.categoryList == null
           ? const LoadingWidget()
           : CustomContainer(
+            noHeight: true,
               color: EBTheme.listColor,
               child: ListView.builder(
                 itemCount: controller.categoryList!.length,
@@ -90,7 +91,7 @@ class CategoryList extends GetView<InventoryController> {
                       ),
                       children: [
                         ListView.builder(
-                          physics: const ClampingScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           padding: EBSizeConfig.textContentPadding,
                           itemCount: controller

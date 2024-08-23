@@ -1,5 +1,3 @@
-import 'dart:io';
-
 class BillTemplate {
   String template = '';
   String billData = '';
@@ -9,19 +7,17 @@ class BillTemplate {
   String qty = '';
   String sno = '';
   String totlaQty = '';
-  File logoFile = File('');
   String amt = '';
   String totlaAmt = '';
 
   String get imageTagW1linebreak => "[C]<img>$billData</img>\n";
-  String get billLogoTag => "[C]<img>$logoFile</img>\n";
   String get imageTagW2linebreak => "[C]<img>$billData</img>\n\n";
   String get billPhone => "[C]<b>Mob: $billData</b>\n\n";
   String get billNo => "[L]<font size='big'>Bill No: $billData</font>\n\n";
   String get tokenNo => "[L]<b><font size='NORMAL'>Token No: $billData</font></b>\n\n";
   String get inch2divider => "[C]<b>--------------------------------</b>\n";
   String get inch3divider => "[C]<b>------------------------------------------------</b>\n";
-  String get inch3QR => "[C]<qrcode size='20'>Test QR Code</qrcode>\n";
+  String get inch3QR => "\n[C]<qrcode size='30'>$billData</qrcode>\n\n";
   String get billDateTime => "[L]<b><font size='normal'>Date: $date</font></b>[R]<b>Time: $time</font></b>\n";
   String get tokenBillDateTime => "[L]<b><font size='normal'>Date:   $billData</font></b>\n";
   String get inch2billTopColumn => "[L]<b><font size='normal'>Sr</font></b>[L]<b><font size='normal'>Name</font></b>[R]<b><font size='normal'>Rate</font></b>[C]<b><font size='normal'>Qty</font></b>[C]<b><font size='normal'>Amount</font></b>\n";

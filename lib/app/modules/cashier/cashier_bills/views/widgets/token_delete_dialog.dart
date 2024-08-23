@@ -1,5 +1,6 @@
 import 'package:easybill_app/app/constants/themes.dart';
 import 'package:easybill_app/app/modules/cashier/cashier_bills/controllers/cashier_bills_controller.dart';
+import 'package:easybill_app/app/widgets/custom_widgets/custom_toast.dart';
 import 'package:get/get.dart';
 import '../../../../../constants/app_string.dart';
 import '../../../../../data/models/product.dart';
@@ -17,9 +18,14 @@ Future deteteBillItemsIfTokenAdded(Product p) {
       Get.back();
       Get.find<CashierBillsController>().billItems.clear();
       Get.find<CashierBillsController>().addBillItem(p);
+      // if (Get.find<CashierBillsController>().billConfig?.printeraddress !=
+      //     null) {
       Get.toNamed(Routes.BILL_DETAILS, arguments: {
         'billItems': Get.find<CashierBillsController>().billItems
       });
+      // } else {
+      //   ebCustomTtoastMsg(message: 'Choose printer from setting');
+      // }
     },
     cancelButtonText: EBAppString.cancel,
     cancelOnPressed: () {

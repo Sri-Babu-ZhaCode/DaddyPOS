@@ -38,7 +38,7 @@ class BillDetailsView extends GetView<BillDetailsController> {
                     child: const BillDetailsItemList()),
                 EBSizeConfig.dividerTH2,
                 SizedBox(
-                  height: EBSizeConfig.screenHeight * 0.1 / 1,
+                  height: EBSizeConfig.screenHeight * 0.1 / 1.3,
                   child: BillCalculatorWidget(
                     crossAxisCount: 3,
                     itemCount: controller.paymentMode.length,
@@ -69,7 +69,7 @@ class BillDetailsView extends GetView<BillDetailsController> {
                         controller.addBillInfo();
                       },
                       child: CustomContainer(
-                        height: 60,
+                        height: 55,
                         borderColor: controller.currentIndex == index
                             ? EBTheme.kPrimaryColor
                             : Colors.transparent,

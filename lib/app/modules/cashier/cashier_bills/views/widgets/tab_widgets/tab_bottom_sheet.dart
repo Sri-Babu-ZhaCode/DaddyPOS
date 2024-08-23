@@ -117,7 +117,7 @@ Widget tabBottomSheet(CashierBillsController controller, BuildContext context) {
                           //  controller: controller.pageController,
                           children: [
                             if (EBBools.isSalePresent) saleTab(context),
-                            if (EBBools.isQuickPresent) billTab(),
+                            if (EBBools.isQuickPresent) billTab(context),
                             if (EBBools.isTokenPresent) tokenTab(),
                           ],
                           // onPageChanged: (index) {

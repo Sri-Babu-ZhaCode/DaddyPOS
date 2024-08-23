@@ -99,13 +99,14 @@ class ProductManagementController extends GetxController {
     if (!RegExp(r'^[a-zA-Z0-9\s]+$').hasMatch(val)) {
       return 'Please enter text in English only';
     }
-    if (isEditMode) return null;
+    if (!isEditMode) {
     bool isProductFound = Get.find<InventoryController>().productList!.any(
         (product) =>
             val.trim().toLowerCase() ==
             product.productnameEnglish?.trim().toLowerCase());
 
     if (isProductFound) return 'Product already added';
+    }
 
     return null;
   }
@@ -128,7 +129,7 @@ class ProductManagementController extends GetxController {
       EBBools.isLoading = true;
       update();
       Product product = Product(
-          productnameEnglish: productNameEnglishController.text,
+          productnameEnglish: productNameEnglishController.text.trim(),
           productnameTamil: productNameTamilController.text,
           categoryid: selectedCategory?.categoryid,
           istoken: tokenFlag == false ? true : tokenVal,

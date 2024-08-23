@@ -7,6 +7,7 @@ import 'package:easybill_app/app/modules/cashier/cashier_bills/controllers/cashi
 import 'package:easybill_app/app/modules/cashier/cashier_bills/views/bill_items_edit.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_scaffold.dart';
 import 'package:easybill_app/app/widgets/custom_widgets/custom_text_button.dart';
+import 'package:easybill_app/app/widgets/custom_widgets/custom_toast.dart';
 import 'package:easybill_app/app/widgets/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -85,8 +86,15 @@ class CashierBillsView extends GetView<CashierBillsController> {
                       btnColor: EBTheme.kPrintBtnColor,
                       onPressed: () {
                         controller.billItemsTotalPrice > 0.01
-                            ? Get.toNamed(Routes.BILL_DETAILS,
-                                arguments: {'billItems': controller.billItems})
+                            // &&
+                            //         controller.billConfig?.printeraddress != null
+                            ? Get.toNamed(Routes.BILL_DETAILS, arguments: {
+                                'billItems': controller.billItems
+                              })
+                            // :
+                            //  controller.billConfig?.printeraddress == null
+                            //     ? ebCustomTtoastMsg(
+                            //         message: 'Choose printer from setting')
                             : null;
                       },
                       child: Text(
@@ -218,7 +226,7 @@ class CashierBillsView extends GetView<CashierBillsController> {
                             //  controller: controller.pageController,
                             children: [
                               if (EBBools.isSalePresent) saleTab(context),
-                              if (EBBools.isQuickPresent) billTab(),
+                              if (EBBools.isQuickPresent) billTab(context),
                               if (EBBools.isTokenPresent) tokenTab(),
                             ],
                             // onPageChanged: (index) {

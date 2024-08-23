@@ -1,12 +1,10 @@
-// ignore_for_file: no_wildcard_variable_uses
+// ignore_for_file: no_wildcard_variable_uses, prefer_const_constructors
 
 import 'package:easybill_app/app/modules/admin/bill_wise_report/views/widgets/bill_top_widget.dart';
 import 'package:easybill_app/app/modules/cashier/bill_details/views/wigdets/payment_qr.dart';
 import 'package:easybill_app/app/modules/cashier/cashier_bills/controllers/cashier_bills_controller.dart';
-import 'package:easybill_app/app/widgets/custom_widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../../constants/app_string.dart';
 import '../../../../constants/app_text_style.dart';
 import '../../../../constants/size_config.dart';
@@ -24,86 +22,12 @@ class BillDetailsItemList extends StatelessWidget {
   Widget build(BuildContext context) {
     EBSizeConfig.init(context);
     return GetBuilder<BillDetailsController>(builder: (controller) {
-      return newBillDetailedWidget(
-          controller, Get.find<CashierBillsController>());
+      return billDetailedWidget(controller, Get.find<CashierBillsController>());
     });
-  }
-
-  Widget oldBillDetails(BillDetailsController controller) {
-    return ListView.builder(
-      padding: EBSizeConfig.edgeInsetsZero,
-      itemCount: controller.billItems!.length,
-      itemBuilder: (context, index) => CustomContainer(
-        color: EBTheme.kPrimaryWhiteColor,
-        padding: EBSizeConfig.edgeInsetsZero,
-        margin: EBSizeConfig.edgeInsetsZero,
-        height: 90,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: Text(
-                      ' ${Get.find<CashierBillsController>().converDecimalConditionally(controller.billItems![index].quantity!)} X',
-                      style: EBAppTextStyle.billItemsText),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: EBSizeConfig.screenWidth * 0.4,
-                          child: Text(
-                            EBAppString.productlanguage == 'English'
-                                ? controller
-                                    .billItems![index].productNameEnglish!
-                                : controller
-                                    .billItems![index].productnameTamil!,
-                            style: EBAppTextStyle.billItemsText,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.edit_outlined,
-                            size: 18,
-                            color: EBTheme.kPrimaryColor,
-                          ), // 'x' icon
-                          onPressed: () async {
-                            // edit bottom sheet
-                            controller.cashierCtrl.billItemIndex = index;
-                            // passing qty to edit bottom sheet itemQuantityController
-                            controller.cashierCtrl.itemQuantityController.text =
-                                controller.billItems![index].quantity
-                                    .toString();
-                            await billItemEditorBottomSheet(
-                                context, controller.billItems![index]);
-                            controller.update();
-                          },
-                        ),
-                      ],
-                    ),
-                    Text(controller.billItems![index].price!.toStringAsFixed(3),
-                        style: EBAppTextStyle.billItemsText),
-                  ],
-                ),
-                Text(
-                    ' + ${controller.billItems![index].totalprice!.toStringAsFixed(3)}',
-                    style: EBAppTextStyle.avtiveTxt),
-              ],
-            ),
-            EBSizeConfig.dividerTH2
-          ],
-        ),
-      ),
-    );
   }
 }
 
-Widget newBillDetailedWidget(
+Widget billDetailedWidget(
     BillDetailsController _, CashierBillsController cashierCtrl) {
   return ListView.builder(
     itemCount: _.billItems!.length,
@@ -221,7 +145,7 @@ Widget newBillDetailedWidget(
                   Text(billItems.quantity!.toStringAsFixed(2),
                       style: EBAppTextStyle.billItemsText,
                       textAlign: TextAlign.left),
-                  Text('${billItems.totalprice}',
+                  Text('${(billItems.price ?? 0) * (billItems.quantity ?? 0)}',
                       style: EBAppTextStyle.billItemsText,
                       textAlign: TextAlign.right),
                   Align(
@@ -239,7 +163,8 @@ Widget newBillDetailedWidget(
                         cashierCtrl.itemQuantityController.text =
                             _.billItems![index].quantity.toString();
                         await billItemEditorBottomSheet(
-                            context, _.billItems![index]);
+                            context, _.billItems![index], _.billItems);
+                        // _.groupBillItemsByTaxPercentage(_.billItems!);
                         _.update();
                       },
                     ),
@@ -272,6 +197,124 @@ Widget newBillDetailedWidget(
                   ],
                 ),
               ],
+            ),
+          if (index == _.billItems!.length - 1 &&
+              cashierCtrl.billConfig?.gstenable == true)
+            Table(
+              columnWidths: const {
+                0: FlexColumnWidth(1),
+                1: FlexColumnWidth(1.1),
+                2: FlexColumnWidth(1),
+                3: FlexColumnWidth(1),
+                4: FlexColumnWidth(1),
+                5: FlexColumnWidth(1),
+              },
+              children: const [
+                TableRow(
+                  decoration: BoxDecoration(
+                    border: BorderDirectional(
+                      bottom: BorderSide(width: 1, color: EBTheme.blackColor),
+                    ),
+                  ),
+                  children: [
+                    Text(
+                      'GST %',
+                      style: EBAppTextStyle.billItemsText,
+                    ),
+                    Text('T.VAL', style: EBAppTextStyle.billItemsText),
+                    Text('CGST%',
+                        style: EBAppTextStyle.billItemsText,
+                        textAlign: TextAlign.right),
+                    Text('CGST',
+                        style: EBAppTextStyle.billItemsText,
+                        textAlign: TextAlign.right),
+                    Text('SGST %',
+                        style: EBAppTextStyle.billItemsText,
+                        textAlign: TextAlign.right),
+                    Text('SGST',
+                        style: EBAppTextStyle.billItemsText,
+                        textAlign: TextAlign.right),
+                  ],
+                ),
+              ],
+            ),
+          if (index == _.billItems!.length - 1 &&
+              cashierCtrl.billConfig?.gstenable == true)
+            ListView.builder(
+              physics: const ClampingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: _.gstBillItems.length,
+              itemBuilder: (context, index) {
+                /*
+                 *  DayEndReport dayReports = dayEndIndex < _.filteredDayReports!.length
+              ? _.filteredDayReports![dayEndIndex]
+              : _.filteredDayReports![0];
+                 */
+                BillItems gstBillItem = index < _.gstBillItems.length
+                    ? _.gstBillItems[index]
+                    : _.gstBillItems[0];
+                return Table(
+                  columnWidths: const {
+                    0: FlexColumnWidth(1),
+                    1: FlexColumnWidth(1.1),
+                    2: FlexColumnWidth(1),
+                    3: FlexColumnWidth(1),
+                    4: FlexColumnWidth(1),
+                    5: FlexColumnWidth(1),
+                  },
+                  children: [
+                    if (gstBillItem.taxpercentage != '0')
+                      TableRow(
+                        decoration: index == _.gstBillItems.length - 1
+                            ? BoxDecoration(
+                                border: const BorderDirectional(
+                                  bottom: BorderSide(
+                                      width: 1, color: EBTheme.blackColor),
+                                ),
+                              )
+                            : null,
+                        children: [
+                          Text(
+                            gstBillItem.taxpercentage ?? "-",
+                            style: EBAppTextStyle.billItemsText,
+                          ),
+                          Text(
+                              _
+                                  .calculateGSTAmount(gstBillItem.totalprice!,
+                                      double.parse(gstBillItem.taxpercentage!))
+                                  .toStringAsFixed(2),
+                              style: EBAppTextStyle.billItemsText),
+                          Text(gstBillItem.cgstPercentage ?? '',
+                              // '${double.parse(consolodatedItem.taxpercentage!) / 2}',
+                              style: EBAppTextStyle.billItemsText,
+                              textAlign: TextAlign.right),
+                          Text(
+                              _
+                                  .calculateGSTAmount(
+                                      gstBillItem.totalprice!,
+                                      double.parse(
+                                          '${double.parse(gstBillItem.taxpercentage!) / 2}'))
+                                  .toStringAsFixed(2),
+                              style: EBAppTextStyle.billItemsText,
+                              textAlign: TextAlign.right),
+                          Text(
+                              gstBillItem.sgstPercentage ?? '',
+                              style: EBAppTextStyle.billItemsText,
+                              textAlign: TextAlign.right),
+                          Text(
+                              _
+                                  .calculateGSTAmount(
+                                      gstBillItem.totalprice!,
+                                      double.parse(
+                                          '${double.parse(gstBillItem.taxpercentage!) / 2}'))
+                                  .toStringAsFixed(2),
+                              style: EBAppTextStyle.billItemsText,
+                              textAlign: TextAlign.right),
+                        ],
+                      ),
+                  ],
+                );
+              },
             ),
 
           // --------->>  bill bottom messages

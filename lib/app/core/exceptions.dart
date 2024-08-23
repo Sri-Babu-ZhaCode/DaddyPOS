@@ -6,6 +6,7 @@ import 'package:easybill_app/app/constants/app_text_style.dart';
 import 'package:easybill_app/app/constants/bools.dart';
 import 'package:easybill_app/app/constants/themes.dart';
 import 'package:easybill_app/app/internet/controller/network_controller.dart';
+import 'package:easybill_app/app/widgets/custom_widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,17 +21,8 @@ class EbException {
       EBAppString.responseMsg = message;
       debugPrint('status code --------->> : $statusCode');
       debugPrint('message --------->> : $message');
-      if (!Get.isSnackbarOpen) {
-        Get.rawSnackbar(
-            backgroundColor: EBTheme.kPrimaryColor,
-            messageText: Text(
-              message!,
-              style: EBAppTextStyle.printBtn,
-            ),
-            animationDuration: const Duration(milliseconds: 300),
-            snackPosition: SnackPosition.BOTTOM);
-      }
-      print('message ----------------->>  ${message}');
+
+      ebCustomTtoastMsg(message: message ?? "");
     }
     if (error is SocketException) {
        debugPrint(

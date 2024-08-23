@@ -1,3 +1,5 @@
+// ignore_for_file: no_wildcard_variable_uses
+
 import 'package:easybill_app/app/constants/size_config.dart';
 import 'package:easybill_app/app/data/models/bill_reports.dart';
 import 'package:easybill_app/app/modules/admin/admin_report/views/widgets/admin_filter_dialog.dart';

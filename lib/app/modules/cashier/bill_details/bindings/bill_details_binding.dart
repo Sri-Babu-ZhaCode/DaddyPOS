@@ -5,7 +5,9 @@ class BillDetailsBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<BillDetailsController>(
-      () => BillDetailsController(billItems: Get.arguments['billItems']),
+      () => BillDetailsController(
+        billItems: Get.arguments['billItems']
+      ),
     );
   }
 }

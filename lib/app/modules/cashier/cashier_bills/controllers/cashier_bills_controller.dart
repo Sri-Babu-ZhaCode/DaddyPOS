@@ -73,7 +73,6 @@ class CashierBillsController extends GetxController
     '5',
     '6',
     const Icon(
-      
       Icons.close,
       size: 30,
       weight: 100,
@@ -119,7 +118,13 @@ class CashierBillsController extends GetxController
         await deteteBillItemsIfTokenAdded(p);
       } else {
         addBillItem(p);
+        // if (billConfig?.printeraddress != null) {
         Get.toNamed(Routes.BILL_DETAILS, arguments: {'billItems': billItems});
+        // } else {
+        //   billItems.clear();
+        //   ebCustomTtoastMsg(message: 'Choose printer from setting');
+        //   update();
+        // }
       }
     } else {
       for (var item in billItems) {
@@ -158,7 +163,12 @@ class CashierBillsController extends GetxController
           formateDecimal(p: p),
           p.shopproductid,
           p.isDecimalAllowed,
-          p.productnameTamil),
+          p.productnameTamil,
+          p.taxpercentage,
+          p.sgstPercentage,
+          p.cgstPercentage,
+          p.sgstValueonprice,
+          p.cgstValueonprice),
       ...billItems
     ];
     // billItems.add(BillItems(
@@ -325,9 +335,13 @@ class CashierBillsController extends GetxController
           tolalprice,
           billItem.shopproductid,
           billItem.isDecimal,
-          billItem.productnameTamil);
+          billItem.productnameTamil,
+          billItem.taxpercentage,
+          billItem.sgstPercentage,
+          billItem.cgstPercentage,
+          billItem.sgstValueonprice,
+          billItem.cgstValueonprice);
       getTotalPriceAndQtyOfBill();
-
       Get.back();
       update();
     }

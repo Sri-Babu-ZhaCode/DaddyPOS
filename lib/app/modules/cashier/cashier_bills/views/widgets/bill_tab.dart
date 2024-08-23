@@ -1,12 +1,13 @@
 // ignore_for_file: no_wildcard_variable_uses
-
+import 'package:easybill_app/app/constants/size_config.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import '../../controllers/cashier_bills_controller.dart';
 import '../bill_calculator_button_widget.dart';
 import '../bill_calculator_widget.dart';
 
-Widget billTab() {
+Widget billTab(BuildContext context) {
+  EBSizeConfig.init(context);
   return GetBuilder<CashierBillsController>(builder: (_) {
     return Column(
       children: [

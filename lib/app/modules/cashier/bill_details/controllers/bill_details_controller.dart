@@ -1,5 +1,4 @@
 // ignore_for_file: unnecessary_overrides
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -29,6 +28,7 @@ class BillDetailsController extends GetxController {
   BillTemplate bt = BillTemplate();
   StreamSubscription<List<ScanResult>>? scanSubscription;
   List<BillItems>? billItems;
+  List<BillItems> gstBillItems = [];
   List<BillInfo>? addedBilInfo;
 
   BillDetailsController({this.billItems});
@@ -43,53 +43,68 @@ class BillDetailsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    PrinterSettings printerSettings;
-    if (cashierCtrl.billConfig?.printersize == '80MM (3 inch)') {
-      printerSettings = PrinterSettings(
-          deviceAddress: cashierCtrl.billConfig!.printeraddress,
-          printerDpi: 200,
-          printerWidth: 72,
-          nbrCharPerLine: 48);
-    } else {
-      printerSettings = PrinterSettings(
-          deviceAddress: cashierCtrl.billConfig!.printeraddress,
-          printerDpi: 200,
-          printerWidth: 48,
-          nbrCharPerLine: 32);
-    }
+    if (cashierCtrl.billConfig?.printeraddress != null) {
+      PrinterSettings printerSettings;
+      if (cashierCtrl.billConfig?.printersize == '80MM (3 inch)') {
+        printerSettings = PrinterSettings(
+            deviceAddress: cashierCtrl.billConfig!.printeraddress,
+            printerDpi: 200,
+            printerWidth: 72,
+            nbrCharPerLine: 48);
+      } else {
+        printerSettings = PrinterSettings(
+            deviceAddress: cashierCtrl.billConfig!.printeraddress,
+            printerDpi: 200,
+            printerWidth: 48,
+            nbrCharPerLine: 32);
+      }
 
-    thermalPrinterSdkPlugin = ThermalPrinterSdk(printerSettings);
+      thermalPrinterSdkPlugin = ThermalPrinterSdk(printerSettings);
+    }
+    if (billItems != null) {
+      List<BillItems> copyOfBillItems = List.from(billItems!);
+      //consolidatebillitems = groupBillItemsByTaxPercentage(copyOfBillItems);
+      calculateGSTByBillItmes(copyOfBillItems);
+    }
   }
 
   Future<void> addBillInfo() async {
     try {
-      debugPrint(
-          "usercredentialsid ------------->> ${LocalStorage.usercredentialsid}");
-      BillInfo billInfo = BillInfo(
-        usercredentialsid: LocalStorage.usercredentialsid,
-        paymentmode: paymentMode[currentIndex].toString().toUpperCase(),
-        billtype: 'Print',
-        tab: EBBools.isTokenPresent &&
-                cashierCtrl.tabIndex == EBAppString.screenAccessList.length - 1
-            ? 'token'
-            : '',
-        billtemplate: 'Template1',
-        issuccess: true,
-        istoken: cashierCtrl.tabIndex == 2 ? true : false,
-        items: cashierCtrl.billItems.map((e) => e).toList(),
-      );
-      final x = await billRepo.addBillInfo(billInfo);
-      debugPrint('Responce for Bill info ---------->>$x');
+      if (cashierCtrl.billConfig?.printeraddress != null) {
+        debugPrint(
+            "usercredentialsid ------------->> ${LocalStorage.usercredentialsid}");
+        BillInfo billInfo = BillInfo(
+          usercredentialsid: LocalStorage.usercredentialsid,
+          paymentmode: paymentMode[currentIndex].toString().toUpperCase(),
+          billtype: 'Print',
+          tab: EBBools.isTokenPresent &&
+                  cashierCtrl.tabIndex ==
+                      EBAppString.screenAccessList.length - 1
+              ? 'token'
+              : '',
+          billtemplate: 'Template1',
+          issuccess: true,
+          istoken: cashierCtrl.tabIndex == 2 ? true : false,
+          items: cashierCtrl.billItems.map((e) => e).toList(),
+        );
+        final x = await billRepo.addBillInfo(billInfo);
+        debugPrint('Responce for Bill info ---------->>$x');
 
-      if (x != null) {
-        addedBilInfo = x;
-        checkBluetoothDevice();
-        // if (isBluetoothPaired == true) {
-        configuringBillTemplate();
-        //  }
+        if (x != null) {
+          addedBilInfo = x;
+          checkBluetoothDevice();
+          // if (isBluetoothPaired) {
+          configuringBillTemplate();
+
+          // } else {
+          //   ebCustomTtoastMsg(message: 'Bluetooth printer is not connected');
+          // }
+        }
+      } else {
+        ebCustomTtoastMsg(message: 'Choose printer from setting');
       }
 
-      // ebCustomTtoastMsg(message: 'Bill Items Printed');
+      //
       // cashierBillsController.billItems.clear();
       // cashierBillsController.getTotalPriceAndQtyOfBill();
       // update();
@@ -129,19 +144,6 @@ class BillDetailsController extends GetxController {
     //bt.template += billConfig.businesslogo;
     //  await thermalPrinterSdkPlugin.print(TemplateSettings(
     //       template: billConfig.businesslogo));
-    int j = 1;
-    for (var item in billItems!) {
-      print('Item ----->> $j');
-
-      print('product name english : ${item.productNameEnglish}');
-      print('product name tamil : ${item.productnameTamil}');
-      print('rate : ${item.price}');
-      print('quantity : ${item.quantity}');
-      print('amount : ${item.totalprice}');
-      print('-----------------------------------------');
-      j++;
-    }
-
     bt.billData = await printerTextToImg(
         size: 30, txt: billConfig.businessname ?? "", allignment: 'CENTER');
     bt.template += bt.imageTagW1linebreak;
@@ -169,7 +171,8 @@ class BillDetailsController extends GetxController {
 
         bt.billData = await printerTextToImg(
             fontType: 'NORMAL',
-            txt: '${i.toString()}    ${item.productNameEnglish ?? ""}');
+            txt:
+                '${i.toString()}    ${EBAppString.productlanguage == 'English' ? item.productNameEnglish ?? "" : item.productnameTamil ?? ""}');
         i++;
 
         bt.template += bt.billProduct;
@@ -188,6 +191,8 @@ class BillDetailsController extends GetxController {
       bt.template += bt.inch3divider;
       // if upi enabled in settings
       if (billConfig.upienable == true) {
+        bt.billData =
+            'upi://pay?pa=${billConfig.upi}&pn=${billConfig.businessname}&tr=&am=${cashierCtrl.billItemsTotalPrice.toStringAsFixed(2)}&cu=INR&mc=0000&mode=02&purpose=00&tn=&tr=';
         bt.template += bt.inch3QR;
       }
       bt.billData = cashierCtrl.billItemsTotalPrice.toStringAsFixed(2);
@@ -270,7 +275,7 @@ class BillDetailsController extends GetxController {
       bt.billData = await printerTextToImg(
           size: 30,
           txt:
-              '${items.quantity ?? ""}        ${items.productNameEnglish ?? ""}            ${items.price ?? ""}');
+              '${items.quantity ?? ""}        ${EBAppString.productlanguage == 'English' ? items.productNameEnglish ?? "" : items.productnameTamil ?? ""}            ${items.price ?? ""}');
       bt.template += bt.billProduct;
     }
     bt.billData = await printerTextToImg(
@@ -295,12 +300,143 @@ class BillDetailsController extends GetxController {
     }
     return (date: date, time: time, amPm: amPm);
   }
+
+  // sortGstFromBillItems() {
+  //   if (billItems != null) {
+
+  //     billItems.where( (element) => element.taxpercentage == )
+  //   }
+
+  //   //  billItems.where((element) => element.)
+  //   // billItems.sort((a, b) => ,)
+  // }
+
+  // List<BillItems> consolidateBillItems(List<BillItems> billItems) {
+  //   Map<String, BillItems> consolidatedMap = {};
+
+  //   // list of bill items order by taxpercentage
+  //   //
+
+  //   for (var i = 0; i < billItems.length; i++) {
+  //     int repetedTaxIndex = 0;
+  //     for (var j = i + 1; j < billItems.length; i++) {
+  //       if (billItems[i].taxpercentage == billItems[j].taxpercentage) {
+  //         double totalPrice =
+  //             (billItems[i].totalprice ?? 0) + (billItems[j].totalprice ?? 0);
+  //       }
+  //     }
+  //   }
+
+  //   for (var item in billItems!) {
+  //     if (item.taxpercentage != null &&
+  //         consolidatedMap.containsKey(item.taxpercentage)) {
+  //       var existingItem = consolidatedMap[item.taxpercentage];
+  //       if (existingItem != null) {
+  //         existingItem.price = (existingItem.price ?? 0) + (item.price ?? 0);
+  //         existingItem.totalprice =
+  //             (existingItem.totalprice ?? 0) + (item.totalprice ?? 0);
+  //       }
+  //     } else {
+  //       consolidatedMap[item.taxpercentage ?? ''] = item;
+  //     }
+  //   }
+
+  //   for (var item in consolidatedMap.values.toList()) {
+  //     debugPrint('tax persentage -------------->> ${item.taxpercentage}');
+  //     debugPrint('cgst persentage -------------->> ${item.cgstPercentage}');
+  //     debugPrint('stax persentage -------------->> ${item.sgstPercentage}');
+  //     debugPrint(
+  //         'total price of percentage  -------------->> ${item.totalprice}');
+  //     // debugPrint('cgstValueonprice -------------->> ${item.cgstValueonprice}');
+  //   }
+  //   return consolidatedMap.values.toList();
+  // }
+
+  List<BillItems> groupBillItemsByTaxPercentage(
+      List<BillItems> copiedBillItems) {
+    Map<String, List<BillItems>> groupedBillItems = {};
+    for (BillItems item in copiedBillItems) {
+      String taxPercentage = item.taxpercentage ?? '';
+      if (!groupedBillItems.containsKey(taxPercentage)) {
+        groupedBillItems[taxPercentage] = [];
+      }
+      groupedBillItems[taxPercentage]!.add(item);
+    }
+
+    List<BillItems> result = [];
+    for (String taxPercentage in groupedBillItems.keys) {
+      List<BillItems> itemsWithSameTax = groupedBillItems[taxPercentage]!;
+      if (itemsWithSameTax.length > 1) {
+        // Combine items with the same tax percentage
+        double totalPrice =
+            itemsWithSameTax.fold(0, (sum, item) => sum + item.totalprice!);
+        BillItems combinedItem = itemsWithSameTax.first;
+        combinedItem.totalprice = totalPrice;
+        result.add(combinedItem);
+      } else {
+        // Keep single items unchanged
+        result.add(itemsWithSameTax.first);
+      }
+    }
+
+    return result;
+  }
+
+  double calculateGSTAmount(double totalAmount, double gstPercentage) {
+    /*
+Add GST
+GST Amount = ( Original Cost * GST% ) / 100
+Net Price = Original Cost + GST Amount
+
+In order to remove GST from base amount,
+
+Remove GST
+GST Amount = Original Cost – (Original Cost * (100 / (100 + GST% ) ) )
+Net Price = Original Cost – GST Amount
+
+*/
+
+debugPrint('total price --------------------------->> $totalAmount');
+    return totalAmount * gstPercentage / 100;
+    // return (gstPercentage / (100 + gstPercentage)) * totalAmount;
+  }
+
+  void calculateGSTByBillItmes(List<BillItems> copiedBillItems) {
+    gstBillItems.clear();
+    for (var i = 0; i < copiedBillItems.length; i++) {
+      for (var j = i + 1; j < copiedBillItems.length; j++) {
+        if (copiedBillItems[i].taxpercentage != '' &&
+            copiedBillItems[i].taxpercentage ==
+                copiedBillItems[j].taxpercentage) {
+          debugPrint(copiedBillItems[i].taxpercentage);
+          copiedBillItems[i].totalprice = (copiedBillItems[i].totalprice ?? 0) +
+              (copiedBillItems[j].totalprice ?? 0);
+          debugPrint(copiedBillItems[i].totalprice.toString());
+
+          copiedBillItems[j].taxpercentage = '';
+        }
+      }
+      if (copiedBillItems[i].taxpercentage != '') {
+        gstBillItems.add(copiedBillItems[i]);
+      }
+      update();
+    }
+
+    for (var item in gstBillItems) {
+      debugPrint('tax persentage -------------->> ${item.taxpercentage}');
+      debugPrint('cgst persentage -------------->> ${item.cgstPercentage}');
+      debugPrint('stax persentage -------------->> ${item.sgstPercentage}');
+      debugPrint(
+          'total price of percentage  -------------->> ${item.totalprice}');
+      // debugPrint('cgstVa
+    }
+  }
 }
 
-  // ThermalPrinterSdk().print(PrinterTemplateSettings(
-  //     deviceAddress: "DC:0D:30:23:0E:00",
-  //     template: "template",
-  //     printerDpi: 200,
-  //     printerWidth: 72,
-  //     nbrCharPerLine: 48));
 
+// ThermalPrinterSdk().print(PrinterTemplateSettings(
+//     deviceAddress: "DC:0D:30:23:0E:00",
+//     template: "template",
+//     printerDpi: 200,
+//     printerWidth: 72,
+//     nbrCharPerLine: 48));

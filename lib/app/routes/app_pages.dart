@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:get/get.dart';
 
 import '../modules/admin/admin_help/bindings/admin_help_binding.dart';
@@ -178,7 +180,7 @@ class AppPages {
         ),
         GetPage(
           name: _Paths.QUNATITY_BILL_CALCULATOR,
-          page: () => QunatityBillCalculatorView(),
+          page: () => const QunatityBillCalculatorView(),
           binding: QunatityBillCalculatorBinding(),
         ),
       ],
