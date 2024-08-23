@@ -17,7 +17,6 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import '../../../../data/api/local_storage.dart';
 import '../../../../data/repositories/auth_repository.dart';
 import '../../../../routes/app_pages.dart';
-import '../../../../widgets/custom_widgets/custom_snackbar.dart';
 import '../../../../widgets/set_password_dialog.dart';
 
 class SubscriptionController extends GetxController {
@@ -81,6 +80,7 @@ class SubscriptionController extends GetxController {
       final x = await _subscriptionRepo.getSubscription();
       subscriptionList = x;
       if (subscriptionList != null) {
+        selectedSubscription = subscriptionList![0];
         for (var sub in subscriptionList!) {
           debugPrint("subscription Id ----------->>  ${sub.subscriptionId}");
           debugPrint("subscription plans ----------->>  ${sub.planname}");
